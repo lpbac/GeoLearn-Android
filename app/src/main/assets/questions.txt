@@ -1,0 +1,15 @@
+1|Việt Nam nằm ở khu vực nào của châu Á?|Bắc Á|Đông Nam Á|Tây Nam Á|Trung Á|B
+1|Biển Đông nằm ở phía nào của phần đất liền Việt Nam?|Phía Bắc|Phía Tây|Phía Đông|Phía Tây Bắc|C
+1|Đỉnh núi cao nhất Việt Nam là đỉnh nào?|Phan Xi Păng|Ngọc Linh|Bạch Mã|Lang Biang|A
+1|Đồng bằng có diện tích lớn nhất Việt Nam là?|Đồng bằng sông Hồng|Đồng bằng sông Cửu Long|Đồng bằng Thanh Hóa|Đồng bằng Phú Yên|B
+1|Khí hậu Việt Nam mang tính chất gì?|Ôn đới hải dương|Nhiệt đới ẩm gió mùa|Hoang mạc|Cận cực|B
+2|Dân tộc có số dân đông nhất ở Việt Nam là?|Kinh|Tày|Thái|Mường|A
+2|Vùng sản xuất lúa lớn nhất cả nước là?|Đồng bằng sông Hồng|Đồng bằng sông Cửu Long|Tây Nguyên|Đông Nam Bộ|B
+2|Cây công nghiệp lâu năm nổi bật nhất ở Tây Nguyên là?|Cà phê|Bông|Củ cải đường|Lúa mì|A
+2|Thành phố đông dân nhất Việt Nam là?|Hà Nội|Thành phố Hồ Chí Minh|Hải Phòng|Đà Nẵng|B
+2|Ngành nào sau đây thuộc nhóm nông - lâm - thủy sản?|Dệt may|Nuôi trồng thủy sản|Du lịch|Xây dựng|B
+3|Châu lục có diện tích lớn nhất thế giới là?|Châu Phi|Châu Âu|Châu Á|Châu Mỹ|C
+3|Đại dương có diện tích lớn nhất thế giới là?|Đại Tây Dương|Thái Bình Dương|Ấn Độ Dương|Bắc Băng Dương|B
+3|Đường xích đạo chia Trái Đất thành hai bán cầu nào?|Đông và Tây|Bắc và Nam|Ngày và đêm|Lục địa và đại dương|B
+3|Bản đồ có tỉ lệ 1:100 000 thì 1 cm trên bản đồ ứng với bao nhiêu ngoài thực tế?|100 m|1 km|10 km|100 km|B
+3|Hướng nào đối diện với hướng Bắc trên bản đồ?|Đông|Tây|Nam|Đông Bắc|C
