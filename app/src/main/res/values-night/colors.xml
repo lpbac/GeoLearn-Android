@@ -9,7 +9,7 @@
     <color name="colorTextSecondary">#CBD5E1</color>
     <color name="colorBorder">#334155</color>
 
-    <color name="colorError">#EF5350</color>
+    <color name="colorError">#FF8A80</color>
     <color name="colorSuccess">#66BB6A</color>
     <color name="white">#1E293B</color>
     <color name="black">#F8FAFC</color>

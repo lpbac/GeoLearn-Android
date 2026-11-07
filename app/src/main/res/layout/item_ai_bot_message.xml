@@ -25,7 +25,7 @@
         android:layout_marginTop="4dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="0dp"
-        app:cardBackgroundColor="#1976D2">
+        app:cardBackgroundColor="@color/colorPrimary">
 
         <TextView
             android:layout_width="match_parent"
@@ -43,7 +43,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="18dp"
         app:cardElevation="2dp"
-        app:cardBackgroundColor="#FFFFFF">
+        app:cardBackgroundColor="@color/colorSurface">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -59,7 +59,7 @@
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
                 android:textSize="15sp"
-                android:textColor="#111827"
+                android:textColor="@color/colorTextPrimary"
                 android:lineSpacingMultiplier="1.4"
                 android:text="..."
                 android:maxWidth="260dp" />
@@ -74,7 +74,7 @@
                 android:layout_marginBottom="6dp"
                 android:text="🃏 Mở lại Flashcard"
                 android:textSize="13sp"
-                android:textColor="#1976D2"
+                android:textColor="@color/colorPrimary"
                 android:visibility="gone" />
 
         </LinearLayout>

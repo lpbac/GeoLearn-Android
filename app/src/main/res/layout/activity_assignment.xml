@@ -14,11 +14,14 @@
         android:elevation="4dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_menu_white"
-            app:tint="@color/colorOnPrimary"
-            android:layout_centerVertical="true"/>
+            android:id="@+id/btnBack"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="Quay lại"
+            android:padding="5dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@color/colorOnPrimary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -29,18 +32,6 @@
             android:textColor="@color/colorOnPrimary"
             android:layout_centerInParent="true"/>
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Quay lại"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            app:strokeColor="@color/colorPrimary"
-            app:strokeWidth="1dp"
-            app:backgroundTint="@color/colorSurface"
-            android:textColor="@color/colorPrimary"
-            app:cornerRadius="8dp"/>
     </RelativeLayout>
 
     <ScrollView

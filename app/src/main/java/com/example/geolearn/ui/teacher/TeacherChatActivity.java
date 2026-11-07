@@ -154,6 +154,7 @@ public class TeacherChatActivity extends AppCompatActivity {
             if (lastMsg.isEmpty()) {
                 holder.tvLastMessage.setText("Bắt đầu trò chuyện...");
                 holder.tvLastMessage.setTypeface(null, Typeface.ITALIC);
+                holder.tvName.setTypeface(null, Typeface.NORMAL);
             } else {
                 holder.tvLastMessage.setText(lastMsg);
                 if (hasUnread) {
@@ -166,6 +167,7 @@ public class TeacherChatActivity extends AppCompatActivity {
                     holder.tvName.setTypeface(null, Typeface.NORMAL);
                 }
             }
+            holder.viewUnreadDot.setVisibility(hasUnread ? View.VISIBLE : View.GONE);
 
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ChatActivity.class);
@@ -180,11 +182,13 @@ public class TeacherChatActivity extends AppCompatActivity {
 
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tvName, tvLastMessage;
+            View viewUnreadDot;
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 // Đảm bảo item_conversation.xml có các ID này
                 tvName = itemView.findViewById(R.id.tvName);
                 tvLastMessage = itemView.findViewById(R.id.tvLastMessage);
+                viewUnreadDot = itemView.findViewById(R.id.viewUnreadDot);
             }
         }
     }

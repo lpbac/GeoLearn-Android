@@ -13,10 +13,14 @@
         android:paddingHorizontal="16dp">
 
         <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_menu_white"
-            android:layout_centerVertical="true"/>
+            android:id="@+id/btnBack"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_centerVertical="true"
+            android:contentDescription="Quay lại"
+            android:padding="5dp"
+            android:src="@drawable/ic_back_arrow"
+            app:tint="@color/colorOnPrimary" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,16 +31,6 @@
             android:textColor="@color/colorOnPrimary"
             android:layout_centerInParent="true"/>
 
-        <Button
-            android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Quay lại"
-            android:textColor="@color/colorPrimary"
-            app:backgroundTint="@color/colorSurface"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:minHeight="40dp"/>
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
