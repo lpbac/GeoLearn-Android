@@ -985,6 +985,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return name.replace("Chương " + chapter.getMaChuong() + ":", "").trim();
     }
 
+    // Thông báo cho học sinh biết chương trước còn thiếu điều kiện nào
+    public String getUnlockHint(int userId, int chapterId) {
+        int prev = chapterId - 1;
+        List<String> missing = new ArrayList<>();
+        int total = getQuestionCountByChapter(prev);
+        int score = getQuizScore(userId, prev);
+        if (total > 0 && !(score >= 0 && ((double) score / total) * 10 >= 5.0))
+            missing.add("đạt từ 5/10 điểm Quiz");
+        if (hasAssignmentInChapter(prev) && !isAssignmentSubmitted(userId, prev))
+            missing.add("nộp bài tập");
+        if (hasDocumentInChapter(prev, "PDF") && !isDocViewed(userId, prev, "PDF"))
+            missing.add("xem tài liệu PDF");
+        if (hasDocumentInChapter(prev, "Video") && !isDocViewed(userId, prev, "Video"))
+            missing.add("xem hết video");
+        if (missing.isEmpty())
+            return "Hãy hoàn thành các chương trước để mở chương này!";
+        return "Ở chương trước, bạn còn cần:\n• " + android.text.TextUtils.join("\n• ", missing);
+    }
+
     public boolean isChapterCompleted(int userId, int chapterId) {
         int totalQuestions = getQuestionCountByChapter(chapterId);
         int score = getQuizScore(userId, chapterId);

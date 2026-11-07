@@ -75,9 +75,11 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
 
             holder.itemView.setOnClickListener(v -> {
                 // Thông báo rõ ràng hơn
-                Toast.makeText(context,
-                        "Bạn phải đạt >5 điểm Quiz VÀ nộp bài tập chương trước mới được mở!",
-                        Toast.LENGTH_LONG).show();
+                new androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setTitle("Chương đang khoá")
+                        .setMessage(dbHelper.getUnlockHint(myUserId, chapter.getMaChuong()))
+                        .setPositiveButton("Đã hiểu", null)
+                        .show();
             });
         }
     }

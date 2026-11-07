@@ -96,7 +96,14 @@ public class QuestionActivity extends AppCompatActivity {
         });
 
         // Nút Back (Góc trái trên)
-        btnBack.setOnClickListener(v -> finish());
+        btnBack.setOnClickListener(v -> confirmExit());
+        // Nút Back hệ thống: hỏi trước khi thoát để không mất bài đang làm
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override
+            public void handleOnBackPressed() {
+                confirmExit();
+            }
+        });
     }
 
     // Hàm hiển thị câu hỏi lên màn hình
@@ -176,6 +183,15 @@ public class QuestionActivity extends AppCompatActivity {
         if (timer != null)
             timer.cancel();
         super.onDestroy();
+    }
+
+    private void confirmExit() {
+        new AlertDialog.Builder(this)
+                .setTitle("Thoát bài kiểm tra")
+                .setMessage("Bài làm sẽ không được lưu. Bạn có chắc muốn thoát?")
+                .setPositiveButton("Thoát", (dialog, which) -> finish())
+                .setNegativeButton("Làm tiếp", null)
+                .show();
     }
 
     // Hộp thoại xác nhận nộp bài
