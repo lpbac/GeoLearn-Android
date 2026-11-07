@@ -55,9 +55,13 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
             holder.tvStatus.setText("🔒 Đang khóa");
             // Set màu xám
             if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorMuted));
+            holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
+            holder.itemView.setOnClickListener(null);
             holder.itemView.setEnabled(false);
             return;
         }
+        // View được tái sử dụng có thể đang ở trạng thái khoá
+        holder.itemView.setEnabled(true);
 
         // 2. Lấy thông tin bài làm: [Text, File, Grade, Feedback]
         String[] submission = db.getSubmissionFullDetail(userId, c.getMaChuong());

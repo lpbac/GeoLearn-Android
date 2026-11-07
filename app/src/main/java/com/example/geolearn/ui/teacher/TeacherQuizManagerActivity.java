@@ -108,7 +108,7 @@ public class TeacherQuizManagerActivity extends AppCompatActivity {
             else if (selectedId == R.id.rbC) correctAns = "C";
             else if (selectedId == R.id.rbD) correctAns = "D";
 
-                if (content.isEmpty() || a.isEmpty() || b.isEmpty() || c.isEmpty() || d.isEmpty() || correctAns.isEmpty()) {
+            if (content.isEmpty() || a.isEmpty() || b.isEmpty() || c.isEmpty() || d.isEmpty() || correctAns.isEmpty()) {
                 Toast.makeText(this, "Vui lòng nhập đủ nội dung, 4 đáp án và chọn đáp án đúng!", Toast.LENGTH_SHORT).show();
             } else {
                 final String finalCorrectAns = correctAns;
