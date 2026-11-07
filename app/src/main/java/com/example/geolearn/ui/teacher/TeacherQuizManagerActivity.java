@@ -152,10 +152,15 @@ public class TeacherQuizManagerActivity extends AppCompatActivity {
             holder.tvContent.setText("Câu " + (position + 1) + ": " + q.getNoiDung());
 
             // Xử lý Xóa
-            holder.btnDelete.setOnClickListener(v -> {
-                db.deleteQuestion(q.getMaCauHoi());
-                loadQuestions();
-            });
+            holder.btnDelete.setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(v.getContext())
+                    .setTitle("Xóa câu hỏi")
+                    .setMessage("Bạn có chắc muốn xóa câu hỏi này không?")
+                    .setPositiveButton("Xóa", (d, w) -> {
+                        db.deleteQuestion(q.getMaCauHoi());
+                        loadQuestions();
+                    })
+                    .setNegativeButton("Hủy", null)
+                    .show());
 
             // Xử lý Sửa (Bấm vào dòng câu hỏi -> Hiện dialog sửa)
             holder.itemView.setOnClickListener(v -> {

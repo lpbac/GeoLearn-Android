@@ -93,7 +93,11 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
             holder.itemView.setAlpha(0.6f);
 
             holder.itemView.setOnClickListener(v -> {
-                Toast.makeText(context, "Hãy học xong lý thuyết và làm bài tập chương trước!", Toast.LENGTH_SHORT).show();
+                new androidx.appcompat.app.AlertDialog.Builder(context)
+                        .setTitle("Chương đang khoá")
+                        .setMessage(dbHelper.getUnlockHint(myUserId, chapter.getMaChuong()))
+                        .setPositiveButton("Đã hiểu", null)
+                        .show();
             });
         } else {
             // NẾU MỞ -> Chạy logic tô màu Xanh/Đỏ cũ của bạn

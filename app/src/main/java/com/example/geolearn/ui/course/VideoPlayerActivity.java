@@ -18,6 +18,28 @@ public class VideoPlayerActivity extends AppCompatActivity {
     private ImageView btnPlayOverlay;
     private int currentChapterId = 1;
 
+    // Cộng dồn thời gian xem thật: mỗi giây chỉ cộng phần tiến lên do phát bình thường, bỏ qua các lần tua
+    private final android.os.Handler ticker = new android.os.Handler(android.os.Looper.getMainLooper());
+    private long watchedMs = 0;
+    private int lastPos = 0;
+    private final Runnable trackWatchTime = new Runnable() {
+        @Override
+        public void run() {
+            int pos = videoView.getCurrentPosition();
+            int delta = pos - lastPos;
+            if (videoView.isPlaying() && delta > 0 && delta <= 2000)
+                watchedMs += delta;
+            lastPos = pos;
+            ticker.postDelayed(this, 1000);
+        }
+    };
+
+    @Override
+    protected void onDestroy() {
+        ticker.removeCallbacks(trackWatchTime);
+        super.onDestroy();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,10 +116,21 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         });
 
-        // shortcut: tua tới cuối cũng tính là xem xong, muốn chặt hơn thì cộng dồn thời gian xem thực tế
-        videoView.setOnCompletionListener(mp -> dbHelper.saveDocProgress(
-                getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", -1),
-                currentChapterId, "Video", 1));
+        // Chỉ tính là đã xem khi thời gian xem thực tế (không tính phần tua) đạt từ 80% thời lượng
+        ticker.post(trackWatchTime);
+        videoView.setOnCompletionListener(mp -> {
+            int duration = videoView.getDuration();
+            if (duration <= 0 || watchedMs >= duration * 0.8) {
+                dbHelper.saveDocProgress(
+                        getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", -1),
+                        currentChapterId, "Video", 1);
+                Toast.makeText(this, "Đã hoàn thành video bài giảng!", Toast.LENGTH_SHORT).show();
+            } else {
+                int percent = (int) (watchedMs * 100L / duration);
+                Toast.makeText(this, "Bạn mới xem " + percent + "% video. Hãy xem hết (không tua) để hoàn thành!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
 
         if (btnPlayOverlay != null) {
             btnPlayOverlay.setOnClickListener(v -> {

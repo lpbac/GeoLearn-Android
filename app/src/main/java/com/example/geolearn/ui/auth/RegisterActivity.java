@@ -55,6 +55,22 @@ public class RegisterActivity extends AppCompatActivity {
         spinnerRole.setAdapter(adapter);
     }
 
+    // Hiện lỗi dưới ô nhập (TextInputLayout) thay vì icon lỗi đè lên nút con mắt
+    private void showError(TextInputEditText edt, String msg) {
+        android.view.ViewParent p = edt.getParent();
+        while (p != null && !(p instanceof com.google.android.material.textfield.TextInputLayout))
+            p = p.getParent();
+        if (p == null) {
+            edt.setError(msg);
+            return;
+        }
+        com.google.android.material.textfield.TextInputLayout til = (com.google.android.material.textfield.TextInputLayout) p;
+        til.setErrorIconDrawable(null); // giữ nút con mắt, lỗi chỉ hiện bằng chữ đỏ bên dưới
+        til.setError(msg);
+        if (msg != null)
+            edt.requestFocus();
+    }
+
     private void handleRegister() {
         String fullName = getInputText(edtFullName);
         String username = getInputText(edtUsername);
@@ -62,33 +78,35 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = getInputText(edtConfirmPassword);
         String classCode = getInputText(edtClassCode).toUpperCase();
         int role = spinnerRole.getSelectedItemPosition() == 0 ? 1 : 2;
+        for (TextInputEditText e : new TextInputEditText[] { edtFullName, edtUsername, edtPassword, edtConfirmPassword, edtClassCode })
+            showError(e, null);
 
         if (fullName.isEmpty()) {
-            edtFullName.setError("Vui lòng nhập họ tên");
+            showError(edtFullName, "Vui lòng nhập họ tên");
             return;
         }
         if (username.isEmpty()) {
-            edtUsername.setError("Vui lòng nhập tên đăng nhập");
+            showError(edtUsername, "Vui lòng nhập tên đăng nhập");
             return;
         }
         if (username.length() < 3) {
-            edtUsername.setError("Tên đăng nhập tối thiểu 3 ký tự");
+            showError(edtUsername, "Tên đăng nhập tối thiểu 3 ký tự");
             return;
         }
         if (password.isEmpty()) {
-            edtPassword.setError("Vui lòng nhập mật khẩu");
+            showError(edtPassword, "Vui lòng nhập mật khẩu");
             return;
         }
         if (password.length() < 3) {
-            edtPassword.setError("Mật khẩu tối thiểu 3 ký tự");
+            showError(edtPassword, "Mật khẩu tối thiểu 3 ký tự");
             return;
         }
         if (!password.equals(confirmPassword)) {
-            edtConfirmPassword.setError("Mật khẩu xác nhận không khớp");
+            showError(edtConfirmPassword, "Mật khẩu xác nhận không khớp");
             return;
         }
         if (classCode.isEmpty()) {
-            edtClassCode.setError(role == 1 ? "Vui lòng nhập mã lớp học" : "Vui lòng nhập lớp học phụ trách");
+            showError(edtClassCode, role == 1 ? "Vui lòng nhập mã lớp học" : "Vui lòng nhập lớp học phụ trách");
             return;
         }
 
@@ -98,7 +116,7 @@ public class RegisterActivity extends AppCompatActivity {
             if (databaseHelper.isUsernameExists(username)) {
                 runOnUiThread(() -> {
                     setRegisterEnabled(true);
-                    edtUsername.setError("Tên đăng nhập đã tồn tại");
+                    showError(edtUsername, "Tên đăng nhập đã tồn tại");
                     Toast.makeText(this, "Tên đăng nhập đã tồn tại", Toast.LENGTH_SHORT).show();
                 });
                 return;
