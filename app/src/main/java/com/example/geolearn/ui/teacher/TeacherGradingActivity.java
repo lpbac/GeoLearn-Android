@@ -58,7 +58,7 @@ public class TeacherGradingActivity extends AppCompatActivity {
             String fileUri = submission[1];
 
             if (answerText == null || answerText.trim().isEmpty()) {
-                tvAnswer.setText("Sinh viên không nhập nội dung văn bản.");
+                tvAnswer.setText("Học sinh không nhập nội dung văn bản.");
             } else {
                 tvAnswer.setText(answerText); // Nội dung bài làm
             }
@@ -71,14 +71,15 @@ public class TeacherGradingActivity extends AppCompatActivity {
             }
 
             // Nếu đã chấm điểm rồi thì hiện lại
-            if (submission[2] != null && !submission[2].equals("-1.0")) {
+            // DB trả "-1" (cột REAL DEFAULT -1) nghĩa là chưa chấm
+            if (submission[2] != null && !submission[2].startsWith("-")) {
                 edtScore.setText(submission[2]);
             }
             if (submission[3] != null) {
                 edtFeedback.setText(submission[3]);
             }
         } else {
-            tvAnswer.setText("Sinh viên chưa nộp bài này.");
+            tvAnswer.setText("Học sinh chưa nộp bài này.");
             btnSubmit.setEnabled(false); // Không cho chấm nếu chưa nộp
         }
 
@@ -92,7 +93,16 @@ public class TeacherGradingActivity extends AppCompatActivity {
                 return;
             }
 
-            double score = Double.parseDouble(sScore);
+            double score;
+            try {
+                score = Double.parseDouble(sScore);
+            } catch (NumberFormatException e) {
+                score = -1;
+            }
+            if (score < 0 || score > 10) {
+                edtScore.setError("Điểm phải từ 0 đến 10");
+                return;
+            }
             dbHelper.gradeSubmission(studentId, chapterId, score, feedback);
             Toast.makeText(this, "Đã lưu điểm!", Toast.LENGTH_SHORT).show();
             finish(); // Quay lại trang trước
@@ -144,7 +154,7 @@ public class TeacherGradingActivity extends AppCompatActivity {
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
             startActivity(Intent.createChooser(intent, "Mở file bài nộp"));
         } catch (Exception e) {
-            Toast.makeText(this, "Không mở được file. Hãy cài ứng dụng đọc PDF/Word hoặc yêu cầu sinh viên nộp lại file.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Không mở được file. Hãy cài ứng dụng đọc PDF/Word hoặc yêu cầu học sinh nộp lại file.", Toast.LENGTH_LONG).show();
         }
     }
 

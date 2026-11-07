@@ -71,7 +71,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
         // Kiểm tra Thêm/Sửa
         if (getIntent().hasExtra("CHAPTER_ID")) {
             chapterId = getIntent().getIntExtra("CHAPTER_ID", -1);
-            tvTitle.setText("Chỉnh sửa khoá học");
+            tvTitle.setText("Chỉnh sửa chương");
             loadData();
         }
 
@@ -86,7 +86,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
         btnManageQuiz.setOnClickListener(v -> {
             if (chapterId == -1) {
                 // Nếu đang thêm mới (chưa có ID) -> Bắt buộc lưu trước
-                Toast.makeText(this, "Vui lòng bấm Submit để lưu chương trước khi soạn câu hỏi!", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Vui lòng bấm Lưu để lưu chương trước khi soạn câu hỏi!", Toast.LENGTH_LONG).show();
             } else {
                 // Nếu đã có ID -> Mở màn hình quản lý câu hỏi
                 Intent intent = new Intent(TeacherAddEditChapterActivity.this, TeacherQuizManagerActivity.class);

@@ -189,23 +189,13 @@ public class SimpleChartView extends View {
             Entry entry = entries.get(i);
             float left = horizontalPadding + i * (barWidth + space);
             float top = 24f + chartBottom * (1f - Math.max(0f, Math.min(100f, entry.value)) / 100f);
-            paint.setColor(getColorForValue(entry.value));
+            paint.setColor(Color.rgb(25, 118, 210)); // phổ điểm: một màu, chiều cao đã thể hiện tỉ lệ
             canvas.drawRoundRect(left, top, left + barWidth, chartBottom + 24f, 12f, 12f, paint);
 
             paint.setColor(Color.rgb(68, 68, 68));
             canvas.drawText(Math.round(entry.value) + "%", left + barWidth / 2f, top - 8f, paint);
             canvas.drawText(shortLabel(entry.label), left + barWidth / 2f, getHeight() - 26f, paint);
         }
-    }
-
-    private int getColorForValue(float value) {
-        if (value >= 80f) {
-            return Color.rgb(46, 125, 50);
-        }
-        if (value >= 50f) {
-            return Color.rgb(251, 140, 0);
-        }
-        return Color.rgb(211, 47, 47);
     }
 
     private String shortLabel(String label) {

@@ -101,7 +101,7 @@ public class TeacherMainActivity extends AppCompatActivity {
 
         // Hiển thị lên giao diện
         tvChapterCount.setText(totalChapters + " chương");
-        tvClassCount.setText(totalClasses + " lớp");
+        tvClassCount.setText(totalClasses + " lớp học");
     }
 
     private void setupBottomNavigation() {

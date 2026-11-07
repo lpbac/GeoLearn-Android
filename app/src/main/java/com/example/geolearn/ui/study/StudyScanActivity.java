@@ -16,7 +16,7 @@ import com.example.geolearn.data.SessionManager;
 import java.util.List;
 
 /**
- * Màn hình quét tiến độ học của sinh viên.
+ * Màn hình quét tiến độ học của học sinh.
  * Hiển thị trạng thái từng chương: DONE / PARTIAL / TODO
  */
 public class StudyScanActivity extends AppCompatActivity {

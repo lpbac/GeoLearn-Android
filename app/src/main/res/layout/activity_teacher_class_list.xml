@@ -21,7 +21,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Danh sách lớp"
+            android:text="Danh sách lớp học"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/white"
@@ -31,7 +31,7 @@
             android:id="@+id/btnBack"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Back"
+            android:text="Quay lại"
             android:textColor="#1976D2"
             app:backgroundTint="@color/white"
             android:layout_alignParentEnd="true"

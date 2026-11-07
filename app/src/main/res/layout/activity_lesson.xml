@@ -14,6 +14,7 @@
 
         <ImageView
             android:id="@+id/btnMenu"
+            android:visibility="invisible"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_centerVertical="true"
@@ -39,7 +40,7 @@
             android:insetTop="0dp"
             android:insetBottom="0dp"
             android:paddingHorizontal="8dp"
-            android:text="Back"
+            android:text="Quay lại"
             android:textColor="@color/colorPrimary"
             android:textSize="12sp"
             app:backgroundTint="@color/white"

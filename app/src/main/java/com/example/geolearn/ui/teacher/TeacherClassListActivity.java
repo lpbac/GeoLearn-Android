@@ -83,7 +83,7 @@ public class TeacherClassListActivity extends AppCompatActivity {
         List<String> myClasses = dbHelper.getTeachingClasses(teacherId);
 
         if (myClasses.isEmpty()) {
-            Toast.makeText(this, "Bạn chưa quản lý lớp nào!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Bạn chưa quản lý lớp học nào!", Toast.LENGTH_SHORT).show();
         }
 
         // 3. Cài đặt RecyclerView

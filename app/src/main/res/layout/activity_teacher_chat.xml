@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:background="@drawable/bg_search_box"
-            android:hint="Tìm kiếm sinh viên hoặc lớp..."
+            android:hint="Tìm kiếm học sinh hoặc lớp học..."
             android:paddingHorizontal="12dp"
             android:textSize="14sp"
             android:drawableStart="@android:drawable/ic_menu_search"/>

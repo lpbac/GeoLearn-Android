@@ -35,13 +35,13 @@
                 android:id="@+id/tvClassName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Lớp KTPM01"
+                android:text="Lớp 12A1"
                 android:textSize="18sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
 
             <TextView
-                android:text="Nhấn để xem danh sách SV"
+                android:text="Nhấn để xem danh sách HS"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"

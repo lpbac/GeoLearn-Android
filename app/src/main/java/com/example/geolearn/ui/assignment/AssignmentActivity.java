@@ -54,6 +54,9 @@ public class AssignmentActivity extends AppCompatActivity {
         }
         if (getIntent().hasExtra("CHAPTER_NAME")) {
             currentChapterName = getIntent().getStringExtra("CHAPTER_NAME");
+        } else {
+            com.example.geolearn.model.Chapter chapter = dbHelper.getChapterById(currentChapterId);
+            if (chapter != null) currentChapterName = chapter.getTenChuong();
         }
 
         // 2. Ánh xạ

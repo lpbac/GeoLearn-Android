@@ -12,7 +12,7 @@
         android:background="#1976D2"
         android:paddingHorizontal="16dp">
         <ImageView android:id="@+id/btnBack" android:layout_width="30dp" android:layout_height="30dp" android:src="@drawable/ic_back_arrow" app:tint="@color/white" android:layout_centerVertical="true"/>
-        <TextView android:id="@+id/tvStudentNameTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tên Sinh Viên" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/white" android:layout_centerInParent="true"/>
+        <TextView android:id="@+id/tvStudentNameTitle" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Tên Học Sinh" android:textSize="20sp" android:textStyle="bold" android:textColor="@color/white" android:layout_centerInParent="true"/>
     </RelativeLayout>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView

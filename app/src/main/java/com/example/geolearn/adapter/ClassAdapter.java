@@ -34,7 +34,7 @@ public class ClassAdapter extends RecyclerView.Adapter<ClassAdapter.ClassViewHol
     @Override
     public void onBindViewHolder(@NonNull ClassViewHolder holder, int position) {
         String className = mListClass.get(position);
-        holder.tvClassName.setText("Lớp: " + className);
+        holder.tvClassName.setText("Lớp học: " + className);
 
         holder.itemView.setOnClickListener(v -> {
             if (mListener != null) {

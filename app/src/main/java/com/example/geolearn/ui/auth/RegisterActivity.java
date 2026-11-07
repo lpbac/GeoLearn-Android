@@ -49,7 +49,7 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void setupRoleSpinner() {
-        String[] roles = {"Sinh viên", "Giảng viên"};
+        String[] roles = {"Học sinh", "Giảng viên"};
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerRole.setAdapter(adapter);
@@ -88,7 +88,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         if (classCode.isEmpty()) {
-            edtClassCode.setError(role == 1 ? "Vui lòng nhập mã lớp" : "Vui lòng nhập lớp phụ trách");
+            edtClassCode.setError(role == 1 ? "Vui lòng nhập mã lớp học" : "Vui lòng nhập lớp học phụ trách");
             return;
         }
 

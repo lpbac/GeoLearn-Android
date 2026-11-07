@@ -20,7 +20,7 @@
 
         <TextView
             android:id="@+id/tvTitle"
-            android:text="Thêm khoá học"
+            android:text="Thêm chương"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="@color/black"
@@ -30,7 +30,7 @@
 
         <Button
             android:id="@+id/btnSubmit"
-            android:text="Submit"
+            android:text="Lưu"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
@@ -132,7 +132,7 @@
             </LinearLayout>
 
             <TextView
-                android:text="Câu hỏi tự luận dành cho sinh viên"
+                android:text="Câu hỏi tự luận dành cho học sinh"
                 android:textStyle="bold"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

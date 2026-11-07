@@ -145,7 +145,7 @@ public class AiBotViewModel extends AndroidViewModel {
             sb.append(icon).append(" ").append(p.chapterName).append("\n");
 
             if (p.totalQuestions > 0) {
-                sb.append("  • Quiz: ").append(p.quizDone ? p.quizScore + "/" + p.totalQuestions : "Chưa làm").append("\n");
+                sb.append("  • Quiz: ").append(p.quizScore >= 0 ? p.quizScore + "/" + p.totalQuestions : "Chưa làm").append("\n");
             }
             if (p.hasAssignment) {
                 sb.append("  • Bài tập: ").append(p.assignmentDone ? "Đã nộp" : "Chưa nộp").append("\n");
@@ -256,6 +256,12 @@ public class AiBotViewModel extends AndroidViewModel {
             public void onError(String errorMessage) {
                 mainHandler.post(() -> {
                     isStreamingLiveData.setValue(false);
+                    // Thay trạng thái "Đang tạo..." bằng lỗi để không bị treo
+                    if (!messages.isEmpty()) {
+                        messages.get(messages.size() - 1).appendToken("\n❌ " + errorMessage);
+                        messagesLiveData.setValue(new ArrayList<>(messages));
+                    }
+                    saveChatHistory();
                     errorLiveData.setValue(errorMessage);
                 });
             }
@@ -283,7 +289,7 @@ public class AiBotViewModel extends AndroidViewModel {
     }
 
     /**
-     * AI chấm bài tập đã nộp của sinh viên — stream kết quả trực tiếp vào chat.
+     * AI chấm bài tập đã nộp của học sinh — stream kết quả trực tiếp vào chat.
      * @param sub SubmissionForReview chứa đề bài + bài làm từ DB
      */
     public void reviewSubmission(DatabaseHelper.SubmissionForReview sub) {
@@ -294,9 +300,9 @@ public class AiBotViewModel extends AndroidViewModel {
 
         // Prompt chi tiết cho AI
         String prompt =
-            "Bạn là giảng viên chấm bài. Hãy đánh giá bài làm của sinh viên dưới đây.\n\n" +
+            "Bạn là giảng viên chấm bài. Hãy đánh giá bài làm của học sinh dưới đây.\n\n" +
             "📋 **ĐỀ BÀI:**\n" + sub.assignmentQuestion + "\n\n" +
-            "✏️ **BÀI LÀM CỦA SINH VIÊN:**\n" + sub.userAnswer + "\n\n" +
+            "✏️ **BÀI LÀM CỦA HỌC SINH:**\n" + sub.userAnswer + "\n\n" +
             "Hãy nhận xét theo cấu trúc:\n" +
             "1. ✅ Điểm đúng (nêu cụ thể)\n" +
             "2. ❌ Điểm cần cải thiện (nêu cụ thể)\n" +

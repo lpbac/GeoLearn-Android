@@ -110,7 +110,7 @@
                         android:background="#E3F2FD"
                         android:paddingHorizontal="14dp"
                         android:paddingVertical="6dp"
-                        android:text="Lớp: ..."
+                        android:text="Lớp học: ..."
                         android:textColor="@color/colorPrimary"
                         android:textSize="15sp"
                         android:textStyle="bold" />
@@ -121,7 +121,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="28dp"
-                        android:hint="Tên sinh viên"
+                        android:hint="Tên học sinh"
                         app:boxStrokeColor="@color/colorPrimary"
                         app:endIconDrawable="@drawable/ic_edit"
                         app:endIconMode="custom"

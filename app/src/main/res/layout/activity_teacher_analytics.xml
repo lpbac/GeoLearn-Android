@@ -102,7 +102,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Phổ điểm của lớp"
+                        android:text="Phổ điểm của lớp học"
                         android:textColor="#1976D2"
                         android:textStyle="bold" />
                     <com.example.geolearn.utils.SimpleChartView

@@ -208,19 +208,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void insertSampleData(SQLiteDatabase db) {
         // Dữ liệu User
         // User chính (ID 1)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv1', '" + hashPassword("123") + "', 'Nguyễn Văn Minh', 1, 'CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv1', '" + hashPassword("123") + "', 'Nguyễn Văn Minh', 1, '12A1')");
 
-        // --- THÊM BẠN BÈ CÙNG LỚP KTPM01 (Để test tính năng Chat) ---
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv2', '" + hashPassword("123") + "', 'Phạm Thùy Trang', 1, 'CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv3', '" + hashPassword("123") + "', 'Trương Hồng Tân', 1, 'CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv4', '" + hashPassword("123") + "', 'Hoàng Minh Khải', 1, 'CNTT07')");
+        // --- THÊM BẠN BÈ CÙNG LỚP 12A1 (Để test tính năng Chat) ---
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv2', '" + hashPassword("123") + "', 'Phạm Thùy Trang', 1, '12A1')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv3', '" + hashPassword("123") + "', 'Trương Hồng Tân', 1, '12A1')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv4', '" + hashPassword("123") + "', 'Hoàng Minh Khải', 1, '12A1')");
 
         // Một bạn lớp khác (Sẽ KHÔNG hiện trong danh sách chat)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv5', '" + hashPassword("123") + "', 'Người Lớp Khác', 1, 'CNTT02')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv5', '" + hashPassword("123") + "', 'Người Lớp Khác', 1, '12A2')");
 
-        // SỬA DÒNG NÀY: Thầy Hậu dạy 2 lớp là KTPM01 và CNTT02 (ngăn cách bởi dấu phẩy)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '" + hashPassword("123") + "', 'Đặng Hồng Phúc', 2, 'CNTT02,CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '" + hashPassword("123") + "', 'Nguyễn Kiều Hưng', 2, 'CNTT02,CNTT07')");
+        // SỬA DÒNG NÀY: Thầy Hậu dạy 2 lớp là 12A1 và 12A2 (ngăn cách bởi dấu phẩy)
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '" + hashPassword("123") + "', 'Đặng Hồng Phúc', 2, '12A2,12A1')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '" + hashPassword("123") + "', 'Nguyễn Kiều Hưng', 2, '12A2,12A1')");
 
         // Dữ liệu Chương học
         db.execSQL("INSERT INTO " + TABLE_CHAPTER
@@ -265,15 +265,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         // Tin nhắn nhóm lớp (QUAN TRỌNG: Phải để số 1 ở cuối để coi là ĐÃ ĐỌC)
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 6, 'Chào lớp CNTT07, hôm nay các em đọc trước tài liệu Chương 2 nhé.', 'Lớp CNTT07', '08:05', 1)");
+                + " VALUES(null, 6, 'Chào lớp 12A1, hôm nay các em đọc trước tài liệu Chương 2 nhé.', 'Lớp 12A1', '08:05', 1)");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 1, 'Dạ thầy, em đã tải tài liệu về rồi ạ.', 'Lớp CNTT07', '08:08', 1)");
+                + " VALUES(null, 1, 'Dạ thầy, em đã tải tài liệu về rồi ạ.', 'Lớp 12A1', '08:08', 1)");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 2, 'Thầy ơi phần bài tập Chương 1 nộp đến khi nào ạ?', 'Lớp CNTT07', '08:12', 1)");
+                + " VALUES(null, 2, 'Thầy ơi phần bài tập Chương 1 nộp đến khi nào ạ?', 'Lớp 12A1', '08:12', 1)");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 6, 'Hạn nộp là 22h tối nay, các em chú ý hoàn thành đúng hạn.', 'Lớp CNTT07', '08:15', 1)");
+                + " VALUES(null, 6, 'Hạn nộp là 22h tối nay, các em chú ý hoàn thành đúng hạn.', 'Lớp 12A1', '08:15', 1)");
 
-        // Tin riêng mẫu giữa sinh viên và bạn cùng lớp / giảng viên
+        // Tin riêng mẫu giữa học sinh và bạn cùng lớp / giảng viên
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
                 + " VALUES(null, 2, 'Minh ơi, cậu làm xong câu hỏi ôn tập chưa?', '1_2', '09:20', 1)");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
@@ -554,7 +554,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    // Hàm lấy bài làm của sinh viên (để xem lại hoặc kiểm tra đã nộp chưa)
+    // Hàm lấy bài làm của học sinh (để xem lại hoặc kiểm tra đã nộp chưa)
     // Trả về: String[] {Nội dung, Đường dẫn file} hoặc NULL nếu chưa làm
     public String[] getSubmissionDetail(int userId, int chapterId) {
         SQLiteDatabase db = this.getReadableDatabase();
@@ -775,38 +775,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return true;
 
         // Muốn học chương hiện tại, phải hoàn thành chương trước đó
-        int prevChapterId = chapterId - 1;
-
-        // --- ĐIỀU KIỆN 1: ĐIỂM QUIZ ---
-        int score = getQuizScore(userId, prevChapterId);
-        int total = getQuestionsByChapter(prevChapterId).size();
-
-        boolean isQuizPassed = false;
-        // Nếu có câu hỏi thì mới tính điểm, không có câu hỏi thì coi như qua phần Quiz
-        if (total > 0) {
-            if (score != -1) {
-                double percentage = ((double) score / total) * 10;
-                isQuizPassed = (percentage >= 5.0);
-            }
-        } else {
-            isQuizPassed = true; // Không có quiz thì cho qua
-        }
-
-        // --- ĐIỀU KIỆN 2: NỘP BÀI TẬP ---
-        boolean isAssignmentDone = isAssignmentSubmitted(userId, prevChapterId);
-
-        // Nếu chương trước KHÔNG CÓ bài tập nào -> Thì coi như đã nộp (để không bị kẹt
-        // mãi mãi)
-        if (!hasAssignmentInChapter(prevChapterId)) {
-            isAssignmentDone = true;
-        }
-
-        // --- ĐIỀU KIỆN 3: XEM TÀI LIỆU PDF & VIDEO (Mới thêm) ---
-        boolean isPdfViewed = isDocViewed(userId, prevChapterId, "PDF");
-        boolean isVideoViewed = isDocViewed(userId, prevChapterId, "Video");
-
-        // KẾT QUẢ: Phải thoả mãn TẤT CẢ (Quiz đậu VÀ Nộp bài xong VÀ Xem tài liệu đầy đủ)
-        return isQuizPassed && isAssignmentDone && isPdfViewed && isVideoViewed;
+        return isChapterCompleted(userId, chapterId - 1);
     }
 
     // --- LƯU TRẠNG THÁI XEM TÀI LIỆU ---
@@ -914,10 +883,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (Chapter chapter : chapters) {
                 int totalQuestions = getQuestionCountByChapter(chapter.getMaChuong());
                 int score = getQuizScore(student.getMaNguoiDung(), chapter.getMaChuong());
-                boolean quizDone = totalQuestions == 0 || score >= 0;
                 boolean assignmentDone = !hasAssignmentInChapter(chapter.getMaChuong())
                         || isAssignmentSubmitted(student.getMaNguoiDung(), chapter.getMaChuong());
-                if (quizDone && assignmentDone)
+                if (isChapterCompleted(student.getMaNguoiDung(), chapter.getMaChuong()))
                     analytics.completedItems++;
                 if (!assignmentDone)
                     unsubmittedSignals++;
@@ -965,13 +933,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (analytics.warnings.isEmpty()) {
             if (lowScoreSignals > 0)
                 analytics.warnings
-                        .add("Có " + lowScoreSignals + " lượt điểm dưới 50%, cần theo dõi nhóm sinh viên yếu.");
+                        .add("Có " + lowScoreSignals + " lượt điểm dưới 50%, cần theo dõi nhóm học sinh yếu.");
             if (unsubmittedSignals > 0)
                 analytics.warnings
-                        .add("Có " + unsubmittedSignals + " lượt chưa nộp bài tập, cần nhắc sinh viên hoàn thành.");
+                        .add("Có " + unsubmittedSignals + " lượt chưa nộp bài tập, cần nhắc học sinh hoàn thành.");
         }
         if (analytics.warnings.isEmpty())
-            analytics.warnings.add("Chưa có cảnh báo nghiêm trọng. Lớp đang theo tiến độ tốt.");
+            analytics.warnings.add("Chưa có cảnh báo nghiêm trọng. Lớp học đang theo tiến độ tốt.");
         return analytics;
     }
 
@@ -1016,8 +984,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         boolean isQuizPassed = totalQuestions == 0 || (score >= 0 && ((double) score / totalQuestions) * 10 >= 5.0);
 
         boolean isAssignmentDone = !hasAssignmentInChapter(chapterId) || isAssignmentSubmitted(userId, chapterId);
-        boolean isPdfViewed = isDocViewed(userId, chapterId, "PDF");
-        boolean isVideoViewed = isDocViewed(userId, chapterId, "Video");
+        // Chỉ đòi xem tài liệu khi chương thật sự có tài liệu đó
+        boolean isPdfViewed = !hasDocumentInChapter(chapterId, "PDF") || isDocViewed(userId, chapterId, "PDF");
+        boolean isVideoViewed = !hasDocumentInChapter(chapterId, "Video") || isDocViewed(userId, chapterId, "Video");
 
         return isQuizPassed && isAssignmentDone && isPdfViewed && isVideoViewed;
     }
@@ -1199,7 +1168,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<User> getStudentsByClass(String maLop) {
         List<User> list = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        // Lấy những user có quyền = 1 (Sinh viên) và thuộc lớp này
+        // Lấy những user có quyền = 1 (Học sinh) và thuộc lớp này
         Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_USER +
                 " WHERE " + COL_CLASS + "=? AND " + COL_ROLE + "=1",
                 new String[] { maLop });
@@ -1253,17 +1222,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // 2. Đếm số lớp mà Giáo viên đang dạy
-    // (Tận dụng lại logic tách chuỗi "KTPM01,CNTT02" đã làm)
+    // (Tận dụng lại logic tách chuỗi "12A1,12A2" đã làm)
     public int getClassCount(int teacherId) {
         List<String> classes = getTeachingClasses(teacherId); // Hàm này bạn đã có ở bước trước
         return classes.size();
     }
 
-    // Đếm số lượng sinh viên trong một lớp cụ thể
+    // Đếm số lượng học sinh trong một lớp cụ thể
     public int getStudentCountByClass(String className) {
         SQLiteDatabase db = this.getReadableDatabase();
         int count = 0;
-        // Đếm User có Role=1 (Sinh viên) và thuộc lớp className
+        // Đếm User có Role=1 (Học sinh) và thuộc lớp className
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_USER +
                 " WHERE " + COL_CLASS + "=? AND " + COL_ROLE + "=1",
                 new String[] { className });
@@ -1345,10 +1314,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 1. Lấy danh sách Lớp (QUAN TRỌNG: Thêm chữ "Lớp " vào đầu)
         List<String> classes = getTeachingClasses(teacherId);
         for (String className : classes) {
-            rooms.add("Lớp " + className); // Ví dụ: "Lớp KTPM01"
+            rooms.add("Lớp " + className); // Ví dụ: "Lớp 12A1"
         }
 
-        // 2. Lấy danh sách Sinh viên nhắn tin riêng (Private Chat)
+        // 2. Lấy danh sách Học sinh nhắn tin riêng (Private Chat)
         // Tìm các phòng có chứa ID giáo viên (VD: "1_5" hoặc "5_2")
         Cursor cursor = db.rawQuery("SELECT DISTINCT " + COL_MSG_ROOM + " FROM " + TABLE_MESSAGE +
                 " WHERE " + COL_MSG_ROOM + " LIKE ? OR " + COL_MSG_ROOM + " LIKE ?",
@@ -1413,22 +1382,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return total;
     }
 
-    // --- HÀM LẤY DANH SÁCH CHAT CỦA SINH VIÊN ---
+    // --- HÀM LẤY DANH SÁCH CHAT CỦA HỌC SINH ---
     public List<String> getStudentConversations(int studentId) {
         List<String> rooms = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         // 1. LẤY CHAT NHÓM LỚP (Quan trọng: Phải khớp logic với bên Giáo viên)
-        String myClass = getUserClass(studentId); // Ví dụ trả về "KTPM01"
+        String myClass = getUserClass(studentId); // Ví dụ trả về "12A1"
         if (myClass != null && !myClass.isEmpty()) {
             // QUY ƯỚC CHUNG: Tên phòng phải là "Lớp " + Mã lớp
-            // Ví dụ: "Lớp KTPM01" (Phải có chữ Lớp và dấu cách)
+            // Ví dụ: "Lớp 12A1" (Phải có chữ Lớp và dấu cách)
             rooms.add("Lớp " + myClass);
         }
 
         // 2. LẤY CHAT RIÊNG VỚI GIÁO VIÊN
         // Tìm các phòng có format "STUDENTID_TEACHERID"
-        // Ví dụ: Sinh viên ID=1. Tìm các phòng "1_%"
+        // Ví dụ: Học sinh ID=1. Tìm các phòng "1_%"
         Cursor cursor = db.rawQuery("SELECT DISTINCT " + COL_MSG_ROOM + " FROM " + TABLE_MESSAGE +
                 " WHERE " + COL_MSG_ROOM + " LIKE ? OR " + COL_MSG_ROOM + " LIKE ?",
                 new String[] { studentId + "_%", "%_" + studentId });
@@ -1601,7 +1570,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static class ChapterProgress {
         public int    chapterId;
         public String chapterName;
-        public boolean quizDone;        // Đã làm quiz chưa
+        public boolean quizDone;        // Đã đạt quiz chưa (>= 5/10)
         public int    quizScore;        // Số câu đúng (-1 nếu chưa làm)
         public int    totalQuestions;   // Tổng câu hỏi
         public boolean assignmentDone;  // Đã nộp bài tập chưa
@@ -1617,7 +1586,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     && (!hasAssignment || assignmentDone)
                     && (!hasPdf || pdfDone)
                     && (!hasVideo || videoDone);
-            boolean anyDone = quizDone || assignmentDone || pdfDone || videoDone;
+            boolean anyDone = quizDone || quizScore >= 0 || assignmentDone || pdfDone || videoDone;
             if (allDone) return "DONE";
             if (anyDone) return "PARTIAL";
             return "TODO";
@@ -1650,7 +1619,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             // Quiz
             p.totalQuestions = getQuestionCountByChapter(ch.getMaChuong());
             p.quizScore      = getQuizScore(userId, ch.getMaChuong()); // -1 nếu chưa làm
-            p.quizDone       = (p.totalQuestions == 0) || (p.quizScore >= 0);
+            // "Xong" quiz = đạt >= 5/10, cùng chuẩn với isChapterCompleted (mở khoá chương sau)
+            p.quizDone       = (p.totalQuestions == 0)
+                    || (p.quizScore >= 0 && p.quizScore * 10.0 / p.totalQuestions >= 5.0);
 
             // Bài tập
             p.hasAssignment   = hasAssignmentInChapter(ch.getMaChuong());
@@ -1683,12 +1654,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // TÍNH NĂNG: AI KIỂM TRA BÀI TẬP ĐÃ NỘP
     // ══════════════════════════════════════════════════════
 
-    /** Model chứa đề bài + bài làm của sinh viên để đưa cho AI chấm */
+    /** Model chứa đề bài + bài làm của học sinh để đưa cho AI chấm */
     public static class SubmissionForReview {
         public int    chapterId;
         public String chapterName;
         public String assignmentQuestion; // Đề bài
-        public String userAnswer;         // Bài làm của sinh viên
+        public String userAnswer;         // Bài làm của học sinh
     }
 
     /**
@@ -1726,7 +1697,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
                 if (hasText || hasFile) {
                     if (!hasText) {
-                        s.userAnswer = "[Sinh viên đã nộp bài bằng file đính kèm. Định dạng file hiện tại AI chưa quét trực tiếp được nội dung. Hãy hướng dẫn sinh viên bổ sung bài làm bằng văn bản để chấm bài]";
+                        s.userAnswer = "[Học sinh đã nộp bài bằng file đính kèm. Định dạng file hiện tại AI chưa quét trực tiếp được nội dung. Hãy hướng dẫn học sinh bổ sung bài làm bằng văn bản để chấm bài]";
                     }
                     result.add(s);
                 }

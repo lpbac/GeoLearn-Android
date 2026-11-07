@@ -178,7 +178,8 @@ public class AiBotAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
         void bind(AiMessage msg, boolean isStreaming, boolean cursorVisible,
                   OnFlashCardClickListener listener) {
-            String text = msg.getContent();
+            // TextView không hiển thị Markdown; bỏ dấu in đậm ** cho dễ đọc
+            String text = msg.getContent().replace("**", "");
             if (isStreaming && cursorVisible) {
                 tvContent.setText(text + CURSOR);
             } else {

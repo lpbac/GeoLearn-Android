@@ -43,6 +43,8 @@ public class StudyScanAdapter extends RecyclerView.Adapter<StudyScanAdapter.Scan
             h.tvQuiz.setText("📝 Quiz: Không có");
         } else if (p.quizDone) {
             h.tvQuiz.setText("✅ Quiz: " + p.quizScore + "/" + p.totalQuestions);
+        } else if (p.quizScore >= 0) {
+            h.tvQuiz.setText("⚠️ Quiz: " + p.quizScore + "/" + p.totalQuestions + " (chưa đạt)");
         } else {
             h.tvQuiz.setText("❌ Quiz: Chưa làm");
         }

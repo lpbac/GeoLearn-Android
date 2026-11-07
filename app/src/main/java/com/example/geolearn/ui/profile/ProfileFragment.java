@@ -96,8 +96,8 @@ public class ProfileFragment extends Fragment {
         if (user != null) {
             boolean isTeacher = user.getQuyenHan() == 2;
             tvFullName.setText(user.getHoTen());
-            tvClass.setText(isTeacher ? "Giảng viên • Lớp phụ trách: " + user.getMaLop() : "Sinh viên • Lớp: " + user.getMaLop());
-            tilFullName.setHint(isTeacher ? "Tên giảng viên" : "Tên sinh viên");
+            tvClass.setText(isTeacher ? "Giảng viên • Lớp học phụ trách: " + user.getMaLop() : "Học sinh • Lớp học: " + user.getMaLop());
+            tilFullName.setHint(isTeacher ? "Tên giảng viên" : "Tên học sinh");
             edtFullName.setText(user.getHoTen());
         } else {
             tvFullName.setText("Khách");

@@ -42,10 +42,10 @@ public class TeacherClassDetailActivity extends AppCompatActivity {
             tvHeaderTitle.setText("Lớp " + className);
         }
 
-        // 2. Lấy danh sách SV
+        // 2. Lấy danh sách HS
         List<User> studentList = dbHelper.getStudentsByClass(className);
         if (studentList.isEmpty()) {
-            Toast.makeText(this, "Lớp này trống!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Lớp học này trống!", Toast.LENGTH_SHORT).show();
         }
 
         // 3. Hiển thị lên RecyclerView
@@ -53,7 +53,7 @@ public class TeacherClassDetailActivity extends AppCompatActivity {
         rcvStudents.setAdapter(new StudentListAdapter(this, studentList, dbHelper));
     }
 
-    // --- ADAPTER DANH SÁCH SINH VIÊN (Inner Class) ---
+    // --- ADAPTER DANH SÁCH HỌC SINH (Inner Class) ---
     public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
         private Context context;
         private List<User> list;

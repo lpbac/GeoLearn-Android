@@ -149,7 +149,7 @@ public class TeacherChatActivity extends AppCompatActivity {
 
         @NonNull @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            // Dùng lại layout item_conversation.xml của sinh viên cho tiện
+            // Dùng lại layout item_conversation.xml của học sinh cho tiện
             // Hoặc dùng item_teacher_chat_room.xml nếu bạn đã tạo
             View view = LayoutInflater.from(context).inflate(R.layout.item_conversation, parent, false);
             return new ViewHolder(view);

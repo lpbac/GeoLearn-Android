@@ -13,7 +13,7 @@ public class Question {
     private String correctAnswer;
     private String userAnswer = "";
 
-    // 1. Constructor CŨ (Giữ nguyên để code Sinh viên không bị lỗi)
+    // 1. Constructor CŨ (Giữ nguyên để code Học sinh không bị lỗi)
     public Question(String content, String a, String b, String c, String d, String correct) {
         this.content = content;
         this.answerA = a;

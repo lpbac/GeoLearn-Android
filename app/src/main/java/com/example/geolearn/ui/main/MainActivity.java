@@ -66,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                     finish();
                     return true;
                 } else {
-                    // ==> NẾU LÀ SINH VIÊN -> GIỮ NGUYÊN LOGIC CŨ (Load HomeFragment)
+                    // ==> NẾU LÀ HỌC SINH -> GIỮ NGUYÊN LOGIC CŨ (Load HomeFragment)
                     // (Giả sử hàm loadFragment của bạn tên là loadFragment hoặc replaceFragment)
                     // loadFragment(new HomeFragment());
 
@@ -97,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // XỬ LÝ CHUYỂN TAB TỪ MÀN HÌNH KHÁC TRỞ VỀ
-        if (getIntent().hasExtra("NAVIGATE_TO")) {
+        // Chỉ lần mở đầu; khi recreate (vd đổi Dark Mode) FragmentManager tự khôi phục tab đang xem
+        if (savedInstanceState == null && getIntent().hasExtra("NAVIGATE_TO")) {
             String tabName = getIntent().getStringExtra("NAVIGATE_TO");
 
             if ("CHAT".equals(tabName)) {

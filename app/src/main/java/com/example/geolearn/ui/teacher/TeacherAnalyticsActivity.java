@@ -58,7 +58,7 @@ public class TeacherAnalyticsActivity extends AppCompatActivity {
     private void renderAnalytics(String className) {
         DatabaseHelper.TeacherAnalytics data = dbHelper.getTeacherAnalytics(className);
         int completionPercent = data.totalItems == 0 ? 0 : Math.round((data.completedItems * 100f) / data.totalItems);
-        tvSummary.setText("Lớp " + className + " • " + data.totalStudents + " sinh viên • " + data.totalChapters + " chương");
+        tvSummary.setText("Lớp " + className + " • " + data.totalStudents + " học sinh • " + data.totalChapters + " chương");
         progressCompletion.setProgress(completionPercent);
         tvCompletion.setText(completionPercent + "% hoàn thành (" + data.completedItems + "/" + data.totalItems + " lượt học)");
 
