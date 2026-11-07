@@ -25,32 +25,28 @@ import okhttp3.Response;
 import okhttp3.ResponseBody;
 
 /**
- * Repository giao tiếp với OpenRouter API (OpenAI-compatible).
- * Streaming SSE: data: {"choices":[{"delta":{"content":"token"}}]}
+ * Repository gọi trực tiếp Google Gemini API (streamGenerateContent, SSE).
+ * Mỗi dòng: data: {"candidates":[{"content":{"parts":[{"text":"token"}]}}]}
  *
- * Lấy API Key miễn phí tại: https://openrouter.ai/keys
- * Model miễn phí gợi ý: google/gemini-2.0-flash-exp:free
+ * Lấy API Key tại: https://aistudio.google.com/apikey
  */
-public class OpenRouterRepository {
+public class GeminiRepository {
 
-    private static final String TAG = "OpenRouterRepository";
+    private static final String TAG = "GeminiRepository";
 
-    // ── Cấu hình OpenRouter ───────────────────────────────────────────
-    // Đặt OPENROUTER_API_KEY=... trong local.properties (không commit)
-    private static final String API_KEY  = com.example.geolearn.BuildConfig.OPENROUTER_API_KEY;
-    private static final String BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
-
-    private static final String[] MODELS = {
-            "openai/gpt-oss-120b:free",
-            "nvidia/nemotron-3-super-120b-a12b:free",
-            "deepseek/deepseek-v4-flash:free"
-    };
+    // ── Cấu hình Gemini ───────────────────────────────────────────────
+    // Đặt GEMINI_API_KEY=... trong local.properties (không commit)
+    private static final String API_KEY = com.example.geolearn.BuildConfig.GEMINI_API_KEY;
+    // gemini-2.5-flash đã đóng với key mới (404); 3.5-flash là bản chạy được khi thử 2026-11-07
+    private static final String MODEL = "gemini-3.5-flash";
+    private static final String BASE_URL =
+            "https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":streamGenerateContent?alt=sse";
 
     private static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     // ── System Prompt ─────────────────────────────────────────────────
     private static final String SYSTEM_PROMPT =
-            "Bạn là trợ lý học tập môn Địa lý thông minh của ứng dụng QuanLyHocTap. " +
+            "Bạn là trợ lý học tập môn Địa lý thông minh của ứng dụng GeoLearn. " +
             "Hãy trả lời bằng tiếng Việt ngắn gọn, súc tích, đi thẳng vào vấn đề, không giải thích dài dòng lan man, không đề xuất phương pháp học tập. " +
             "Nhiệm vụ chính của bạn là giải đáp các câu hỏi về Địa lý tự nhiên, Địa lý dân cư - kinh tế, bản đồ và Atlat, Địa lý thế giới, đồng thời chấm điểm và nhận xét bài tập của sinh viên. " +
             "Hãy thân thiện chào hỏi và tương tác cơ bản khi bắt đầu cuộc trò chuyện. " +
@@ -69,10 +65,10 @@ public class OpenRouterRepository {
     private final OkHttpClient client;
     private Call currentCall;
 
-    public OpenRouterRepository() {
+    public GeminiRepository() {
         client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
-                .readTimeout(60, TimeUnit.SECONDS)
+                .readTimeout(120, TimeUnit.SECONDS) // Gemini có lúc >50s mới trả token đầu
                 .writeTimeout(15, TimeUnit.SECONDS)
                 .build();
     }
@@ -88,15 +84,12 @@ public class OpenRouterRepository {
         }
 
         String requestBodyJson = buildRequestBody(history);
-        Log.d(TAG, "Sending to OpenRouter: " + requestBodyJson);
+        Log.d(TAG, "Sending to Gemini: " + requestBodyJson);
 
         Request request = new Request.Builder()
                 .url(BASE_URL)
                 .post(RequestBody.create(requestBodyJson, JSON))
-                .addHeader("Authorization", "Bearer " + API_KEY)
-                .addHeader("Content-Type", "application/json")
-                .addHeader("HTTP-Referer", "https://github.com/QuanLyHocTap") // optional
-                .addHeader("X-Title", "QuanLyHocTap AI Bot")                  // optional
+                .addHeader("x-goog-api-key", API_KEY)
                 .build();
 
         currentCall = client.newCall(request);
@@ -117,10 +110,9 @@ public class OpenRouterRepository {
                 if (!response.isSuccessful()) {
                     String errorBody = response.body() != null ? response.body().string() : "";
                     Log.e(TAG, "API error " + response.code() + ": " + errorBody);
-                    callback.onError(parseApiError(response.code(), errorBody));
+                    callback.onError(parseApiError(response.code()));
                     return;
                 }
-                Log.d(TAG, "Starting to parse stream...");
                 parseStreamingResponse(response, callback);
             }
         });
@@ -134,11 +126,7 @@ public class OpenRouterRepository {
 
     // ── Private Helpers ───────────────────────────────────────────────
 
-    /**
-     * Parse SSE stream theo format OpenAI:
-     * data: {"choices":[{"delta":{"content":"token"},"finish_reason":null}]}
-     * data: [DONE]
-     */
+    /** Đọc SSE: mỗi dòng "data: {...}" là một chunk; stream kết thúc khi server đóng kết nối. */
     private void parseStreamingResponse(Response response, StreamCallback callback) {
         ResponseBody body = response.body();
         if (body == null) {
@@ -147,26 +135,14 @@ public class OpenRouterRepository {
         }
 
         try (InputStream inputStream = body.byteStream();
-                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, "UTF-8"))) {
 
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.isEmpty())
-                    continue;
-
-                Log.d(TAG, "Received line: " + line);
-
                 if (!line.startsWith("data: "))
                     continue;
 
-                String jsonStr = line.substring(6).trim();
-
-                if ("[DONE]".equals(jsonStr)) {
-                    callback.onComplete();
-                    return;
-                }
-
-                String token = extractTokenFromChunk(jsonStr);
+                String token = extractTokenFromChunk(line.substring(6).trim());
                 if (token != null && !token.isEmpty()) {
                     callback.onToken(token);
                 }
@@ -182,22 +158,23 @@ public class OpenRouterRepository {
         }
     }
 
-    /**
-     * Trích xuất token từ OpenAI SSE chunk.
-     * Cấu trúc: choices[0].delta.content
-     */
+    /** Ghép text của mọi part trong candidates[0].content.parts. */
     private String extractTokenFromChunk(String jsonStr) {
         try {
-            JSONObject root = new JSONObject(jsonStr);
-            JSONArray choices = root.optJSONArray("choices");
-            if (choices == null || choices.length() == 0)
+            JSONArray candidates = new JSONObject(jsonStr).optJSONArray("candidates");
+            if (candidates == null || candidates.length() == 0)
                 return null;
 
-            JSONObject delta = choices.getJSONObject(0).optJSONObject("delta");
-            if (delta == null)
+            JSONObject content = candidates.getJSONObject(0).optJSONObject("content");
+            JSONArray parts = content == null ? null : content.optJSONArray("parts");
+            if (parts == null)
                 return null;
 
-            return delta.optString("content", null);
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < parts.length(); i++) {
+                sb.append(parts.getJSONObject(i).optString("text", ""));
+            }
+            return sb.toString();
 
         } catch (JSONException e) {
             Log.w(TAG, "Failed to parse chunk: " + jsonStr);
@@ -206,55 +183,28 @@ public class OpenRouterRepository {
     }
 
     /**
-     * Build request body theo format OpenAI Chat Completions.
-     * {
-     *   "model": "...",
-     *   "stream": true,
-     *   "messages": [
-     *     {"role": "system", "content": "..."},
-     *     {"role": "user",   "content": "..."},
-     *     {"role": "assistant", "content": "..."}
-     *   ]
-     * }
+     * Body theo format Gemini generateContent:
+     * {"systemInstruction":{"parts":[{"text":"..."}]},
+     *  "contents":[{"role":"user"|"model","parts":[{"text":"..."}]}]}
      */
     private String buildRequestBody(List<AiMessage> history) {
         try {
             JSONObject root = new JSONObject();
-            
-            // Gán model chính mặc định (bắt buộc theo schema của API)
-            root.put("model", MODELS[0]);
-            
-            JSONArray modelsArray = new JSONArray();
-            for (String m : MODELS) {
-                modelsArray.put(m);
-            }
-            root.put("models", modelsArray);
-            root.put("stream", true);
+            root.put("systemInstruction", new JSONObject()
+                    .put("parts", new JSONArray().put(new JSONObject().put("text", SYSTEM_PROMPT))));
 
-            JSONArray messages = new JSONArray();
-
-            // 1. System message
-            JSONObject systemMsg = new JSONObject();
-            systemMsg.put("role", "system");
-            systemMsg.put("content", SYSTEM_PROMPT);
-            messages.put(systemMsg);
-
-            // 2. Conversation history
+            JSONArray contents = new JSONArray();
             for (AiMessage msg : history) {
                 if (msg.getRole() == AiMessage.Role.TYPING)
                     continue;
                 if (msg.getRole() == AiMessage.Role.BOT && msg.isStreaming())
                     continue;
 
-                JSONObject msgObj = new JSONObject();
-                // OpenAI dùng "assistant" thay vì "model"
-                String role = (msg.getRole() == AiMessage.Role.USER) ? "user" : "assistant";
-                msgObj.put("role", role);
-                msgObj.put("content", msg.getContent());
-                messages.put(msgObj);
+                contents.put(new JSONObject()
+                        .put("role", msg.getApiRole())
+                        .put("parts", new JSONArray().put(new JSONObject().put("text", msg.getContent()))));
             }
-
-            root.put("messages", messages);
+            root.put("contents", contents);
 
             return root.toString();
 
@@ -264,16 +214,12 @@ public class OpenRouterRepository {
         }
     }
 
-    private String parseApiError(int code, String body) {
+    private String parseApiError(int code) {
         switch (code) {
             case 400:
-                return "Yêu cầu không hợp lệ. Vui lòng thử lại.";
-            case 401:
-                return "API Key không hợp lệ. Vui lòng kiểm tra key OpenRouter.";
-            case 402:
-                return "Tài khoản OpenRouter hết credit. Vui lòng nạp thêm.";
+                return "Yêu cầu không hợp lệ hoặc API Key sai. Vui lòng kiểm tra key Gemini.";
             case 403:
-                return "API Key không có quyền truy cập model này.";
+                return "API Key không có quyền truy cập Gemini API.";
             case 404:
                 return "Model không tồn tại. Vui lòng kiểm tra tên model.";
             case 429:

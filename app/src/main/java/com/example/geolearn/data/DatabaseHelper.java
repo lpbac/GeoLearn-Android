@@ -1001,14 +1001,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private String getKnowledgeAreaName(Chapter chapter) {
         String name = chapter.getTenChuong();
         String lower = name.toLowerCase();
-        if (lower.contains("cpu"))
-            return "CPU";
-        if (lower.contains("bộ nhớ") || lower.contains("bo nho"))
-            return "Bộ nhớ";
-        if (lower.contains("nhị phân") || lower.contains("nhi phan"))
-            return "Hệ nhị phân";
-        if (lower.contains("tổng quan") || lower.contains("tong quan"))
-            return "Tổng quan";
+        if (lower.contains("tự nhiên") || lower.contains("tu nhien"))
+            return "Tự nhiên";
+        if (lower.contains("dân cư") || lower.contains("kinh tế") || lower.contains("dan cu"))
+            return "Dân cư-Kinh tế";
+        if (lower.contains("bản đồ") || lower.contains("thế giới") || lower.contains("ban do"))
+            return "Bản đồ-Thế giới";
         return name.replace("Chương " + chapter.getMaChuong() + ":", "").trim();
     }
 

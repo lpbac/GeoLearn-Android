@@ -12,7 +12,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.example.geolearn.data.ChatHistoryManager;
 import com.example.geolearn.data.FlashCardStorage;
 import com.example.geolearn.data.DatabaseHelper;
-import com.example.geolearn.data.OpenRouterRepository;
+import com.example.geolearn.data.GeminiRepository;
 import com.example.geolearn.model.AiMessage;
 import com.example.geolearn.model.FlashCard;
 
@@ -43,7 +43,7 @@ public class AiBotViewModel extends AndroidViewModel {
     // ── Handler đảm bảo mọi UI update đều trên main thread ────────────
     private final Handler mainHandler = new Handler(Looper.getMainLooper());
 
-    private final OpenRouterRepository repository;
+    private final GeminiRepository repository;
     private int streamingMessageIndex = -1;
     private ChatHistoryManager chatHistoryManager;
     private FlashCardStorage flashCardStorage;
@@ -54,7 +54,7 @@ public class AiBotViewModel extends AndroidViewModel {
 
     public AiBotViewModel(@NonNull Application application) {
         super(application);
-        repository = new OpenRouterRepository();
+        repository = new GeminiRepository();
     }
 
     /**
@@ -203,7 +203,7 @@ public class AiBotViewModel extends AndroidViewModel {
 
         isStreamingLiveData.setValue(true);
 
-        repository.streamMessage(history, new OpenRouterRepository.StreamCallback() {
+        repository.streamMessage(history, new GeminiRepository.StreamCallback() {
             @Override
             public void onToken(String token) {
                 fullResponse.append(token);
@@ -319,7 +319,7 @@ public class AiBotViewModel extends AndroidViewModel {
         List<AiMessage> history = new ArrayList<>();
         history.add(AiMessage.userMessage(prompt));
 
-        repository.streamMessage(history, new OpenRouterRepository.StreamCallback() {
+        repository.streamMessage(history, new GeminiRepository.StreamCallback() {
             @Override
             public void onToken(String token) {
                 mainHandler.post(() -> {
@@ -399,7 +399,7 @@ public class AiBotViewModel extends AndroidViewModel {
         List<AiMessage> historySnapshot = buildHistoryForApi();
 
         // 5. Gọi API streaming
-        repository.streamMessage(historySnapshot, new OpenRouterRepository.StreamCallback() {
+        repository.streamMessage(historySnapshot, new GeminiRepository.StreamCallback() {
 
             @Override
             public void onToken(String token) {

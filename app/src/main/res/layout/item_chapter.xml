@@ -23,7 +23,7 @@
             android:layout_height="wrap_content"
             android:layout_toStartOf="@id/tvStatus"
             android:layout_marginEnd="8dp"
-            android:text="Chương 1: Tổng quan"
+            android:text="Chương 1: Địa lý tự nhiên Việt Nam"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold" />

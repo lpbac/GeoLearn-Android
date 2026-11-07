@@ -6,6 +6,8 @@
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:navigationBarColor">@color/colorSurface</item>
+        <!-- shortcut: tắt edge-to-edge bắt buộc của targetSdk 35 vì app chưa xử lý insets; bị bỏ qua từ targetSdk 36, khi đó phải xử lý insets thật -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
     </style>
 
     <style name="Theme._9_BTL" parent="Base.Theme._9_BTL" />
