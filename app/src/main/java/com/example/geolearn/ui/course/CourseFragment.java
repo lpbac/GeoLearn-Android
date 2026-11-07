@@ -30,7 +30,7 @@ public class CourseFragment extends Fragment {
     private RecyclerView rcvChapters;
     private ChapterAdapter adapter; // Nếu bạn dùng CourseAdapter thì sửa tên ở đây
     private List<Chapter> mListChapter;
-    private MaterialButton btnBack;
+    private android.view.View btnBack;
     private DatabaseHelper dbHelper;
     private TextView tvCurrentChapter;
 

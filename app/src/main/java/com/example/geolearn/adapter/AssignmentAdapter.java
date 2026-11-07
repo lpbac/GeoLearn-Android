@@ -65,7 +65,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
         if (submission == null) {
             // --- CHƯA NỘP ---
             holder.tvStatus.setText("Chưa nộp bài");
-            holder.tvStatus.setTextColor(Color.RED);
+            holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorError));
             if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorLateBg)); // Đỏ nhạt
 
             holder.itemView.setOnClickListener(v -> {

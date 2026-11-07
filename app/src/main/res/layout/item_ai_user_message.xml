@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="18dp"
         app:cardElevation="2dp"
-        app:cardBackgroundColor="#1976D2">
+        app:cardBackgroundColor="@color/colorPrimary">
 
         <TextView
             android:id="@+id/tvUserContent"

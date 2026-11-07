@@ -10,7 +10,7 @@
     android:id="@+id/layoutRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F0F2F5">
+    android:background="@color/colorBackground">
 
     <!-- ══════════════════════════════════════════════════ -->
     <!--  HEADER BAR                                        -->
@@ -47,7 +47,7 @@
             app:cardCornerRadius="20dp"
             app:cardElevation="0dp"
             android:layout_marginStart="4dp"
-            app:cardBackgroundColor="#1976D2">
+            app:cardBackgroundColor="@color/colorPrimary">
 
             <TextView
                 android:layout_width="match_parent"
@@ -119,7 +119,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:scrollbars="none"
-        android:background="#F0F2F5"
+        android:background="@color/colorBackground"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
         app:layout_constraintBottom_toTopOf="@id/layoutInputBar"
@@ -149,7 +149,7 @@
         android:paddingEnd="8dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"
-        android:background="#FFFFFF"
+        android:background="@color/colorSurface"
         android:elevation="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -162,7 +162,7 @@
             android:layout_weight="1"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
-            app:cardBackgroundColor="#F0F2F5">
+            app:cardBackgroundColor="@color/colorBackground">
 
             <EditText
                 android:id="@+id/edtAiInput"
@@ -176,8 +176,8 @@
                 android:paddingBottom="10dp"
                 android:hint="Hỏi bất cứ điều gì về bài học..."
                 android:textSize="15sp"
-                android:textColor="#111827"
-                android:textColorHint="#9CA3AF"
+                android:textColor="@color/colorTextPrimary"
+                android:textColorHint="@color/colorTextSecondary"
                 android:imeOptions="actionSend"
                 android:inputType="textCapSentences|textMultiLine"
                 android:maxLines="4" />
@@ -204,7 +204,7 @@
             android:layout_height="44dp"
             android:layout_marginStart="6dp"
             android:src="@android:drawable/ic_menu_send"
-            android:background="#1976D2"
+            android:background="@color/colorPrimary"
             android:padding="10dp"
             android:scaleType="fitCenter"
             app:tint="#FFFFFF"

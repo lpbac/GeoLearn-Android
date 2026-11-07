@@ -24,7 +24,7 @@ import java.io.File;
 public class LessonActivity extends AppCompatActivity {
 
     private TextView tvCurrentChapter;
-    private MaterialButton btnBack;
+    private android.view.View btnBack;
     private CardView cardPdf, cardVideo, cardQuiz, cardAssignment;
 
     private DatabaseHelper dbHelper;
