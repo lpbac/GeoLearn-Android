@@ -170,6 +170,14 @@ public class QuestionActivity extends AppCompatActivity {
         }.start();
     }
 
+    @Override
+    protected void onDestroy() {
+        // Thoát giữa bài thì huỷ timer, tránh tự nộp bài và ghi đè điểm cũ
+        if (timer != null)
+            timer.cancel();
+        super.onDestroy();
+    }
+
     // Hộp thoại xác nhận nộp bài
     private void confirmSubmit() {
         new AlertDialog.Builder(this)

@@ -511,16 +511,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // --- HÀM LẤY ĐỀ BÀI (Thêm vào cuối file) ---
     public String getAssignmentQuestion(int chapterId) {
+        String content = getAssignmentContent(chapterId);
+        return content.isEmpty() ? "Không có bài tập cho chương này." : content;
+    }
+
+    // Nội dung bài tập thật, "" nếu chương không có bài tập (dùng cho form sửa chương)
+    public String getAssignmentContent(int chapterId) {
         SQLiteDatabase db = this.getReadableDatabase();
-        String question = "Không có bài tập cho chương này.";
+        String content = "";
         Cursor cursor = db.rawQuery(
                 "SELECT " + COL_ASS_CONTENT + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
                 new String[] { String.valueOf(chapterId) });
-        if (cursor.moveToFirst()) {
-            question = cursor.getString(0);
+        if (cursor.moveToFirst() && cursor.getString(0) != null) {
+            content = cursor.getString(0);
         }
         cursor.close();
-        return question;
+        return content;
+    }
+
+    public boolean hasAssignment(int chapterId) {
+        return !getAssignmentContent(chapterId).isEmpty();
     }
 
     // --- HÀM LƯU BÀI LÀM (Thêm vào cuối file) ---
@@ -1486,12 +1496,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             addDocument(chapterId, "Video", videoFile);
 
         // C. Cập nhật bài tập
-        db.delete(TABLE_ASSIGNMENT, COL_ASS_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
-        if (!assignment.isEmpty()) {
+        // Sửa tại chỗ để giữ nguyên MaBT, bài đã nộp và điểm đã chấm không bị mất
+        String[] chapArg = { String.valueOf(chapterId) };
+        if (assignment.isEmpty()) {
+            // Giáo viên xoá bài tập: xoá luôn bài nộp của nó để không còn dữ liệu mồ côi
+            db.execSQL("DELETE FROM " + TABLE_SUBMISSION + " WHERE " + COL_SUB_ASS_ID + " IN (SELECT " + COL_ASS_ID
+                    + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?)", chapArg);
+            db.delete(TABLE_ASSIGNMENT, COL_ASS_CHAPTER_ID + "=?", chapArg);
+        } else {
             android.content.ContentValues cvAss = new android.content.ContentValues();
-            cvAss.put(COL_ASS_CHAPTER_ID, chapterId);
             cvAss.put(COL_ASS_CONTENT, assignment);
-            db.insert(TABLE_ASSIGNMENT, null, cvAss);
+            if (db.update(TABLE_ASSIGNMENT, cvAss, COL_ASS_CHAPTER_ID + "=?", chapArg) == 0) {
+                cvAss.put(COL_ASS_CHAPTER_ID, chapterId);
+                db.insert(TABLE_ASSIGNMENT, null, cvAss);
+            }
         }
     }
 
