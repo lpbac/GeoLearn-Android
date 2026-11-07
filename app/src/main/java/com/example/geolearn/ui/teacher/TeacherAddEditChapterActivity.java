@@ -174,7 +174,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
             edtDesc.setText(c.getMoTa());
             edtPdf.setText(db.getPdfFileName(chapterId));
             edtVideo.setText(db.getVideoFileName(chapterId));
-            edtAssignment.setText(db.getAssignmentQuestion(chapterId));
+            edtAssignment.setText(db.getAssignmentContent(chapterId));
         }
     }
 
