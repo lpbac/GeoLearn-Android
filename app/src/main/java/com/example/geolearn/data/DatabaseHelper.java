@@ -298,10 +298,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SELECT " + COL_DOC_FILENAME + " FROM " + TABLE_DOCUMENT +
                         " WHERE " + COL_DOC_CHAPTER_ID + "=? AND " + COL_DOC_TYPE + "='PDF'",
                 new String[] { String.valueOf(maChuong) });
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             fileName = cursor.getString(0);
-            cursor.close();
         }
+        cursor.close();
         return fileName;
     }
 
@@ -313,10 +313,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "SELECT " + COL_DOC_FILENAME + " FROM " + TABLE_DOCUMENT +
                         " WHERE " + COL_DOC_CHAPTER_ID + "=? AND " + COL_DOC_TYPE + "='Video'",
                 new String[] { String.valueOf(maChuong) });
-        if (cursor != null && cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
             fileName = cursor.getString(0);
-            cursor.close();
         }
+        cursor.close();
         return fileName;
     }
 
@@ -529,9 +529,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return content;
     }
 
-    public boolean hasAssignment(int chapterId) {
-        return !getAssignmentContent(chapterId).isEmpty();
-    }
 
     // --- HÀM LƯU BÀI LÀM (Thêm vào cuối file) ---
     public void saveSubmission(int userId, int chapterId, String text, String filePath) {
@@ -706,36 +703,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // 2. Lấy danh sách tên các bạn cùng lớp (Trừ chính mình ra)
-    public List<String> getClassmates(String maLop, int myId) {
-        List<String> names = new ArrayList<>();
+    public List<android.util.Pair<Integer, String>> getClassmates(String maLop, int myId) {
+        List<android.util.Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Lấy Họ Tên của những người cùng MaLop nhưng khác ID của mình
-        Cursor cursor = db.rawQuery("SELECT " + COL_FULLNAME + " FROM " + TABLE_USER +
+        Cursor cursor = db.rawQuery("SELECT " + COL_USER_ID + ", " + COL_FULLNAME + " FROM " + TABLE_USER +
                 " WHERE " + COL_CLASS + "=? AND " + COL_USER_ID + "!=?",
                 new String[] { maLop, String.valueOf(myId) });
 
         if (cursor.moveToFirst()) {
             do {
-                names.add(cursor.getString(0));
+                names.add(new android.util.Pair<>(cursor.getInt(0), cursor.getString(1)));
             } while (cursor.moveToNext());
         }
         cursor.close();
         return names;
     }
 
-    public List<String> getTeachersByClass(String maLop) {
-        List<String> names = new ArrayList<>();
+    public List<android.util.Pair<Integer, String>> getTeachersByClass(String maLop) {
+        List<android.util.Pair<Integer, String>> names = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
 
-        Cursor cursor = db.rawQuery("SELECT " + COL_FULLNAME + " FROM " + TABLE_USER +
+        Cursor cursor = db.rawQuery("SELECT " + COL_USER_ID + ", " + COL_FULLNAME + " FROM " + TABLE_USER +
                 " WHERE " + COL_ROLE + "=2 AND (" + COL_CLASS + "=? OR " + COL_CLASS + " LIKE ? OR " + COL_CLASS
                 + " LIKE ? OR " + COL_CLASS + " LIKE ?)",
                 new String[] { maLop, maLop + ",%", "%," + maLop + ",%", "%," + maLop });
 
         if (cursor.moveToFirst()) {
             do {
-                names.add(cursor.getString(0));
+                names.add(new android.util.Pair<>(cursor.getInt(0), cursor.getString(1)));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -1063,60 +1060,44 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return lastId; // Trả về 0 nếu chưa có tin nhắn nào
     }
 
-    // 2. Kiểm tra xem phòng này có tin nhắn mới (của người khác) chưa đọc không?
+    // Trạng thái đã đọc lưu RIÊNG cho từng người: ID tin nhắn cuối cùng người đó đã xem trong phòng.
+    // (Cột IsRead dùng chung cho cả phòng nên 1 người mở nhóm lớp là cả lớp mất chấm chưa đọc.)
+    private static final String READ_TABLE_SQL = "CREATE TABLE IF NOT EXISTS DaDoc (MaNguoiDung INTEGER, Phong TEXT, "
+            + "MaTinCuoi INTEGER, PRIMARY KEY (MaNguoiDung, Phong))";
+    private static final String UNREAD_COND = " AND " + COL_MSG_SENDER_ID + "!=? AND " + COL_MSG_ID
+            + " > COALESCE((SELECT MaTinCuoi FROM DaDoc WHERE MaNguoiDung=? AND Phong=" + TABLE_MESSAGE + "."
+            + COL_MSG_ROOM + "), 0)";
+
+    // 2. Kiểm tra xem phòng này có tin nhắn mới (của người khác) mà mình chưa đọc không?
     public boolean hasUnreadMessage(String roomId, int myId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        boolean hasUnread = false;
-
-        // Điều kiện: Cùng phòng + Người gửi KHÁC mình + IsRead = 0
-        String query = "SELECT COUNT(*) FROM " + TABLE_MESSAGE +
-                " WHERE " + COL_MSG_ROOM + "=? AND " + COL_MSG_SENDER_ID + "!=? AND IsRead=0";
-
-        Cursor cursor = db.rawQuery(query, new String[] { roomId, String.valueOf(myId) });
-        if (cursor.moveToFirst()) {
-            hasUnread = cursor.getInt(0) > 0;
-        }
-        cursor.close();
-        return hasUnread;
-    }
-
-    // 3. Đánh dấu tất cả tin nhắn trong phòng là ĐÃ ĐỌC
-    public void markMessagesAsRead(String roomId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        android.content.ContentValues values = new android.content.ContentValues();
-        values.put("IsRead", 1); // 1 = Đã xem
-
-        db.update(TABLE_MESSAGE, values, COL_MSG_ROOM + "=?", new String[] { roomId });
-    }
-
-    // Kiểm tra xem user này có bất kỳ tin nhắn chưa đọc nào không (của bất kỳ ai)
-    public boolean hasAnyUnreadMessages(int myUserId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        boolean hasUnread = false;
-
-        // Đếm số tin nhắn: Người gửi KHÁC mình VÀ Chưa đọc (IsRead = 0)
-        String query = "SELECT COUNT(*) FROM " + TABLE_MESSAGE +
-                " WHERE " + COL_MSG_SENDER_ID + "!=? AND IsRead=0";
-
-        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(myUserId) });
-        if (cursor.moveToFirst()) {
-            int count = cursor.getInt(0);
-            hasUnread = (count > 0);
-        }
+        db.execSQL(READ_TABLE_SQL);
+        String me = String.valueOf(myId);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?" + UNREAD_COND,
+                new String[] { roomId, me, me });
+        boolean hasUnread = cursor.moveToFirst() && cursor.getInt(0) > 0;
         cursor.close();
         return hasUnread;
     }
 
-    // (Optional) Nếu bạn muốn hiện số lượng (ví dụ: số 5 trong chấm đỏ)
+    // 3. Đánh dấu phòng là ĐÃ ĐỌC đối với một người
+    public void markMessagesAsRead(String roomId, int userId) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(READ_TABLE_SQL);
+        db.execSQL("INSERT OR REPLACE INTO DaDoc (MaNguoiDung, Phong, MaTinCuoi) VALUES (?, ?, "
+                + "(SELECT COALESCE(MAX(" + COL_MSG_ID + "), 0) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?))",
+                new Object[] { userId, roomId, roomId });
+    }
+
+    // Số tin chưa đọc của học sinh: chỉ tính phòng lớp của mình và phòng riêng có ID của mình
     public int getUnreadCount(int myUserId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        int count = 0;
-        String query = "SELECT COUNT(*) FROM " + TABLE_MESSAGE +
-                " WHERE " + COL_MSG_SENDER_ID + "!=? AND IsRead=0";
-        Cursor cursor = db.rawQuery(query, new String[] { String.valueOf(myUserId) });
-        if (cursor.moveToFirst()) {
-            count = cursor.getInt(0);
-        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL(READ_TABLE_SQL);
+        String me = String.valueOf(myUserId);
+        Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE (" + COL_MSG_ROOM + "=? OR "
+                + COL_MSG_ROOM + " LIKE ? ESCAPE '\\' OR " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\')" + UNREAD_COND,
+                new String[] { "Lớp " + getUserClass(myUserId), me + "\\_%", "%\\_" + me, me, me });
+        int count = cursor.moveToFirst() ? cursor.getInt(0) : 0;
         cursor.close();
         return count;
     }
@@ -1330,8 +1311,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // 2. Lấy danh sách Học sinh nhắn tin riêng (Private Chat)
         // Tìm các phòng có chứa ID giáo viên (VD: "1_5" hoặc "5_2")
         Cursor cursor = db.rawQuery("SELECT DISTINCT " + COL_MSG_ROOM + " FROM " + TABLE_MESSAGE +
-                " WHERE " + COL_MSG_ROOM + " LIKE ? OR " + COL_MSG_ROOM + " LIKE ?",
-                new String[] { "%_" + teacherId, teacherId + "_%" });
+                " WHERE " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\' OR " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\'",
+                new String[] { "%\\_" + teacherId, teacherId + "\\_%" });
 
         if (cursor.moveToFirst()) {
             do {
@@ -1409,8 +1390,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tìm các phòng có format "STUDENTID_TEACHERID"
         // Ví dụ: Học sinh ID=1. Tìm các phòng "1_%"
         Cursor cursor = db.rawQuery("SELECT DISTINCT " + COL_MSG_ROOM + " FROM " + TABLE_MESSAGE +
-                " WHERE " + COL_MSG_ROOM + " LIKE ? OR " + COL_MSG_ROOM + " LIKE ?",
-                new String[] { studentId + "_%", "%_" + studentId });
+                " WHERE " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\' OR " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\'",
+                new String[] { studentId + "\\_%", "%\\_" + studentId });
 
         if (cursor.moveToFirst()) {
             do {
@@ -1518,6 +1499,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_DOCUMENT, COL_DOC_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
         db.delete(TABLE_QUESTION, COL_Q_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
         db.delete(TABLE_SCORE, COL_SCORE_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
+        // Xoá lịch sử xem, tránh chương mới dùng lại ID cũ bị tính là đã xem
+        db.execSQL("CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))");
+        db.delete("LichSuXem", "MaChuong=?", new String[] { String.valueOf(chapterId) });
 
         Cursor cursor = db.rawQuery(
                 "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",

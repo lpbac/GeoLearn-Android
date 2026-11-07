@@ -115,9 +115,7 @@ public class AssignmentActivity extends AppCompatActivity {
                     Uri uri = result.getData().getData();
                     if (uri != null) {
                         try {
-                            final int flags = result.getData().getFlags()
-                                    & (Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                            getContentResolver().takePersistableUriPermission(uri, flags & Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                            getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         } catch (Exception ignored) {
                         }
                         String copiedPath = copyPickedFileToInternalStorage(uri);
@@ -195,6 +193,11 @@ public class AssignmentActivity extends AppCompatActivity {
         // Kiểm tra xem đã nhập gì chưa
         if (answerText.isEmpty() && selectedFilePath.isEmpty()) {
             Toast.makeText(this, "Vui lòng nhập câu trả lời hoặc đính kèm file!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (!dbHelper.hasAssignmentInChapter(currentChapterId)) {
+            Toast.makeText(this, "Chương này không có bài tập để nộp.", Toast.LENGTH_SHORT).show();
             return;
         }
 

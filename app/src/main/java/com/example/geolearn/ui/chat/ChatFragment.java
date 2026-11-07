@@ -77,8 +77,9 @@ public class ChatFragment extends Fragment {
     // --- Adapter ---
     class ConversationAdapter extends RecyclerView.Adapter<ConversationAdapter.ViewHolder> {
 
-        private List<String> originalList;
-        private List<String> displayList;
+        // Mỗi mục: {tên hiển thị, mã phòng}. Mã phòng tính theo ID nên không nhầm khi trùng tên
+        private List<String[]> originalList;
+        private List<String[]> displayList;
         private int myId;
 
         public ConversationAdapter() {
@@ -99,25 +100,22 @@ public class ChatFragment extends Fragment {
             // 1. Lấy danh sách cơ bản
             String myClass = dbHelper.getUserClass(myId);
             if (!myClass.isEmpty()) {
-                originalList.add("Lớp " + myClass);
-                List<String> teachers = dbHelper.getTeachersByClass(myClass);
-                for (String teacherName : teachers) {
-                    originalList.add(teacherName + " (GV)");
+                originalList.add(new String[] { "Lớp " + myClass, "Lớp " + myClass });
+                for (android.util.Pair<Integer, String> t : dbHelper.getTeachersByClass(myClass)) {
+                    originalList.add(new String[] { t.second + " (GV)", privateRoomId(t.first) });
                 }
-                List<String> classmates = dbHelper.getClassmates(myClass, myId);
-                originalList.addAll(classmates);
+                for (android.util.Pair<Integer, String> st : dbHelper.getClassmates(myClass, myId)) {
+                    originalList.add(new String[] { st.second, privateRoomId(st.first) });
+                }
             } else {
-                originalList.add("Hỗ trợ viên");
+                originalList.add(new String[] { "Hỗ trợ viên", "Hỗ trợ viên" });
             }
 
             // 2. SẮP XẾP: Ai nhắn tin mới nhất thì đẩy lên đầu
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                originalList.sort((name1, name2) -> {
-                    String room1 = getSmartRoomId(name1);
-                    String room2 = getSmartRoomId(name2);
-
-                    long time1 = dbHelper.getLastMessageTime(room1);
-                    long time2 = dbHelper.getLastMessageTime(room2);
+                originalList.sort((e1, e2) -> {
+                    long time1 = dbHelper.getLastMessageTime(e1[1]);
+                    long time2 = dbHelper.getLastMessageTime(e2[1]);
 
                     // Sắp xếp giảm dần (time lớn hơn đứng trước)
                     return Long.compare(time2, time1);
@@ -135,36 +133,18 @@ public class ChatFragment extends Fragment {
             if (query.isEmpty()) {
                 displayList.addAll(originalList);
             } else {
-                for (String name : originalList) {
-                    if (name.toLowerCase().contains(query.toLowerCase())) {
-                        displayList.add(name);
+                for (String[] entry : originalList) {
+                    if (entry[0].toLowerCase().contains(query.toLowerCase())) {
+                        displayList.add(entry);
                     }
                 }
             }
             notifyDataSetChanged();
         }
 
-        // Hàm tiện ích: Tính Room ID
-        private String getSmartRoomId(String chatName) {
-            if (chatName.startsWith("Lớp ")) {
-                return chatName;
-            } else {
-                // --- SỬA Ở ĐÂY: Xử lý tên GV ---
-                String searchName = chatName;
-                if (chatName.contains(" (GV)")) {
-                    // Cắt bỏ chữ " (GV)" để lấy tên thật "Vũ Tuấn Hậu"
-                    searchName = chatName.replace(" (GV)", "").trim();
-                }
-                // ------------------------------
-
-                int partnerId = dbHelper.getUserIdByName(searchName); // Tìm bằng tên thật
-
-                if (partnerId != -1) {
-                    return (myId < partnerId) ? (myId + "_" + partnerId) : (partnerId + "_" + myId);
-                } else {
-                    return chatName; // Nếu vẫn không tìm thấy thì đành chịu
-                }
-            }
+        // Phòng chat riêng: "idNhỏ_idLớn"
+        private String privateRoomId(int partnerId) {
+            return (myId < partnerId) ? (myId + "_" + partnerId) : (partnerId + "_" + myId);
         }
 
         @NonNull
@@ -176,11 +156,9 @@ public class ChatFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-            String chatName = displayList.get(position);
+            String chatName = displayList.get(position)[0];
+            String roomId = displayList.get(position)[1];
             holder.tvName.setText(chatName);
-
-            // 1. Tính Room ID
-            String roomId = getSmartRoomId(chatName);
 
             // 2. Lấy tin nhắn cuối cùng
             String lastMsg = dbHelper.getLastMessage(roomId, myId);

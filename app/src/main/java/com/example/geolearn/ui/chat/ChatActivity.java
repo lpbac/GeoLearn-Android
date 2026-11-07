@@ -80,7 +80,7 @@ public class ChatActivity extends AppCompatActivity {
 
         // Đánh dấu đã đọc
         if (!currentRoomId.isEmpty()) {
-            dbHelper.markMessagesAsRead(currentRoomId);
+            dbHelper.markMessagesAsRead(currentRoomId, myUserId);
         }
 
         btnSend.setOnClickListener(v -> {
