@@ -208,19 +208,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private void insertSampleData(SQLiteDatabase db) {
         // Dữ liệu User
         // User chính (ID 1)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv1', '123', 'Nguyễn Văn Minh', 1, 'CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv1', '" + hashPassword("123") + "', 'Nguyễn Văn Minh', 1, 'CNTT07')");
 
         // --- THÊM BẠN BÈ CÙNG LỚP KTPM01 (Để test tính năng Chat) ---
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv2', '123', 'Phạm Thùy Trang', 1, 'CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv3', '123', 'Trương Hồng Tân', 1, 'CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv4', '123', 'Hoàng Minh Khải', 1, 'CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv2', '" + hashPassword("123") + "', 'Phạm Thùy Trang', 1, 'CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv3', '" + hashPassword("123") + "', 'Trương Hồng Tân', 1, 'CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv4', '" + hashPassword("123") + "', 'Hoàng Minh Khải', 1, 'CNTT07')");
 
         // Một bạn lớp khác (Sẽ KHÔNG hiện trong danh sách chat)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv5', '123', 'Người Lớp Khác', 1, 'CNTT02')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv5', '" + hashPassword("123") + "', 'Người Lớp Khác', 1, 'CNTT02')");
 
         // SỬA DÒNG NÀY: Thầy Hậu dạy 2 lớp là KTPM01 và CNTT02 (ngăn cách bởi dấu phẩy)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '123', 'Đặng Hồng Phúc', 2, 'CNTT02,CNTT07')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '123', 'Nguyễn Kiều Hưng', 2, 'CNTT02,CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '" + hashPassword("123") + "', 'Đặng Hồng Phúc', 2, 'CNTT02,CNTT07')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '" + hashPassword("123") + "', 'Nguyễn Kiều Hưng', 2, 'CNTT02,CNTT07')");
 
         // Dữ liệu Chương học
         db.execSQL("INSERT INTO " + TABLE_CHAPTER
@@ -348,12 +348,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // 4. Kiểm tra Đăng nhập (ĐÃ BỔ SUNG LẠI)
     public User checkLogin(String username, String password) {
-        SQLiteDatabase db = this.getReadableDatabase();
+        SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery(
-                "SELECT * FROM " + TABLE_USER + " WHERE " + COL_USERNAME + "=? AND " + COL_PASSWORD + "=?",
-                new String[] { username, password });
+                "SELECT * FROM " + TABLE_USER + " WHERE " + COL_USERNAME + "=?",
+                new String[] { username });
 
-        if (cursor.moveToFirst()) {
+        while (cursor.moveToNext()) {
+            String stored = cursor.getString(2);
+            boolean legacy = stored != null && !stored.contains("$");
+            boolean ok = legacy ? stored.equals(password) : verifyPassword(password, stored);
+            if (!ok) continue;
+            if (legacy) { // DB cũ còn mật khẩu thô: băm lại ngay khi đăng nhập đúng
+                ContentValues v = new ContentValues();
+                v.put(COL_PASSWORD, hashPassword(password));
+                db.update(TABLE_USER, v, COL_USER_ID + "=?", new String[] { String.valueOf(cursor.getInt(0)) });
+            }
             User user = new User();
             user.setMaNguoiDung(cursor.getInt(0)); // Cột 0: ID
             user.setTenDangNhap(cursor.getString(1)); // Cột 1: Username
@@ -367,6 +376,46 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return null; // Đăng nhập thất bại
+    }
+
+    // Định dạng lưu: "<salt hex>$<sha256(salt + password) hex>"
+    // shortcut: SHA-256 một vòng dễ brute-force hơn PBKDF2/bcrypt, nâng cấp nếu có server/dữ liệu thật.
+    static String hashPassword(String password) {
+        byte[] salt = new byte[16];
+        new java.security.SecureRandom().nextBytes(salt);
+        return toHex(salt) + "$" + sha256(salt, password);
+    }
+
+    static boolean verifyPassword(String password, String stored) {
+        int i = stored.indexOf('$');
+        if (i <= 0) return false;
+        byte[] salt = fromHex(stored.substring(0, i));
+        return java.security.MessageDigest.isEqual(
+                sha256(salt, password).getBytes(java.nio.charset.StandardCharsets.UTF_8),
+                stored.substring(i + 1).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+    }
+
+    private static String sha256(byte[] salt, String password) {
+        try {
+            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
+            md.update(salt);
+            return toHex(md.digest(password.getBytes(java.nio.charset.StandardCharsets.UTF_8)));
+        } catch (java.security.NoSuchAlgorithmException e) {
+            throw new IllegalStateException(e); // SHA-256 luôn có trên Android
+        }
+    }
+
+    private static String toHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) sb.append(String.format("%02x", b));
+        return sb.toString();
+    }
+
+    private static byte[] fromHex(String hex) {
+        byte[] out = new byte[hex.length() / 2];
+        for (int i = 0; i < out.length; i++)
+            out[i] = (byte) Integer.parseInt(hex.substring(2 * i, 2 * i + 2), 16);
+        return out;
     }
 
     public boolean isUsernameExists(String username) {
@@ -383,7 +432,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COL_USERNAME, username);
-        values.put(COL_PASSWORD, password);
+        values.put(COL_PASSWORD, hashPassword(password));
         values.put(COL_FULLNAME, fullName);
         values.put(COL_ROLE, role);
         values.put(COL_CLASS, classCode);
@@ -1170,20 +1219,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return list;
     }
 
-    // 3. Hàm thêm Chương mới (Cho tính năng Tạo bài học)
-    public void addChapter(String name, String desc) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        // Tính thứ tự tiếp theo
-        int nextOrder = getAllChapters().size() + 1;
-
-        android.content.ContentValues values = new android.content.ContentValues();
-        values.put(COL_CHAPTER_NAME, name);
-        values.put(COL_CHAPTER_DESC, desc);
-        values.put(COL_CHAPTER_ORDER, nextOrder);
-
-        db.insert(TABLE_CHAPTER, null, values);
-    }
-
     // --- HÀM MỚI: Lấy danh sách các lớp mà GV này dạy ---
     public List<String> getTeachingClasses(int teacherId) {
         List<String> classes = new ArrayList<>();
@@ -1435,14 +1470,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // 2. Thêm chương mới (Trả về ID chương vừa tạo)
-    public int addChapterFull(String name, String pdfFile, String videoFile, String assignment) {
+    public int addChapterFull(String name, String desc, String pdfFile, String videoFile, String assignment) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // A. Thêm vào bảng Chapter
         int newOrder = getChapterCount() + 1;
         android.content.ContentValues cvChapter = new android.content.ContentValues();
         cvChapter.put(COL_CHAPTER_NAME, name);
-        cvChapter.put(COL_CHAPTER_DESC, "Mô tả ngắn..."); // Mặc định hoặc thêm ô nhập nếu muốn
+        cvChapter.put(COL_CHAPTER_DESC, desc);
         cvChapter.put(COL_CHAPTER_ORDER, newOrder);
         long chapterId = db.insert(TABLE_CHAPTER, null, cvChapter);
 
@@ -1467,12 +1502,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // 3. Cập nhật chương đã có
-    public void updateChapterFull(int chapterId, String name, String pdfFile, String videoFile, String assignment) {
+    public void updateChapterFull(int chapterId, String name, String desc, String pdfFile, String videoFile, String assignment) {
         SQLiteDatabase db = this.getWritableDatabase();
 
-        // A. Cập nhật tên chương
+        // A. Cập nhật tên và mô tả chương
         android.content.ContentValues cvChapter = new android.content.ContentValues();
         cvChapter.put(COL_CHAPTER_NAME, name);
+        cvChapter.put(COL_CHAPTER_DESC, desc);
         db.update(TABLE_CHAPTER, cvChapter, COL_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
 
         // B. Cập nhật tài liệu (Xóa cũ thêm mới cho nhanh)

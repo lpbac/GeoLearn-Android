@@ -31,12 +31,13 @@ import okhttp3.ResponseBody;
  * Lấy API Key miễn phí tại: https://openrouter.ai/keys
  * Model miễn phí gợi ý: google/gemini-2.0-flash-exp:free
  */
-public class GeminiRepository {
+public class OpenRouterRepository {
 
-    private static final String TAG = "GeminiRepository";
+    private static final String TAG = "OpenRouterRepository";
 
     // ── Cấu hình OpenRouter ───────────────────────────────────────────
-    private static final String API_KEY  = "your_api_key";
+    // Đặt OPENROUTER_API_KEY=... trong local.properties (không commit)
+    private static final String API_KEY  = com.example.geolearn.BuildConfig.OPENROUTER_API_KEY;
     private static final String BASE_URL = "https://openrouter.ai/api/v1/chat/completions";
 
     private static final String[] MODELS = {
@@ -68,7 +69,7 @@ public class GeminiRepository {
     private final OkHttpClient client;
     private Call currentCall;
 
-    public GeminiRepository() {
+    public OpenRouterRepository() {
         client = new OkHttpClient.Builder()
                 .connectTimeout(30, TimeUnit.SECONDS)
                 .readTimeout(60, TimeUnit.SECONDS)
@@ -80,6 +81,11 @@ public class GeminiRepository {
 
     public void streamMessage(List<AiMessage> history, StreamCallback callback) {
         cancelCurrentCall();
+
+        if (API_KEY == null || API_KEY.trim().isEmpty()) {
+            callback.onError("Trợ lý AI chưa được cấu hình API key. Vui lòng liên hệ quản trị viên.");
+            return;
+        }
 
         String requestBodyJson = buildRequestBody(history);
         Log.d(TAG, "Sending to OpenRouter: " + requestBodyJson);

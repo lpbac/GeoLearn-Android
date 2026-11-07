@@ -63,6 +63,21 @@
                 android:layout_marginBottom="16dp"/>
 
             <TextView
+                android:text="Mô tả"
+                android:textStyle="bold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+            <EditText
+                android:id="@+id/edtChapterDesc"
+                android:hint="Nhập mô tả chương..."
+                android:inputType="textMultiLine|textCapSentences"
+                android:minLines="2"
+                android:background="@android:drawable/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"/>
+
+            <TextView
                 android:text="Tài liệu PDF"
                 android:textStyle="bold"
                 android:layout_width="match_parent"

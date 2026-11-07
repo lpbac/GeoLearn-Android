@@ -27,7 +27,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
     private DatabaseHelper db;
     private int chapterId = -1;
 
-    private EditText edtName, edtPdf, edtVideo, edtAssignment;
+    private EditText edtName, edtDesc, edtPdf, edtVideo, edtAssignment;
     private TextView tvTitle;
 
     // --- 1. KHAI BÁO BIẾN NÚT QUIZ ---
@@ -46,6 +46,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
 
         // Ánh xạ View
         edtName = findViewById(R.id.edtChapterName);
+        edtDesc = findViewById(R.id.edtChapterDesc);
         edtPdf = findViewById(R.id.edtPdf);
         edtVideo = findViewById(R.id.edtVideo);
         edtAssignment = findViewById(R.id.edtAssignment);
@@ -170,6 +171,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
         Chapter c = db.getChapterById(chapterId);
         if (c != null) {
             edtName.setText(c.getTenChuong());
+            edtDesc.setText(c.getMoTa());
             edtPdf.setText(db.getPdfFileName(chapterId));
             edtVideo.setText(db.getVideoFileName(chapterId));
             edtAssignment.setText(db.getAssignmentQuestion(chapterId));
@@ -178,6 +180,7 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
 
     private void saveChapter() {
         String name = edtName.getText().toString().trim();
+        String desc = edtDesc.getText().toString().trim();
         String pdf = edtPdf.getText().toString().trim();
         String video = edtVideo.getText().toString().trim();
         String assignment = edtAssignment.getText().toString().trim();
@@ -188,12 +191,12 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
         }
 
         if (chapterId == -1) {
-            db.addChapterFull(name, pdf, video, assignment);
+            db.addChapterFull(name, desc, pdf, video, assignment);
             Toast.makeText(this, "Đã thêm chương mới!", Toast.LENGTH_SHORT).show();
             // Không finish() ngay nếu muốn cho người dùng soạn câu hỏi luôn
             // Nhưng để đơn giản, cứ finish về danh sách rồi bảo họ bấm vào lại
         } else {
-            db.updateChapterFull(chapterId, name, pdf, video, assignment);
+            db.updateChapterFull(chapterId, name, desc, pdf, video, assignment);
             Toast.makeText(this, "Đã cập nhật chương!", Toast.LENGTH_SHORT).show();
         }
         finish();

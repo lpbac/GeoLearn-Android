@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
 }
@@ -7,13 +9,22 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.geolearn"
+        applicationId = "com.geolearn.app"
         minSdk = 24
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val localProps = Properties()
+        rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { localProps.load(it) }
+        val apiKey = localProps.getProperty("OPENROUTER_API_KEY", "")
+        buildConfigField("String", "OPENROUTER_API_KEY", "\"$apiKey\"")
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
