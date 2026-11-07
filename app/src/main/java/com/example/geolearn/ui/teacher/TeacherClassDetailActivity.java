@@ -80,10 +80,10 @@ public class TeacherClassDetailActivity extends AppCompatActivity {
             Chapter c = db.getCurrentChapter(s.getMaNguoiDung());
             if (c != null) {
                 holder.tvProgress.setText("Đang học: " + c.getTenChuong());
-                holder.tvProgress.setTextColor(android.graphics.Color.parseColor("#1976D2"));
+                holder.tvProgress.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary));
             } else {
                 holder.tvProgress.setText("Chưa học");
-                holder.tvProgress.setTextColor(android.graphics.Color.GRAY);
+                holder.tvProgress.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
             }
 
             // --- SỰ KIỆN CLICK: CHUYỂN MÀN HÌNH ---
@@ -122,6 +122,7 @@ public class TeacherClassDetailActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
 
         if (bottomNav != null) {
+            bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
             com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_chat);
             if (unreadCount > 0) {
                 badge.setVisible(true);

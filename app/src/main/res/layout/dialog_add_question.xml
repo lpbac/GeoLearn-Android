@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="16dp"
-    android:background="#FFF">
+    android:background="@color/colorSurface">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,12 +20,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-        <EditText android:id="@+id/edtQuestionContent" android:hint="Nhập nội dung câu hỏi..." android:background="@android:drawable/edit_text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/edtQuestionContent" android:hint="Nhập nội dung câu hỏi..." android:background="@drawable/bg_input" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
 
-        <EditText android:id="@+id/edtOpA" android:hint="Đáp án A" android:background="@android:drawable/edit_text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/edtOpB" android:hint="Đáp án B" android:background="@android:drawable/edit_text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/edtOpC" android:hint="Đáp án C" android:background="@android:drawable/edit_text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
-        <EditText android:id="@+id/edtOpD" android:hint="Đáp án D" android:background="@android:drawable/edit_text" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
+        <EditText android:id="@+id/edtOpA" android:hint="Đáp án A" android:background="@drawable/bg_input" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/edtOpB" android:hint="Đáp án B" android:background="@drawable/bg_input" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/edtOpC" android:hint="Đáp án C" android:background="@drawable/bg_input" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp"/>
+        <EditText android:id="@+id/edtOpD" android:hint="Đáp án D" android:background="@drawable/bg_input" android:minHeight="48dp" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="12dp"/>
 
         <TextView android:text="Chọn đáp án đúng:" android:textStyle="bold" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
 

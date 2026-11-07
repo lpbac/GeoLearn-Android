@@ -61,11 +61,11 @@ public class TeacherChatAdapter extends RecyclerView.Adapter<TeacherChatAdapter.
         boolean hasUnread = db.hasUnreadMessage(roomId, teacherId);
         if (hasUnread) {
             holder.tvMsg.setTypeface(null, Typeface.BOLD);
-            holder.tvMsg.setTextColor(Color.BLACK);
+            holder.tvMsg.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextPrimary));
             holder.imgDot.setVisibility(View.VISIBLE);
         } else {
             holder.tvMsg.setTypeface(null, Typeface.NORMAL);
-            holder.tvMsg.setTextColor(Color.GRAY);
+            holder.tvMsg.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
             holder.imgDot.setVisibility(View.GONE);
         }
 

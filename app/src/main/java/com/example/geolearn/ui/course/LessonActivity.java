@@ -72,7 +72,7 @@ public class LessonActivity extends AppCompatActivity {
             File fileInStorage = new File(getFilesDir(), pdfFileName);
 
             if (fileInStorage.exists() && fileInStorage.length() > 0) {
-                // File do giảng viên chọn nằm trong internal storage của app.
+                // File do giáo viên chọn nằm trong internal storage của app.
                 // Truyền absolute path để thư viện đọc đúng file local đã copy.
                 startActivity(
                         PdfViewerActivity.Companion.launchPdfFromPath(
@@ -100,7 +100,7 @@ public class LessonActivity extends AppCompatActivity {
                 return;
             }
 
-            Toast.makeText(this, "Không tìm thấy file PDF: " + pdfFileName + ". Vui lòng yêu cầu giảng viên chọn lại file PDF.", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Không tìm thấy file PDF: " + pdfFileName + ". Vui lòng yêu cầu giáo viên chọn lại file PDF.", Toast.LENGTH_LONG).show();
         });
 
         // Video
@@ -112,9 +112,6 @@ public class LessonActivity extends AppCompatActivity {
                 Toast.makeText(LessonActivity.this, "Chương này chưa có Video bài giảng!", Toast.LENGTH_SHORT).show();
                 return; // Dừng lại, không mở màn hình kia
             }
-
-            // Ghi nhận trạng thái đã xem Video
-            dbHelper.saveDocProgress(getUserId(), currentChapterId, "Video", 1);
 
             // 2. Nếu có thì mới mở
             Intent intent = new Intent(LessonActivity.this, VideoPlayerActivity.class);

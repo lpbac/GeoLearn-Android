@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F7FB">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#1976D2"
+        android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp">
         <TextView
             android:id="@+id/btnBack"
@@ -17,14 +17,14 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="‹"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="34sp" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Phân tích năng lực"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -38,6 +38,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="14dp"
@@ -51,7 +52,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Spider Chart theo mảng kiến thức"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/colorPrimary"
                         android:textStyle="bold" />
                     <com.example.geolearn.utils.SimpleChartView
                         android:id="@+id/chartAbility"
@@ -63,6 +64,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

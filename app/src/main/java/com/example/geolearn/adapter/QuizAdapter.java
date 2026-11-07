@@ -59,13 +59,13 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
         if (totalQuestions == 0) {
             // Chương chưa có câu hỏi
-            holder.cardRoot.setCardBackgroundColor(Color.WHITE);
+            holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorSurface));
             holder.tvScore.setText("(Chưa có câu hỏi)");
             holder.itemView.setEnabled(false); // Không cho bấm
         }
         else if (correctAnswers == -1) {
             // Chưa làm bài
-            holder.cardRoot.setCardBackgroundColor(Color.WHITE);
+            holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorSurface));
             holder.tvScore.setText("Chưa làm");
             holder.itemView.setEnabled(true);
         }
@@ -75,9 +75,9 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
             double score10 = ((double) correctAnswers / totalQuestions) * 10;
             if (score10 >= 7.0) {
-                holder.cardRoot.setCardBackgroundColor(Color.parseColor("#A5D6A7")); // Xanh
+                holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorPassBg)); // Xanh
             } else {
-                holder.cardRoot.setCardBackgroundColor(Color.parseColor("#EF9A9A")); // Đỏ
+                holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorFailBg)); // Đỏ
             }
             holder.itemView.setEnabled(true);
         }
@@ -88,7 +88,7 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
         if (!isUnlocked) {
             // NẾU KHOÁ
-            holder.cardRoot.setCardBackgroundColor(Color.parseColor("#E0E0E0")); // Màu xám
+            holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorMuted)); // Màu xám
             holder.tvScore.setText("Đang khoá");
             holder.itemView.setAlpha(0.6f);
 

@@ -4,18 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F5F5">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#1976D2"
+        android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp">
         <TextView
             android:text="Trang chủ"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:layout_centerInParent="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
@@ -33,6 +33,7 @@
             android:orientation="vertical">
 
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="12dp"
@@ -45,11 +46,11 @@
                     android:padding="16dp">
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginBottom="8dp">
                         <TextView android:text="Số chương" android:textStyle="bold" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
-                        <TextView android:id="@+id/tvChapterCount" android:text="0 chương" android:textColor="#1976D2" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvChapterCount" android:text="0 chương" android:textColor="@color/colorPrimary" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
                     <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content">
                         <TextView android:text="Số lớp học phụ trách" android:textStyle="bold" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"/>
-                        <TextView android:id="@+id/tvClassCount" android:text="0 lớp học" android:textColor="#1976D2" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:id="@+id/tvClassCount" android:text="0 lớp học" android:textColor="@color/colorPrimary" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -67,7 +68,7 @@
                     android:layout_weight="1"
                     android:layout_marginEnd="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F3E5F5"
+                    app:cardBackgroundColor="@color/colorSurface"
                     app:cardElevation="2dp"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground">
@@ -76,7 +77,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical">
-                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_my_calendar" app:tint="#1976D2"/>
+                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_my_calendar" app:tint="@color/colorPrimary"/>
                         <TextView android:text="Lớp học" android:textStyle="bold" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -88,7 +89,7 @@
                     android:layout_weight="1"
                     android:layout_marginStart="8dp"
                     app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#F3E5F5"
+                    app:cardBackgroundColor="@color/colorSurface"
                     app:cardElevation="2dp"
                     android:clickable="true"
                     android:foreground="?attr/selectableItemBackground">
@@ -97,7 +98,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:orientation="vertical">
-                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_media_play" app:tint="#1976D2"/>
+                        <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_media_play" app:tint="@color/colorPrimary"/>
                         <TextView android:text="Bài học" android:textStyle="bold" android:layout_marginTop="8dp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </androidx.cardview.widget.CardView>
@@ -109,7 +110,7 @@
                 android:layout_height="96dp"
                 android:layout_marginTop="16dp"
                 app:cardCornerRadius="12dp"
-                app:cardBackgroundColor="#E3F2FD"
+                app:cardBackgroundColor="@color/colorSurface"
                 app:cardElevation="2dp"
                 android:clickable="true"
                 android:foreground="?attr/selectableItemBackground">
@@ -119,10 +120,10 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     android:padding="18dp">
-                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="#1976D2"/>
+                    <ImageView android:layout_width="40dp" android:layout_height="40dp" android:src="@android:drawable/ic_menu_sort_by_size" app:tint="@color/colorPrimary"/>
                     <LinearLayout android:layout_width="0dp" android:layout_height="wrap_content" android:layout_weight="1" android:layout_marginStart="14dp" android:orientation="vertical">
-                        <TextView android:text="Thống kê học tập" android:textStyle="bold" android:textColor="#1976D2" android:textSize="16sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
-                        <TextView android:text="Tỷ lệ hoàn thành, phổ điểm và cảnh báo câu hỏi sai nhiều" android:textColor="#455A64" android:textSize="13sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="Thống kê học tập" android:textStyle="bold" android:textColor="@color/colorPrimary" android:textSize="16sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
+                        <TextView android:text="Tỷ lệ hoàn thành, phổ điểm và cảnh báo câu hỏi sai nhiều" android:textColor="@color/colorTextSecondary" android:textSize="13sp" android:layout_width="wrap_content" android:layout_height="wrap_content"/>
                     </LinearLayout>
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
@@ -134,6 +135,6 @@
         android:id="@+id/bottomNavTeacher"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
+        android:background="@color/colorSurface"
         app:menu="@menu/bottom_nav_menu"/>
 </LinearLayout>

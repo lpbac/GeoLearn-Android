@@ -4,12 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F5F7FB">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#1976D2"
+        android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp">
 
         <TextView
@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:text="‹"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="34sp" />
 
         <TextView
@@ -26,7 +26,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="Thống kê lớp học"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
     </RelativeLayout>
@@ -52,11 +52,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="12dp"
-                android:textColor="#263238"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="14dp"
@@ -70,7 +71,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Tỷ lệ hoàn thành bài học"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/colorPrimary"
                         android:textStyle="bold" />
                     <ProgressBar
                         android:id="@+id/progressCompletion"
@@ -84,11 +85,12 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:textColor="#263238" />
+                        android:textColor="@color/colorTextPrimary" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"
@@ -103,7 +105,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Phổ điểm của lớp học"
-                        android:textColor="#1976D2"
+                        android:textColor="@color/colorPrimary"
                         android:textStyle="bold" />
                     <com.example.geolearn.utils.SimpleChartView
                         android:id="@+id/chartScoreDistribution"
@@ -114,6 +116,7 @@
             </androidx.cardview.widget.CardView>
 
             <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="14dp"

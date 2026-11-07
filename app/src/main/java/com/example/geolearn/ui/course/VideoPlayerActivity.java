@@ -94,6 +94,11 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
         });
 
+        // shortcut: tua tới cuối cũng tính là xem xong, muốn chặt hơn thì cộng dồn thời gian xem thực tế
+        videoView.setOnCompletionListener(mp -> dbHelper.saveDocProgress(
+                getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", -1),
+                currentChapterId, "Video", 1));
+
         if (btnPlayOverlay != null) {
             btnPlayOverlay.setOnClickListener(v -> {
                 videoView.start();

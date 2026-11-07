@@ -300,7 +300,7 @@ public class AiBotViewModel extends AndroidViewModel {
 
         // Prompt chi tiết cho AI
         String prompt =
-            "Bạn là giảng viên chấm bài. Hãy đánh giá bài làm của học sinh dưới đây.\n\n" +
+            "Bạn là giáo viên chấm bài. Hãy đánh giá bài làm của học sinh dưới đây.\n\n" +
             "📋 **ĐỀ BÀI:**\n" + sub.assignmentQuestion + "\n\n" +
             "✏️ **BÀI LÀM CỦA HỌC SINH:**\n" + sub.userAnswer + "\n\n" +
             "Hãy nhận xét theo cấu trúc:\n" +

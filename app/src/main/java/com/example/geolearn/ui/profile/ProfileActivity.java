@@ -1,10 +1,11 @@
 package com.example.geolearn.ui.profile;
 
+import com.example.geolearn.ui.teacher.TeacherNav;
+
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 
 import com.example.geolearn.R;
 import com.example.geolearn.ui.teacher.TeacherChatActivity;
@@ -15,10 +16,6 @@ public class ProfileActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        AppCompatDelegate.setDefaultNightMode(getSharedPreferences("AppSettings", MODE_PRIVATE)
-                .getBoolean("KEY_DARK_MODE", false)
-                ? AppCompatDelegate.MODE_NIGHT_YES
-                : AppCompatDelegate.MODE_NIGHT_NO);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
@@ -36,24 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavProfile);
         bottomNav.setSelectedItemId(R.id.nav_profile);
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_profile) {
-                return true;
-            }
-            if (itemId == R.id.nav_home) {
-                Intent intent = new Intent(ProfileActivity.this, TeacherMainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            if (itemId == R.id.nav_chat) {
-                Intent intent = new Intent(ProfileActivity.this, TeacherChatActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 }

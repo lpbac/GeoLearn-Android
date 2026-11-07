@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.fragment.app.Fragment; // QUAN TRỌNG: Phải dùng thư viện này
 
 import com.example.geolearn.R;
@@ -23,10 +22,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        SharedPreferences settingsPrefs = getSharedPreferences("AppSettings", MODE_PRIVATE);
-        AppCompatDelegate.setDefaultNightMode(settingsPrefs.getBoolean("KEY_DARK_MODE", false)
-                ? AppCompatDelegate.MODE_NIGHT_YES
-                : AppCompatDelegate.MODE_NIGHT_NO);
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -105,7 +100,7 @@ public class MainActivity extends AppCompatActivity {
                 // Tự động bấm vào nút Chat
                 bottomNavigation.setSelectedItemId(R.id.nav_chat);
             } else if ("PROFILE".equals(tabName)) {
-                // Mở trực tiếp hồ sơ để giảng viên không bị điều hướng ngược về màn teacher home
+                // Mở trực tiếp hồ sơ để giáo viên không bị điều hướng ngược về màn teacher home
                 bottomNavigation.setSelectedItemId(R.id.nav_profile);
                 loadFragment(new ProfileFragment());
             }

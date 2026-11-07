@@ -54,7 +54,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
             // --- ĐANG KHÓA ---
             holder.tvStatus.setText("🔒 Đang khóa");
             // Set màu xám
-            if(holder.card != null) holder.card.setCardBackgroundColor(Color.parseColor("#E0E0E0"));
+            if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorMuted));
             holder.itemView.setEnabled(false);
             return;
         }
@@ -66,7 +66,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
             // --- CHƯA NỘP ---
             holder.tvStatus.setText("Chưa nộp bài");
             holder.tvStatus.setTextColor(Color.RED);
-            if(holder.card != null) holder.card.setCardBackgroundColor(Color.parseColor("#FFEBEE")); // Đỏ nhạt
+            if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorLateBg)); // Đỏ nhạt
 
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, AssignmentActivity.class);
@@ -85,7 +85,7 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
                 // --- CHỜ CHẤM ---
                 holder.tvStatus.setText("Đã nộp (Chờ chấm)");
                 holder.tvStatus.setTextColor(Color.parseColor("#FF9800")); // Cam
-                if(holder.card != null) holder.card.setCardBackgroundColor(Color.parseColor("#FFF3E0"));
+                if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorPendingBg));
 
                 holder.itemView.setOnClickListener(v -> {
                     Intent intent = new Intent(context, AssignmentActivity.class);
@@ -95,9 +95,9 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
             } else {
                 // --- ĐÃ CÓ ĐIỂM ---
                 holder.tvStatus.setText("Điểm: " + grade);
-                holder.tvStatus.setTextColor(Color.parseColor("#2E7D32")); // Xanh lá đậm
+                holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorSuccess)); // Xanh lá đậm
                 holder.tvStatus.setTypeface(null, android.graphics.Typeface.BOLD);
-                if(holder.card != null) holder.card.setCardBackgroundColor(Color.parseColor("#E8F5E9"));
+                if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorDoneBg));
 
                 // Bấm vào để xem Lời phê
                 double finalGrade = grade;

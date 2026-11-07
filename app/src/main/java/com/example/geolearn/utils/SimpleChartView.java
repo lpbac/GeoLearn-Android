@@ -141,7 +141,7 @@ public class SimpleChartView extends View {
 
         paint.setStyle(Paint.Style.FILL);
         paint.setTextSize(LABEL_TEXT_SIZE);
-        paint.setColor(Color.rgb(69, 69, 69));
+        paint.setColor(getContext().getColor(com.example.geolearn.R.color.colorTextPrimary));
         paint.setTextAlign(Paint.Align.CENTER);
 
         if (Math.cos(angle) > 0.35d) {
@@ -192,7 +192,7 @@ public class SimpleChartView extends View {
             paint.setColor(Color.rgb(25, 118, 210)); // phổ điểm: một màu, chiều cao đã thể hiện tỉ lệ
             canvas.drawRoundRect(left, top, left + barWidth, chartBottom + 24f, 12f, 12f, paint);
 
-            paint.setColor(Color.rgb(68, 68, 68));
+            paint.setColor(getContext().getColor(com.example.geolearn.R.color.colorTextPrimary));
             canvas.drawText(Math.round(entry.value) + "%", left + barWidth / 2f, top - 8f, paint);
             canvas.drawText(shortLabel(entry.label), left + barWidth / 2f, getHeight() - 26f, paint);
         }

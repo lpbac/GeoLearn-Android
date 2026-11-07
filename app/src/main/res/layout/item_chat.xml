@@ -36,7 +36,7 @@
             android:id="@+id/tvTimeLeft"
             android:text="10:00"
             android:textSize="10sp"
-            android:textColor="#757575"
+            android:textColor="@color/colorTextSecondary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
@@ -54,7 +54,7 @@
         <TextView
             android:id="@+id/tvContentRight"
             android:text="Tin nhắn của tôi"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="16sp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

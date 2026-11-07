@@ -108,29 +108,7 @@ public class TeacherMainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
         bottomNav.setSelectedItemId(R.id.nav_home); // Mặc định chọn Home
 
-        bottomNav.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.nav_home) {
-                    // Đang ở Home rồi thì không làm gì
-                    return true;
-                }
-                else if (itemId == R.id.nav_chat) {
-                    // Chuyển sang màn hình Chat dành cho GV
-                    Intent intent = new Intent(TeacherMainActivity.this, TeacherChatActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-                else if (itemId == R.id.nav_profile) {
-                    Intent intent = new Intent(TeacherMainActivity.this, ProfileActivity.class);
-                    startActivity(intent);
-                    return true;
-                }
-                return false;
-            }
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 
 

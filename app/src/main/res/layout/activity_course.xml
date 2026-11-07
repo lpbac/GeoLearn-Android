@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#1976D2"
+        android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp">
 
         <ImageView
@@ -26,7 +26,7 @@
             android:text="BÀI HỌC"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:layout_centerInParent="true"/>
 
         <com.google.android.material.button.MaterialButton
@@ -34,8 +34,8 @@
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:text="Quay lại"
-            android:textColor="#1976D2"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/colorPrimary"
+            app:backgroundTint="@color/colorSurface"
             app:cornerRadius="4dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"/>
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:background="@color/white"
+        android:background="@color/colorSurface"
         android:elevation="16dp"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
@@ -70,7 +70,7 @@
             app:cardCornerRadius="16dp"
             app:strokeColor="@color/black"
             app:strokeWidth="1dp"
-            app:cardBackgroundColor="#FFF0F5">
+            app:cardBackgroundColor="@color/colorProgressCard">
 
             <LinearLayout
                 android:layout_width="match_parent"

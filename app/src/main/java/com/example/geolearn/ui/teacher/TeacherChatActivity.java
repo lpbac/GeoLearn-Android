@@ -100,21 +100,7 @@ public class TeacherChatActivity extends AppCompatActivity {
         if (bottomNav == null) return;
         bottomNav.setSelectedItemId(R.id.nav_chat);
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                startActivity(new Intent(this, TeacherMainActivity.class));
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 
     private void updateUnreadBadge() {
@@ -172,11 +158,11 @@ public class TeacherChatActivity extends AppCompatActivity {
                 holder.tvLastMessage.setText(lastMsg);
                 if (hasUnread) {
                     holder.tvLastMessage.setTypeface(null, Typeface.BOLD);
-                    holder.tvLastMessage.setTextColor(Color.BLACK);
+                    holder.tvLastMessage.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextPrimary));
                     holder.tvName.setTypeface(null, Typeface.BOLD);
                 } else {
                     holder.tvLastMessage.setTypeface(null, Typeface.NORMAL);
-                    holder.tvLastMessage.setTextColor(Color.GRAY);
+                    holder.tvLastMessage.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
                     holder.tvName.setTypeface(null, Typeface.NORMAL);
                 }
             }

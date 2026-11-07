@@ -5,7 +5,7 @@ public class User {
     private String tenDangNhap;
     private String matKhau;
     private String hoTen;
-    private int quyenHan; // 1: Học sinh, 2: Giảng viên
+    private int quyenHan; // 1: Học sinh, 2: Giáo viên
     private String maLop;
 
     public User(int maNguoiDung, String tenDangNhap, String matKhau, String hoTen, int quyenHan, String maLop) {

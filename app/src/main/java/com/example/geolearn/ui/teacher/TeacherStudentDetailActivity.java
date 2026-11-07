@@ -21,6 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import java.util.List;
 
 public class TeacherStudentDetailActivity extends AppCompatActivity {
+    private StudentScoreAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +55,7 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
 
             // Hiển thị danh sách
             List<Chapter> allChapters = dbHelper.getAllChapters();
-            StudentScoreAdapter adapter = new StudentScoreAdapter(allChapters, dbHelper, studentId);
+            adapter = new StudentScoreAdapter(allChapters, dbHelper, studentId);
             rcv.setLayoutManager(new LinearLayoutManager(this));
             rcv.setAdapter(adapter);
 
@@ -69,31 +70,7 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
         // Hoặc có thể set là nav_home nếu muốn
         bottomNav.getMenu().setGroupCheckable(0, false, true);
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                // Về trang chủ
-                Intent intent = new Intent(this, TeacherMainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            else if (itemId == R.id.nav_chat) {
-                // Sang màn hình Chat (Nếu bạn đã làm)
-//                startActivity(new Intent(this, TeacherChatActivity.class));
-                return true;
-            }
-            else if (itemId == R.id.nav_profile) {
-                // --- SỬA LỖI 2: MỞ MÀN HÌNH HỒ SƠ ---
-                // Chuyển sang MainActivity và yêu cầu mở tab Profile
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 
     // --- ADAPTER ---
@@ -129,7 +106,7 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
             // Logic hiển thị
             if (totalQuestions == 0) {
                 holder.tvScore.setText("Không có bài");
-                holder.tvScore.setTextColor(android.graphics.Color.GRAY);
+                holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
             } else if (score == -1) {
                 holder.tvScore.setText("Chưa thi");
                 holder.tvScore.setTextColor(android.graphics.Color.RED);
@@ -137,10 +114,16 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
                 holder.tvScore.setText(score + "/" + totalQuestions); // Sẽ hiện 2/2 thay vì 2/20
                 // Tô màu: Xanh nếu >= 50% điểm, Đỏ nếu thấp hơn
                 if (score >= totalQuestions / 2.0) {
-                    holder.tvScore.setTextColor(android.graphics.Color.parseColor("#1976D2"));
+                    holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary));
                 } else {
                     holder.tvScore.setTextColor(android.graphics.Color.RED);
                 }
+            }
+
+            // Điểm bài tập tự luận giáo viên đã chấm (-1 = chưa chấm)
+            String[] sub = db.getSubmissionFullDetail(studentId, c.getMaChuong());
+            if (sub != null) {
+                holder.tvScore.append(sub[2] == null || sub[2].startsWith("-") ? "\nBT: chưa chấm" : "\nBT: " + sub[2] + "/10");
             }
 
             // Click để chấm bài tập tự luận
@@ -168,7 +151,7 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // ... code cũ ...
+        if (adapter != null) adapter.notifyDataSetChanged(); // cập nhật điểm sau khi chấm xong quay lại
 
         // Cập nhật Badge tin nhắn
         DatabaseHelper db = new DatabaseHelper(this);

@@ -273,7 +273,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
                 + " VALUES(null, 6, 'Hạn nộp là 22h tối nay, các em chú ý hoàn thành đúng hạn.', 'Lớp 12A1', '08:15', 1)");
 
-        // Tin riêng mẫu giữa học sinh và bạn cùng lớp / giảng viên
+        // Tin riêng mẫu giữa học sinh và bạn cùng lớp / giáo viên
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
                 + " VALUES(null, 2, 'Minh ơi, cậu làm xong câu hỏi ôn tập chưa?', '1_2', '09:20', 1)");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE

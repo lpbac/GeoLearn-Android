@@ -82,18 +82,7 @@ public class TeacherCourseListActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
         bottomNav.setSelectedItemId(R.id.nav_home);
-        bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_home) {
-                startActivity(new Intent(this, TeacherMainActivity.class));
-                return true;
-            } else if (item.getItemId() == R.id.nav_profile) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 
     // --- ADAPTER ---
@@ -115,7 +104,9 @@ public class TeacherCourseListActivity extends AppCompatActivity {
             String pdf = db.getPdfFileName(c.getMaChuong()).isEmpty() ? "Chưa có PDF" : "Có PDF";
             String video = db.getVideoFileName(c.getMaChuong()).isEmpty() ? "Chưa có video" : "Có video";
             String assignment = db.hasAssignmentInChapter(c.getMaChuong()) ? "Có bài tập" : "Chưa có bài tập";
-            holder.tvDesc.setText(pdf + " • " + video + " • " + assignment);
+            String status = pdf + " • " + video + " • " + assignment;
+            String moTa = c.getMoTa();
+            holder.tvDesc.setText(moTa == null || moTa.trim().isEmpty() ? status : moTa.trim() + "\n" + status);
 
             holder.itemView.setOnClickListener(v -> openEditChapter(c));
             holder.btnEdit.setOnClickListener(v -> openEditChapter(c));

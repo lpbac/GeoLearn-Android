@@ -16,7 +16,7 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_menu_white"
-            app:tint="@color/white" />
+            app:tint="@color/colorOnPrimary" />
 
         <TextView
             android:id="@+id/tvVideoTitle"
@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="VIDEO BÀI GIẢNG"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -38,7 +38,7 @@
             android:textSize="12sp"
             android:paddingHorizontal="8dp"
             android:textColor="@color/colorPrimary"
-            app:backgroundTint="@color/white"
+            app:backgroundTint="@color/colorSurface"
             app:cornerRadius="4dp"
             android:insetTop="0dp"
             android:insetBottom="0dp"/>
@@ -50,7 +50,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="0dp"
-        android:background="@color/white"
+        android:background="@color/colorSurface"
         android:elevation="16dp"
         app:itemIconTint="@color/nav_item_colors"
         app:itemTextColor="@color/nav_item_colors"
@@ -75,7 +75,7 @@
             android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_play_arrow"
-            app:tint="@color/white"
+            app:tint="@color/colorOnPrimary"
             android:background="@drawable/bg_circle_transparent"/>
     </RelativeLayout>
 

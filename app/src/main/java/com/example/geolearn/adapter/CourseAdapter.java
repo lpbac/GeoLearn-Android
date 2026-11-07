@@ -57,7 +57,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             // MỞ KHOÁ: Sáng rõ, bấm được
             holder.itemView.setAlpha(1.0f);
             holder.tvStatus.setText("Mở");
-            holder.tvStatus.setTextColor(Color.parseColor("#1976D2")); // Màu xanh
+            holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary)); // Màu xanh
 
             holder.itemView.setOnClickListener(v -> {
                 // Chuyển sang màn hình chi tiết bài học (PDF/Video...)
@@ -71,7 +71,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             // BỊ KHOÁ
             holder.itemView.setAlpha(0.5f);
             holder.tvStatus.setText("Khoá");
-            holder.tvStatus.setTextColor(android.graphics.Color.GRAY);
+            holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
 
             holder.itemView.setOnClickListener(v -> {
                 // Thông báo rõ ràng hơn

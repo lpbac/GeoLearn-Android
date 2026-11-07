@@ -43,37 +43,7 @@ public class TeacherClassListActivity extends AppCompatActivity {
         // Hoặc nếu bạn coi đây là màn Home thì để nav_home
 //        bottomNav.setSelectedItemId(R.id.nav_home);
 
-        bottomNav.setOnItemSelectedListener(new com.google.android.material.navigation.NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull android.view.MenuItem item) {
-                int itemId = item.getItemId();
-
-                if (itemId == R.id.nav_home) {
-                    // --- SỬA Ở ĐÂY: CHUYỂN VỀ TRANG CHỦ GIÁO VIÊN ---
-                    Intent intent = new Intent(TeacherClassListActivity.this, TeacherMainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish(); // Đóng màn hình hiện tại
-                    return true;
-                }
-                else if (itemId == R.id.nav_chat) {
-                    // Chuyển sang Chat Giáo viên
-//                    Intent intent = new Intent(TeacherClassListActivity.this, TeacherChatActivity.class);
-//                    startActivity(intent);
-//                    finish();
-//                    return true;
-                }
-                else if (itemId == R.id.nav_profile) {
-                    // Tạm thời chuyển về Main (Profile) hoặc làm trang Profile riêng cho GV
-                    Intent intent = new Intent(TeacherClassListActivity.this, com.example.geolearn.ui.main.MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "PROFILE");
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
 
         // 1. Lấy ID Giáo viên
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
@@ -107,31 +77,7 @@ public class TeacherClassListActivity extends AppCompatActivity {
         // Hoặc có thể set là nav_home nếu muốn
         bottomNav.getMenu().setGroupCheckable(0, false, true);
 
-        bottomNav.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                // Về trang chủ
-                Intent intent = new Intent(this, TeacherMainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            else if (itemId == R.id.nav_chat) {
-                // Sang màn hình Chat (Nếu bạn đã làm)
-//                startActivity(new Intent(this, TeacherChatActivity.class));
-                return true;
-            }
-            else if (itemId == R.id.nav_profile) {
-                // --- SỬA LỖI 2: MỞ MÀN HÌNH HỒ SƠ ---
-                // Chuyển sang MainActivity và yêu cầu mở tab Profile
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 
     @Override

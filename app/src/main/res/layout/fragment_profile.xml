@@ -107,7 +107,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:background="#E3F2FD"
+                        android:background="@color/colorPrimarySoft"
                         android:paddingHorizontal="14dp"
                         android:paddingVertical="6dp"
                         android:text="Lớp học: ..."

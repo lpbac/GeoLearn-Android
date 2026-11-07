@@ -3,13 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F5">
+    android:background="@color/colorBackground">
 
     <RelativeLayout
         android:id="@+id/layoutHeader"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#1976D2"
+        android:background="@color/colorPrimary"
         android:paddingHorizontal="16dp">
 
         <ImageView
@@ -24,7 +24,7 @@
             android:text="Danh sách lớp học"
             android:textSize="20sp"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:layout_centerInParent="true"/>
 
         <Button
@@ -32,8 +32,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Quay lại"
-            android:textColor="#1976D2"
-            app:backgroundTint="@color/white"
+            android:textColor="@color/colorPrimary"
+            app:backgroundTint="@color/colorSurface"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
             android:minHeight="40dp"/>
@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/white"
+        android:background="@color/colorSurface"
         app:menu="@menu/bottom_nav_menu" />
 
     <androidx.recyclerview.widget.RecyclerView

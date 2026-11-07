@@ -173,6 +173,7 @@ public class TeacherGradingActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
 
         if (bottomNav != null) {
+            bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
             com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_chat);
             if (unreadCount > 0) {
                 badge.setVisible(true);

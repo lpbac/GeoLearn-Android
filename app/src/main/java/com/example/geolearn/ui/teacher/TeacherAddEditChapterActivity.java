@@ -205,17 +205,6 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
         bottomNav.setSelectedItemId(R.id.nav_home);
-        bottomNav.setOnItemSelectedListener(item -> {
-            if (item.getItemId() == R.id.nav_home) {
-                startActivity(new Intent(this, TeacherMainActivity.class));
-                return true;
-            } else if (item.getItemId() == R.id.nav_profile) {
-                Intent intent = new Intent(this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                startActivity(intent);
-                return true;
-            }
-            return false;
-        });
+        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
     }
 }

@@ -20,7 +20,7 @@
             android:layout_height="24dp"
             android:layout_centerVertical="true"
             android:src="@drawable/ic_menu_white"
-            app:tint="@color/white"
+            app:tint="@color/colorOnPrimary"
             android:contentDescription="Menu" />
 
         <TextView
@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:text="TRANG CHỦ"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/white"
+                app:cardBackgroundColor="@color/colorSurface"
                 app:cardCornerRadius="12dp"
                 app:cardElevation="4dp">
 
@@ -98,6 +98,7 @@
                 android:columnOrderPreserved="false">
 
                 <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                     android:id="@+id/cardCourse"
                     android:layout_width="0dp"
                     android:layout_height="120dp"
@@ -127,6 +128,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                     android:id="@+id/cardQuiz"
                     android:layout_width="0dp"
                     android:layout_height="120dp"
@@ -156,6 +158,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                     android:id="@+id/cardAssignment"
                     android:layout_width="0dp"
                     android:layout_height="120dp"
@@ -185,6 +188,7 @@
                 </androidx.cardview.widget.CardView>
 
                 <androidx.cardview.widget.CardView
+    app:cardBackgroundColor="@color/colorSurface"
                     android:id="@+id/cardAbility"
                     android:layout_width="0dp"
                     android:layout_height="120dp"

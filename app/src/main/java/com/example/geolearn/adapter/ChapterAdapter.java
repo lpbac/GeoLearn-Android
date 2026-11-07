@@ -55,13 +55,13 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterV
 
             // Text trạng thái
             holder.tvStatus.setText("Khoá");
-            holder.tvStatus.setTextColor(Color.GRAY);
+            holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
 
             // Tên chương: Màu xám nhạt để thể hiện bị vô hiệu hóa
-            holder.tvChapterName.setTextColor(Color.parseColor("#9E9E9E"));
+            holder.tvChapterName.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
 
             // CardView: Viền xám, bỏ đổ bóng (Elevation = 0)
-            holder.cardChapter.setStrokeColor(Color.parseColor("#E0E0E0"));
+            holder.cardChapter.setStrokeColor(holder.itemView.getContext().getColor(R.color.colorMuted));
             holder.cardChapter.setCardElevation(0);
 
             // Sự kiện Click: Vô hiệu hóa (set null)
@@ -78,7 +78,7 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterV
             holder.tvStatus.setTextColor(colorPrimary);
 
             // Tên chương: Màu đen rõ ràng
-            holder.tvChapterName.setTextColor(Color.BLACK);
+            holder.tvChapterName.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextPrimary));
 
             // CardView: Viền xanh, có đổ bóng nổi lên
             holder.cardChapter.setStrokeColor(colorPrimary);

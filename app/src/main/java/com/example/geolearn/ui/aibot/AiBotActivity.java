@@ -109,7 +109,6 @@ public class AiBotActivity extends AppCompatActivity
         viewModel.getMessages().observe(this, messages -> {
             if (messages == null) return;
             adapter.setMessages(messages, viewModel.getStreamingMessageIndex());
-            chipGroup.setVisibility(messages.isEmpty() ? View.VISIBLE : View.GONE);
             scrollToBottom();
         });
 
@@ -199,26 +198,23 @@ public class AiBotActivity extends AppCompatActivity
             chip.setClickable(true);
             chip.setCheckable(false);
             chip.setChipBackgroundColorResource(R.color.colorPrimary);
-            chip.setTextColor(getResources().getColor(R.color.white, getTheme()));
+            chip.setTextColor(getResources().getColor(R.color.colorOnPrimary, getTheme()));
             chip.setOnClickListener(v -> {
                 // Chip đặc biệt: quét tiến độ
                 if (suggestion.startsWith("📊")) {
                     int userId = getSharedPreferences("UserSession", MODE_PRIVATE)
                             .getInt("KEY_USER_ID", 1);
                     viewModel.scanAndShowProgress(this, userId);
-                    chipGroup.setVisibility(View.GONE);
                     return;
                 }
                 // Chip Flashcard
                 if (suggestion.startsWith("🃏")) {
                     showChapterPickerForFlashCard();
-                    chipGroup.setVisibility(View.GONE);
                     return;
                 }
                 // Chip Kiểm tra bài tập
                 if (suggestion.startsWith("🔍")) {
                     showSubmissionPickerDialog();
-                    chipGroup.setVisibility(View.GONE);
                     return;
                 }
                 // Các chip thường

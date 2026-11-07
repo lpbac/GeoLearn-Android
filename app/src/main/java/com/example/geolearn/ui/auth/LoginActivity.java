@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
         // 2. Phân quyền chuyển màn hình
         if (user.getQuyenHan() == 2) {
-            Toast.makeText(this, "Xin chào Giảng viên: " + user.getHoTen(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Xin chào Giáo viên: " + user.getHoTen(), Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
         }

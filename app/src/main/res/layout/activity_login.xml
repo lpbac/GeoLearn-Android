@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:text="Đăng nhập để bắt đầu học tập"
-            android:textColor="#757575"
+            android:textColor="@color/colorTextSecondary"
             android:textSize="15sp" />
 
         <!-- Ô nhập Tên đăng nhập -->
@@ -138,7 +138,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Chưa có tài khoản?"
-                android:textColor="#757575"
+                android:textColor="@color/colorTextSecondary"
                 android:textSize="15sp" />
 
             <TextView

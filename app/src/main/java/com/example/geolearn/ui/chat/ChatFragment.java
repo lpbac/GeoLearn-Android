@@ -191,7 +191,7 @@ public class ChatFragment extends Fragment {
             if (lastMsg.isEmpty()) {
                 holder.tvLastMessage.setText("Chưa có tin nhắn");
                 holder.tvLastMessage.setTypeface(null, Typeface.ITALIC);
-                holder.tvLastMessage.setTextColor(android.graphics.Color.GRAY);
+                holder.tvLastMessage.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
                 holder.tvName.setTypeface(null, Typeface.NORMAL);
             } else {
                 holder.tvLastMessage.setText(lastMsg);
@@ -199,12 +199,12 @@ public class ChatFragment extends Fragment {
                 if (hasUnread) {
                     // --- NẾU CÓ TIN MỚI: IN ĐẬM ---
                     holder.tvLastMessage.setTypeface(null, Typeface.BOLD);
-                    holder.tvLastMessage.setTextColor(android.graphics.Color.BLACK); // Đen đậm
+                    holder.tvLastMessage.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextPrimary));
                     holder.tvName.setTypeface(null, Typeface.BOLD); // Tên người cũng đậm
                 } else {
                     // --- NẾU ĐÃ ĐỌC: BÌNH THƯỜNG ---
                     holder.tvLastMessage.setTypeface(null, Typeface.NORMAL);
-                    holder.tvLastMessage.setTextColor(android.graphics.Color.GRAY);
+                    holder.tvLastMessage.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
                     holder.tvName.setTypeface(null, Typeface.NORMAL);
                 }
             }

@@ -20,7 +20,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Tin nhắn"
-            android:textColor="@color/white"
+            android:textColor="@color/colorOnPrimary"
             android:textSize="28sp"
             android:textStyle="bold" />
 
@@ -28,15 +28,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Trao đổi nhanh với lớp học và giảng viên"
-            android:textColor="#DCEEFF"
+            android:text="Trao đổi nhanh với lớp học và giáo viên"
+            android:textColor="@color/colorOnPrimary"
+            android:alpha="0.85"
             android:textSize="14sp" />
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_marginTop="18dp"
-            app:cardBackgroundColor="@color/white"
+            app:cardBackgroundColor="@color/colorSurface"
             app:cardCornerRadius="24dp"
             app:cardElevation="0dp"
             app:strokeWidth="0dp">
@@ -52,8 +53,8 @@
                 <ImageView
                     android:layout_width="20dp"
                     android:layout_height="20dp"
-                    android:alpha="0.55"
-                    android:src="@drawable/ic_search_box" />
+                    android:src="@android:drawable/ic_menu_search"
+                    app:tint="@color/colorTextSecondary" />
 
                 <EditText
                     android:id="@+id/edtSearch"

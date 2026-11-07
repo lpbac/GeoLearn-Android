@@ -6,7 +6,7 @@
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="2dp"
-    app:cardBackgroundColor="@android:color/white">
+    app:cardBackgroundColor="@color/colorSurface">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,6 +30,6 @@
             android:layout_marginEnd="8dp"
             android:text="Nội dung câu hỏi..."
             android:textSize="16sp"
-            android:textColor="#333"/>
+            android:textColor="@color/colorTextPrimary"/>
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

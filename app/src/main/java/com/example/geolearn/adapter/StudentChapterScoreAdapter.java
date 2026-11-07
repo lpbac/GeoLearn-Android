@@ -45,7 +45,7 @@ public class StudentChapterScoreAdapter extends RecyclerView.Adapter<StudentChap
 
         if (totalQuestions == 0) {
             holder.tvScore.setText("Không có bài");
-            holder.tvScore.setTextColor(android.graphics.Color.GRAY);
+            holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));
         } else if (score == -1) {
             holder.tvScore.setText("Chưa làm");
             holder.tvScore.setTextColor(android.graphics.Color.RED);
@@ -53,7 +53,7 @@ public class StudentChapterScoreAdapter extends RecyclerView.Adapter<StudentChap
             holder.tvScore.setText(score + "/" + totalQuestions);
             // Logic màu sắc
             if (score >= totalQuestions / 2.0) {
-                holder.tvScore.setTextColor(android.graphics.Color.parseColor("#1976D2")); // Xanh
+                holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary)); // Xanh
             } else {
                 holder.tvScore.setTextColor(android.graphics.Color.RED);
             }
