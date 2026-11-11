@@ -112,17 +112,23 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK && data != null && data.getData() != null) {
             Uri uri = data.getData();
-            String savedFileName = copyFileToInternalStorage(uri);
-
-            if (savedFileName != null) {
-                if (requestCode == PICK_PDF_REQUEST) {
-                    edtPdf.setText(savedFileName);
-                } else if (requestCode == PICK_VIDEO_REQUEST) {
-                    edtVideo.setText(savedFileName);
-                }
-            } else {
-                Toast.makeText(this, "Lỗi khi tải file!", Toast.LENGTH_SHORT).show();
-            }
+            // Copy ở luồng nền (video lớn làm đứng giao diện); khoá nút Lưu tới khi xong
+            android.view.View btnSubmit = findViewById(R.id.btnSubmit);
+            btnSubmit.setEnabled(false);
+            Toast.makeText(this, "Đang tải file...", Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                String savedFileName = copyFileToInternalStorage(uri);
+                runOnUiThread(() -> {
+                    btnSubmit.setEnabled(true);
+                    if (savedFileName == null) {
+                        Toast.makeText(this, "Lỗi khi tải file!", Toast.LENGTH_SHORT).show();
+                    } else if (requestCode == PICK_PDF_REQUEST) {
+                        edtPdf.setText(savedFileName);
+                    } else if (requestCode == PICK_VIDEO_REQUEST) {
+                        edtVideo.setText(savedFileName);
+                    }
+                });
+            }).start();
         }
     }
 

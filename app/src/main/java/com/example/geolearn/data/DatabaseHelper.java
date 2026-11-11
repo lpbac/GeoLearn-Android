@@ -199,6 +199,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         insertSampleData(db);
     }
 
+    private static final String VIEW_TABLE_SQL = "CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, "
+            + "MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))";
+
+    // Hai bảng phụ (lịch sử xem, đã đọc) tạo ở đây để DB cũ chưa có cũng được bổ sung
+    @Override
+    public void onOpen(SQLiteDatabase db) {
+        super.onOpen(db);
+        if (!db.isReadOnly()) {
+            db.execSQL(VIEW_TABLE_SQL);
+            db.execSQL(READ_TABLE_SQL);
+        }
+    }
+
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (oldVersion == 3) { // v4 chỉ thêm cột, giữ nguyên dữ liệu
@@ -213,6 +226,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASSIGNMENT);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBMISSION);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
+        // Xoá cả bảng phụ, nếu không user mới trùng ID sẽ thừa hưởng lịch sử xem/đã đọc cũ
+        db.execSQL("DROP TABLE IF EXISTS LichSuXem");
+        db.execSQL("DROP TABLE IF EXISTS DaDoc");
         onCreate(db);
     }
 
@@ -248,16 +264,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_DOCUMENT + " VALUES(null, 2, 'Video', 'video2.mp4')");
         db.execSQL("INSERT INTO " + TABLE_DOCUMENT + " VALUES(null, 3, 'PDF', 'Chuong3.pdf')");
         db.execSQL("INSERT INTO " + TABLE_DOCUMENT + " VALUES(null, 3, 'Video', 'video3.mp4')");
-
-        // // Dữ liệu Câu hỏi Trắc nghiệm
-        // db.execSQL("INSERT INTO " + TABLE_QUESTION + " VALUES(null, 1, 'Máy tính
-        // ENIAC ra đời năm nào?', '1945', '1946', '1950', '1955', 'B')");
-        // db.execSQL("INSERT INTO " + TABLE_QUESTION + " VALUES(null, 1, 'Thế hệ máy
-        // tính thứ nhất dùng linh kiện gì?', 'Bóng bán dẫn', 'Vi mạch', 'Đèn điện tử
-        // chân không', 'Chip AI', 'C')");
-        // db.execSQL("INSERT INTO " + TABLE_QUESTION + " VALUES(null, 2, 'ALU là viết
-        // tắt của gì?', 'Arithmetic Logic Unit', 'All Logic Unit', 'Array Logic Unit',
-        // 'Area Logic Unit', 'A')");
 
         importQuestionsFromAssets(db);
 
@@ -347,10 +353,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 String desc = cursor.getString(2);
                 int order = cursor.getInt(3);
 
-                // Logic khóa: Ví dụ mở chương 1 & 2, khóa chương 3 trở đi
-                boolean isLocked = (id > 2);
-
-                list.add(new Chapter(id, name, desc, order, isLocked));
+                // Trạng thái khoá tính theo từng học sinh ở isChapterUnlocked
+                list.add(new Chapter(id, name, desc, order, false));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -578,18 +582,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    // Mã bài tập của chương (mỗi chương tối đa 1 bài), 0 nếu chương không có bài tập
+    private int getAssignmentId(int chapterId) {
+        Cursor c = getReadableDatabase().rawQuery(
+                "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
+                new String[] { String.valueOf(chapterId) });
+        int assId = c.moveToFirst() ? c.getInt(0) : 0;
+        c.close();
+        return assId;
+    }
+
     // --- HÀM LƯU BÀI LÀM (Thêm vào cuối file) ---
     public void saveSubmission(int userId, int chapterId, String text, String filePath) {
         SQLiteDatabase db = this.getWritableDatabase();
         // Lấy ID bài tập dựa trên chương (Giả sử mỗi chương 1 bài)
         // Trong thực tế cần logic phức tạp hơn, nhưng BTL làm vậy là ổn
-        int assId = 0;
-        Cursor c = db.rawQuery(
-                "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
-                new String[] { String.valueOf(chapterId) });
-        if (c.moveToFirst())
-            assId = c.getInt(0);
-        c.close();
+        int assId = getAssignmentId(chapterId);
 
         if (assId > 0) {
             android.content.ContentValues values = new android.content.ContentValues();
@@ -616,13 +624,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] result = null;
 
         // Lấy ID bài tập của chương này
-        int assId = 0;
-        Cursor c1 = db.rawQuery(
-                "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
-                new String[] { String.valueOf(chapterId) });
-        if (c1.moveToFirst())
-            assId = c1.getInt(0);
-        c1.close();
+        int assId = getAssignmentId(chapterId);
 
         if (assId > 0) {
             // Tìm trong bảng NopBai
@@ -835,8 +837,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void saveDocProgress(int userId, int chapterId, String docType, int status) {
         try {
             SQLiteDatabase db = this.getWritableDatabase();
-            db.execSQL("CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))");
-            
             android.content.ContentValues values = new android.content.ContentValues();
             values.put("MaNguoiDung", userId);
             values.put("MaChuong", chapterId);
@@ -850,8 +850,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean isDocViewed(int userId, int chapterId, String docType) {
         try {
             SQLiteDatabase db = this.getReadableDatabase();
-            db.execSQL("CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))");
-            
             // Nếu không có tài liệu loại này thì mặc định coi như đã xem
             boolean hasDoc = false;
             Cursor cDoc = db.rawQuery("SELECT COUNT(*) FROM TaiLieu WHERE MaChuong=? AND Loai=?", new String[]{String.valueOf(chapterId), docType});
@@ -1083,7 +1081,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Hàm tìm Chương cao nhất đang được mở
     public Chapter getCurrentChapter(int userId) {
-        SQLiteDatabase db = this.getReadableDatabase();
         List<Chapter> chapters = getAllChapters(); // Lấy tất cả chương
         Chapter current = null;
 
@@ -1133,7 +1130,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // 2. Kiểm tra xem phòng này có tin nhắn mới (của người khác) mà mình chưa đọc không?
     public boolean hasUnreadMessage(String roomId, int myId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(READ_TABLE_SQL);
         String me = String.valueOf(myId);
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?" + UNREAD_COND,
                 new String[] { roomId, me, me });
@@ -1145,7 +1141,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // 3. Đánh dấu phòng là ĐÃ ĐỌC đối với một người
     public void markMessagesAsRead(String roomId, int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(READ_TABLE_SQL);
         db.execSQL("INSERT OR REPLACE INTO DaDoc (MaNguoiDung, Phong, MaTinCuoi) VALUES (?, ?, "
                 + "(SELECT COALESCE(MAX(" + COL_MSG_ID + "), 0) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?))",
                 new Object[] { userId, roomId, roomId });
@@ -1154,7 +1149,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // Số tin chưa đọc của học sinh: chỉ tính phòng lớp của mình và phòng riêng có ID của mình
     public int getUnreadCount(int myUserId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL(READ_TABLE_SQL);
         String me = String.valueOf(myUserId);
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE (" + COL_MSG_ROOM + "=? OR "
                 + COL_MSG_ROOM + " LIKE ? ESCAPE '\\' OR " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\')" + UNREAD_COND,
@@ -1303,13 +1297,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // 1. Tìm ID bài tập
-        int assId = 0;
-        Cursor c = db.rawQuery(
-                "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
-                new String[] { String.valueOf(chapterId) });
-        if (c.moveToFirst())
-            assId = c.getInt(0);
-        c.close();
+        int assId = getAssignmentId(chapterId);
 
         // 2. Cập nhật điểm
         if (assId > 0) {
@@ -1329,13 +1317,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String[] getSubmissionFullDetail(int userId, int chapterId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] result = null;
-        int assId = 0;
-        Cursor c1 = db.rawQuery(
-                "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
-                new String[] { String.valueOf(chapterId) });
-        if (c1.moveToFirst())
-            assId = c1.getInt(0);
-        c1.close();
+        int assId = getAssignmentId(chapterId);
 
         if (assId > 0) {
             Cursor c2 = db.rawQuery(
@@ -1566,7 +1548,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.delete(TABLE_QUESTION, COL_Q_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
         db.delete(TABLE_SCORE, COL_SCORE_CHAPTER_ID + "=?", new String[] { String.valueOf(chapterId) });
         // Xoá lịch sử xem, tránh chương mới dùng lại ID cũ bị tính là đã xem
-        db.execSQL("CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))");
         db.delete("LichSuXem", "MaChuong=?", new String[] { String.valueOf(chapterId) });
 
         Cursor cursor = db.rawQuery(

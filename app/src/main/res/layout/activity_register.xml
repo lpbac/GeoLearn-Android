@@ -138,29 +138,12 @@
                 android:textSize="16sp" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
-            android:text="Vai trò"
-            android:textColor="@color/colorTextPrimary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/spinnerRole"
-            android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginBottom="14dp"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp" />
-
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="28dp"
-            android:hint="Mã lớp học / lớp học phụ trách"
+            android:hint="Mã lớp học"
             app:placeholderText="Ví dụ: 12A1" app:boxCornerRadiusBottomEnd="12dp"
             app:boxCornerRadiusBottomStart="12dp"
             app:boxCornerRadiusTopEnd="12dp"

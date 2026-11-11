@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.OpenableColumns;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -13,15 +12,12 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.geolearn.R;
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.main.MainActivity;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -83,7 +79,7 @@ public class AssignmentActivity extends AppCompatActivity {
         // Nộp bài
         btnSubmit.setOnClickListener(v -> submitAssignment());
 
-        setupBottomNavigation();
+        com.example.geolearn.ui.main.StudentNav.setup(this);
 
         // --- THÊM ĐOẠN NÀY ĐỂ XEM LẠI BÀI CŨ ---
         checkExistingSubmission();
@@ -118,16 +114,25 @@ public class AssignmentActivity extends AppCompatActivity {
                             getContentResolver().takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
                         } catch (Exception ignored) {
                         }
-                        String copiedPath = copyPickedFileToInternalStorage(uri);
-                        if (copiedPath == null || copiedPath.isEmpty()) {
-                            selectedFilePath = uri.toString();
-                            tvFileName.setText("Đã chọn: " + getDisplayFileName(uri));
-                            Toast.makeText(this, "Không copy được file, app sẽ thử lưu quyền đọc URI.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            selectedFilePath = copiedPath;
-                            tvFileName.setText("Đã chọn: " + new File(copiedPath).getName());
-                        }
-                        tvFileName.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                        // Copy ở luồng nền (file lớn làm đứng giao diện); khoá nút Nộp tới khi xong
+                        btnSubmit.setEnabled(false);
+                        tvFileName.setText("Đang tải file...");
+                        new Thread(() -> {
+                            String copiedPath = copyPickedFileToInternalStorage(uri);
+                            String displayName = getDisplayFileName(uri);
+                            runOnUiThread(() -> {
+                                btnSubmit.setEnabled(true);
+                                if (copiedPath.isEmpty()) {
+                                    selectedFilePath = uri.toString();
+                                    tvFileName.setText("Đã chọn: " + displayName);
+                                    Toast.makeText(this, "Không copy được file, app sẽ thử lưu quyền đọc URI.", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    selectedFilePath = copiedPath;
+                                    tvFileName.setText("Đã chọn: " + new File(copiedPath).getName());
+                                }
+                                tvFileName.setTextColor(getResources().getColor(android.R.color.holo_green_dark));
+                            });
+                        }).start();
                     }
                 }
             }
@@ -201,6 +206,22 @@ public class AssignmentActivity extends AppCompatActivity {
             return;
         }
 
+        // Nộp lại sẽ xoá điểm và nhận xét giáo viên đã chấm: phải hỏi trước
+        String[] old = dbHelper.getSubmissionFullDetail(getUserId(), currentChapterId);
+        boolean graded = old != null && old[2] != null && !old[2].startsWith("-");
+        if (!graded) {
+            saveSubmission(answerText);
+            return;
+        }
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Bài đã được chấm")
+                .setMessage("Nộp lại sẽ xoá điểm và nhận xét của giáo viên. Bạn có chắc không?")
+                .setPositiveButton("Nộp lại", (d, w) -> saveSubmission(answerText))
+                .setNegativeButton("Huỷ", null)
+                .show();
+    }
+
+    private void saveSubmission(String answerText) {
         // Lưu vào DB theo đúng ID của user đang đăng nhập
         dbHelper.saveSubmission(getUserId(), currentChapterId, answerText, selectedFilePath);
 
@@ -251,39 +272,5 @@ public class AssignmentActivity extends AppCompatActivity {
         super.onResume();
         updateHeaderProgress(); // <--- GỌI HÀM NÀY
         // ... các code load dữ liệu khác
-    }
-
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    Intent intent = new Intent(AssignmentActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_chat) {
-                    // Chuyển sang Tab Chat
-                    Intent intent = new Intent(AssignmentActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "CHAT");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    // Chuyển sang Tab Profile
-                    Intent intent = new Intent(AssignmentActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "PROFILE");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 }

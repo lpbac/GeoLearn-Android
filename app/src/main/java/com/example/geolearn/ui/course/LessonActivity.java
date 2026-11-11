@@ -11,11 +11,8 @@ import androidx.cardview.widget.CardView;
 import com.example.geolearn.R;
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.main.MainActivity;
 import com.example.geolearn.ui.quiz.QuizActivity;
 // import com.example.geolearn.ui.course.VideoPlayerActivity; // Chung package không cần import
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.button.MaterialButton;
 import com.rajat.pdfviewer.PdfViewerActivity;
 import com.rajat.pdfviewer.util.saveTo;
 
@@ -54,7 +51,7 @@ public class LessonActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
 
         // Setup Menu
-        setupBottomNavigation();
+        com.example.geolearn.ui.main.StudentNav.setup(this);
 
         // --- XỬ LÝ CLICK PDF (ĐÃ NÂNG CẤP) ---
         cardPdf.setOnClickListener(v -> {
@@ -199,36 +196,5 @@ public class LessonActivity extends AppCompatActivity {
         if (tvCurrentChapter != null) {
             tvCurrentChapter.setText(currentChapterName);
         }
-    }
-
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-
-        bottomNavigationView.setOnItemSelectedListener(item -> {
-            int itemId = item.getItemId();
-            if (itemId == R.id.nav_home) {
-                Intent intent = new Intent(LessonActivity.this, MainActivity.class);
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_chat) {
-                Intent intent = new Intent(LessonActivity.this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "CHAT");
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            } else if (itemId == R.id.nav_profile) {
-                Intent intent = new Intent(LessonActivity.this, MainActivity.class);
-                intent.putExtra("NAVIGATE_TO", "PROFILE");
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                startActivity(intent);
-                finish();
-                return true;
-            }
-            return false;
-        });
     }
 }

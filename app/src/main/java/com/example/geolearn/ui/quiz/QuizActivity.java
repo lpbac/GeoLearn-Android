@@ -1,13 +1,9 @@
 package com.example.geolearn.ui.quiz;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,13 +11,7 @@ import com.example.geolearn.R;
 import com.example.geolearn.adapter.QuizAdapter;
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.assignment.AssignmentActivity;
-import com.example.geolearn.ui.chat.ChatFragment;
-import com.example.geolearn.ui.main.HomeFragment;
-import com.example.geolearn.ui.main.MainActivity;
-import com.example.geolearn.ui.profile.ProfileFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.List;
 
@@ -48,7 +38,7 @@ public class QuizActivity extends AppCompatActivity {
 
         // Chia làm 2 cột
         rcvQuiz.setLayoutManager(new GridLayoutManager(this, 2));
-        setupBottomNavigation();
+        com.example.geolearn.ui.main.StudentNav.setup(this);
     }
 
     @Override
@@ -81,40 +71,6 @@ public class QuizActivity extends AppCompatActivity {
         if (currentChapter != null && tvCurrentChapter != null) {
             tvCurrentChapter.setText(currentChapter.getTenChuong());
         }
-    }
-
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    Intent intent = new Intent(QuizActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_chat) {
-                    // Chuyển sang Tab Chat
-                    Intent intent = new Intent(QuizActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "CHAT");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    // Chuyển sang Tab Profile
-                    Intent intent = new Intent(QuizActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "PROFILE");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 
 }

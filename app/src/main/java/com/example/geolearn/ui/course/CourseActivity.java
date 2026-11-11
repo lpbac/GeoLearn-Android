@@ -1,13 +1,9 @@
 package com.example.geolearn.ui.course;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -15,10 +11,8 @@ import com.example.geolearn.R;
 import com.example.geolearn.adapter.CourseAdapter;
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.assignment.AssignmentActivity;
 import com.example.geolearn.ui.main.MainActivity; // Import MainActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 public class CourseActivity extends AppCompatActivity {
 
@@ -46,7 +40,7 @@ public class CourseActivity extends AppCompatActivity {
         // Đặt mặc định chọn nút Home (vì Khóa học thuộc về Home)
         bottomNav.setSelectedItemId(R.id.nav_home);
 
-        setupBottomNavigation();
+        com.example.geolearn.ui.main.StudentNav.setup(this);
     }
 
     private void loadData() {
@@ -76,39 +70,5 @@ public class CourseActivity extends AppCompatActivity {
         loadData();
         updateHeaderProgress(); // <--- GỌI HÀM NÀY
         // ... các code load dữ liệu khác
-    }
-
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    Intent intent = new Intent(CourseActivity.this, MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_chat) {
-                    // Chuyển sang Tab Chat
-                    Intent intent = new Intent(CourseActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "CHAT");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    // Chuyển sang Tab Profile
-                    Intent intent = new Intent(CourseActivity.this, MainActivity.class);
-                    intent.putExtra("NAVIGATE_TO", "PROFILE");
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(intent);
-                    finish();
-                    return true;
-                }
-                return false;
-            }
-        });
     }
 }

@@ -1,9 +1,7 @@
 package com.example.geolearn.ui.auth;
 
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,7 +18,6 @@ public class RegisterActivity extends AppCompatActivity {
     private TextInputEditText edtPassword;
     private TextInputEditText edtConfirmPassword;
     private TextInputEditText edtClassCode;
-    private Spinner spinnerRole;
     private Button btnRegister;
     private TextView tvBackToLogin;
 
@@ -38,21 +35,11 @@ public class RegisterActivity extends AppCompatActivity {
         edtPassword = findViewById(R.id.edtRegisterPassword);
         edtConfirmPassword = findViewById(R.id.edtConfirmPassword);
         edtClassCode = findViewById(R.id.edtClassCode);
-        spinnerRole = findViewById(R.id.spinnerRole);
         btnRegister = findViewById(R.id.btnRegister);
         tvBackToLogin = findViewById(R.id.tvBackToLogin);
 
-        setupRoleSpinner();
-
         btnRegister.setOnClickListener(v -> handleRegister());
         tvBackToLogin.setOnClickListener(v -> finish());
-    }
-
-    private void setupRoleSpinner() {
-        String[] roles = {"Học sinh", "Giáo viên"};
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, roles);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerRole.setAdapter(adapter);
     }
 
     // Hiện lỗi dưới ô nhập (TextInputLayout) thay vì icon lỗi đè lên nút con mắt
@@ -78,7 +65,7 @@ public class RegisterActivity extends AppCompatActivity {
         String confirmPassword = getInputText(edtConfirmPassword);
         // Bỏ dấu cách quanh dấu phẩy ("12A1, 12A2"): truy vấn tìm giáo viên theo lớp so khớp chính xác
         String classCode = getInputText(edtClassCode).toUpperCase().replaceAll("\\s*,\\s*", ",");
-        int role = spinnerRole.getSelectedItemPosition() == 0 ? 1 : 2;
+        int role = 1; // chỉ đăng ký được học sinh; tài khoản giáo viên được tạo sẵn
         for (TextInputEditText e : new TextInputEditText[] { edtFullName, edtUsername, edtPassword, edtConfirmPassword, edtClassCode })
             showError(e, null);
 
@@ -107,7 +94,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         if (classCode.isEmpty()) {
-            showError(edtClassCode, role == 1 ? "Vui lòng nhập mã lớp học" : "Vui lòng nhập lớp học phụ trách");
+            showError(edtClassCode, "Vui lòng nhập mã lớp học");
             return;
         }
 

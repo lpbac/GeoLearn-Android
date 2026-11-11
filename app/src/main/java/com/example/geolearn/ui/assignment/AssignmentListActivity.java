@@ -1,11 +1,8 @@
 package com.example.geolearn.ui.assignment;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.widget.TextView;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,9 +11,6 @@ import com.example.geolearn.R;
 import com.example.geolearn.adapter.AssignmentAdapter; // Import Adapter mới tạo
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.main.MainActivity;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.navigation.NavigationBarView;
 
 import java.util.List;
 
@@ -43,7 +37,7 @@ public class AssignmentListActivity extends AppCompatActivity {
         rcvAssignment.setLayoutManager(new GridLayoutManager(this, 2));
 
         loadData();
-        setupBottomNavigation();
+        com.example.geolearn.ui.main.StudentNav.setup(this);
     }
 
     @Override
@@ -69,36 +63,5 @@ public class AssignmentListActivity extends AppCompatActivity {
         // Gọi Adapter từ file riêng
         AssignmentAdapter adapter = new AssignmentAdapter(this, chapters, dbHelper, userId);
         rcvAssignment.setAdapter(adapter);
-    }
-
-    private void setupBottomNavigation() {
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottomNavigation);
-        if (bottomNavigationView == null) return;
-
-        bottomNavigationView.setOnItemSelectedListener(new NavigationBarView.OnItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int itemId = item.getItemId();
-                if (itemId == R.id.nav_home) {
-                    navigateToMain("");
-                    return true;
-                } else if (itemId == R.id.nav_chat) {
-                    navigateToMain("CHAT");
-                    return true;
-                } else if (itemId == R.id.nav_profile) {
-                    navigateToMain("PROFILE");
-                    return true;
-                }
-                return false;
-            }
-        });
-    }
-
-    private void navigateToMain(String tab) {
-        Intent intent = new Intent(AssignmentListActivity.this, MainActivity.class);
-        if (!tab.isEmpty()) intent.putExtra("NAVIGATE_TO", tab);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        finish();
     }
 }
