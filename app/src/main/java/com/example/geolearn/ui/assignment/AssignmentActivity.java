@@ -206,22 +206,6 @@ public class AssignmentActivity extends AppCompatActivity {
             return;
         }
 
-        // Nộp lại sẽ xoá điểm và nhận xét giáo viên đã chấm: phải hỏi trước
-        String[] old = dbHelper.getSubmissionFullDetail(getUserId(), currentChapterId);
-        boolean graded = old != null && old[2] != null && !old[2].startsWith("-");
-        if (!graded) {
-            saveSubmission(answerText);
-            return;
-        }
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Bài đã được chấm")
-                .setMessage("Nộp lại sẽ xoá điểm và nhận xét của giáo viên. Bạn có chắc không?")
-                .setPositiveButton("Nộp lại", (d, w) -> saveSubmission(answerText))
-                .setNegativeButton("Huỷ", null)
-                .show();
-    }
-
-    private void saveSubmission(String answerText) {
         // Lưu vào DB theo đúng ID của user đang đăng nhập
         dbHelper.saveSubmission(getUserId(), currentChapterId, answerText, selectedFilePath);
 
