@@ -49,7 +49,7 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
 
         // 2. Logic Tô màu & Điểm số (Copy từ logic cũ vào đây)
         // Lấy User ID từ bộ nhớ (Giả sử bạn đã biết cách lấy, tạm để 1)
-        int myId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", 1);
+        int myId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", -1);
 
         // Lấy số câu đúng
         int correctAnswers = dbHelper.getQuizScore(myId, chapter.getMaChuong());
@@ -84,7 +84,7 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
         }
 
         // --- THÊM LOGIC CHẶN CỬA ---
-        int myUserId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", 1);
+        int myUserId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", -1);
         boolean isUnlocked = dbHelper.isChapterUnlocked(myUserId, chapter.getMaChuong());
 
         if (!isUnlocked) {

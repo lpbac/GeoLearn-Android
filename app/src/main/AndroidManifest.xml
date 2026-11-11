@@ -29,14 +29,15 @@
 
         <activity
             android:name=".ui.main.MainActivity"
-            android:exported="true" />
+            android:exported="false" />
         <activity android:name=".ui.profile.ProfileActivity" />
         <activity android:name=".ui.main.StudentAbilityActivity" />
         <activity android:name=".ui.course.CourseActivity" />
         <activity android:name=".ui.course.LessonActivity" />
-        <activity android:name=".ui.course.VideoPlayerActivity" />
+        <!-- configChanges: xoay máy không tạo lại Activity, giữ thời gian đã xem / bài quiz đang làm -->
+        <activity android:name=".ui.course.VideoPlayerActivity" android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
         <activity android:name=".ui.quiz.QuizActivity" />
-        <activity android:name=".ui.quiz.QuestionActivity" />
+        <activity android:name=".ui.quiz.QuestionActivity" android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize" />
         <activity android:name=".ui.assignment.AssignmentActivity" />
         <activity android:name=".ui.assignment.AssignmentListActivity" />
         <activity android:name=".ui.chat.ChatActivity" />

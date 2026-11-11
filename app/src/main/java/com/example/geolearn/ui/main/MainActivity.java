@@ -141,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
         // 1. Lấy ID User
         android.content.SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        int myId = prefs.getInt("KEY_USER_ID", 1);
+        int myId = prefs.getInt("KEY_USER_ID", -1);
 
         // 2. Hỏi Database
         DatabaseHelper db = new DatabaseHelper(this);

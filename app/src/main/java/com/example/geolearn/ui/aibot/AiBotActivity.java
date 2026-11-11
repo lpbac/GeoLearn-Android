@@ -102,7 +102,7 @@ public class AiBotActivity extends AppCompatActivity
 
         // Load lịch sử chat từ SharedPreferences
         int userId = getSharedPreferences("UserSession", MODE_PRIVATE)
-                .getInt("KEY_USER_ID", 1);
+                .getInt("KEY_USER_ID", -1);
         viewModel.initChatHistory(userId);
 
         // Full list update — thêm/xoá message
@@ -203,7 +203,7 @@ public class AiBotActivity extends AppCompatActivity
                 // Chip đặc biệt: quét tiến độ
                 if (suggestion.startsWith("📊")) {
                     int userId = getSharedPreferences("UserSession", MODE_PRIVATE)
-                            .getInt("KEY_USER_ID", 1);
+                            .getInt("KEY_USER_ID", -1);
                     viewModel.scanAndShowProgress(this, userId);
                     return;
                 }
@@ -319,7 +319,7 @@ public class AiBotActivity extends AppCompatActivity
     /** Hiện dialog danh sách bài đã nộp để AI chấm */
     private void showSubmissionPickerDialog() {
         int userId = getSharedPreferences("UserSession", MODE_PRIVATE)
-                .getInt("KEY_USER_ID", 1);
+                .getInt("KEY_USER_ID", -1);
 
         DatabaseHelper db = new DatabaseHelper(this);
         java.util.List<DatabaseHelper.SubmissionForReview> subs =

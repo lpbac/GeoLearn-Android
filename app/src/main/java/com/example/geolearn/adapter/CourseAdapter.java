@@ -35,7 +35,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         this.dbHelper = new DatabaseHelper(context);
 
         // Lấy ID người dùng
-        this.myUserId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", 1);
+        this.myUserId = context.getSharedPreferences("UserSession", Context.MODE_PRIVATE).getInt("KEY_USER_ID", -1);
     }
 
     @NonNull

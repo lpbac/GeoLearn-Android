@@ -70,7 +70,7 @@ public class QuizActivity extends AppCompatActivity {
     private void updateHeaderProgress() {
         // 1. Lấy ID user
         android.content.SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        int myId = prefs.getInt("KEY_USER_ID", 1);
+        int myId = prefs.getInt("KEY_USER_ID", -1);
 
         // 2. Tìm chương hiện tại
         DatabaseHelper db = new DatabaseHelper(this);

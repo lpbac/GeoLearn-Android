@@ -183,7 +183,7 @@ public class AssignmentActivity extends AppCompatActivity {
 
     private int getUserId() {
         android.content.SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        return prefs.getInt("KEY_USER_ID", 1);
+        return prefs.getInt("KEY_USER_ID", -1);
     }
 
     // --- LOGIC NỘP BÀI ---

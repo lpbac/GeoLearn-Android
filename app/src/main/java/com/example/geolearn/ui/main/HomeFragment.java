@@ -96,7 +96,7 @@ public class HomeFragment extends Fragment {
 
         // 2. Lấy ID User đang đăng nhập
         android.content.SharedPreferences prefs = getActivity().getSharedPreferences("UserSession", android.content.Context.MODE_PRIVATE);
-        int myId = prefs.getInt("KEY_USER_ID", 1);
+        int myId = prefs.getInt("KEY_USER_ID", -1);
 
         // 3. Khởi tạo Database
         DatabaseHelper db = new DatabaseHelper(getContext());

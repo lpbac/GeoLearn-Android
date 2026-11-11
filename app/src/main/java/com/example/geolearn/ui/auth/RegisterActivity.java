@@ -76,7 +76,8 @@ public class RegisterActivity extends AppCompatActivity {
         String username = getInputText(edtUsername);
         String password = getInputText(edtPassword);
         String confirmPassword = getInputText(edtConfirmPassword);
-        String classCode = getInputText(edtClassCode).toUpperCase();
+        // Bỏ dấu cách quanh dấu phẩy ("12A1, 12A2"): truy vấn tìm giáo viên theo lớp so khớp chính xác
+        String classCode = getInputText(edtClassCode).toUpperCase().replaceAll("\\s*,\\s*", ",");
         int role = spinnerRole.getSelectedItemPosition() == 0 ? 1 : 2;
         for (TextInputEditText e : new TextInputEditText[] { edtFullName, edtUsername, edtPassword, edtConfirmPassword, edtClassCode })
             showError(e, null);

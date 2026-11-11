@@ -130,7 +130,9 @@ public class TeacherAddEditChapterActivity extends AppCompatActivity {
     private String copyFileToInternalStorage(Uri uri) {
         try {
             String fileName = getFileName(uri);
-            if (fileName == null) fileName = "file_" + System.currentTimeMillis();
+            if (fileName == null) fileName = "file";
+            // Thêm thời gian vào tên: hai chương tải file trùng tên không ghi đè lên nhau
+            fileName = System.currentTimeMillis() + "_" + fileName;
 
             File desFile = new File(getFilesDir(), fileName);
             InputStream in = getContentResolver().openInputStream(uri);

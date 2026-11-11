@@ -88,7 +88,7 @@ public class ChatFragment extends Fragment {
 
             // Lấy ID của mình
             SharedPreferences prefs = getActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-            myId = prefs.getInt("KEY_USER_ID", 1);
+            myId = prefs.getInt("KEY_USER_ID", -1);
 
             reloadData(); // Load dữ liệu lần đầu
         }

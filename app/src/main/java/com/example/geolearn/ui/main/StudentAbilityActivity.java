@@ -32,7 +32,7 @@ public class StudentAbilityActivity extends AppCompatActivity {
     }
 
     private void renderAbility() {
-        int userId = getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", 1);
+        int userId = getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", -1);
         List<DatabaseHelper.AbilityItem> abilities = dbHelper.getStudentAbilityAnalysis(userId);
         List<SimpleChartView.Entry> entries = new ArrayList<>();
         layoutAbilityList.removeAllViews();

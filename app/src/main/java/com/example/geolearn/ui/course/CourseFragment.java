@@ -75,7 +75,7 @@ public class CourseFragment extends Fragment {
     private void loadData() {
         // 1. Lấy ID User hiện tại
         SharedPreferences prefs = getActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-        int myId = prefs.getInt("KEY_USER_ID", 1);
+        int myId = prefs.getInt("KEY_USER_ID", -1);
 
         // 2. Lấy danh sách chương từ Database (Thay vì viết cứng)
         mListChapter = dbHelper.getAllChapters();
@@ -130,7 +130,7 @@ public class CourseFragment extends Fragment {
         if (tvCurrentChapter == null) return;
 
         SharedPreferences prefs = getActivity().getSharedPreferences("UserSession", Context.MODE_PRIVATE);
-        int myId = prefs.getInt("KEY_USER_ID", 1);
+        int myId = prefs.getInt("KEY_USER_ID", -1);
 
         // Tìm chương cao nhất đang mở
         Chapter current = dbHelper.getCurrentChapter(myId);
