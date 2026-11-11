@@ -225,7 +225,7 @@ public class QuestionActivity extends AppCompatActivity {
 
         // --- MỚI: LƯU ĐIỂM VÀO DATABASE THEO USER ĐĂNG NHẬP ---
         int chapterId = getIntent().getIntExtra("CHAPTER_ID", 1);
-        dbHelper.saveQuizScore(getUserId(), chapterId, score);
+        dbHelper.saveQuizScore(getUserId(), chapterId, score, total);
         // ----------------------------------
 
         // Hiển thị thông báo kết quả

@@ -50,9 +50,10 @@ public class StudentChapterScoreAdapter extends RecyclerView.Adapter<StudentChap
             holder.tvScore.setText("Chưa làm");
             holder.tvScore.setTextColor(android.graphics.Color.RED);
         } else {
-            holder.tvScore.setText(score + "/" + totalQuestions);
+            int quizTotal = dbHelper.getQuizTotal(studentId, chapter.getMaChuong()); // số câu lúc học sinh làm bài
+            holder.tvScore.setText(score + "/" + quizTotal);
             // Logic màu sắc
-            if (score >= totalQuestions / 2.0) {
+            if (score >= quizTotal / 2.0) {
                 holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary)); // Xanh
             } else {
                 holder.tvScore.setTextColor(android.graphics.Color.RED);

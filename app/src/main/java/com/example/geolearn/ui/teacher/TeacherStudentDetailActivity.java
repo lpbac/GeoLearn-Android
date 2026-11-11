@@ -111,9 +111,10 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
                 holder.tvScore.setText("Chưa thi");
                 holder.tvScore.setTextColor(android.graphics.Color.RED);
             } else {
-                holder.tvScore.setText(score + "/" + totalQuestions); // Sẽ hiện 2/2 thay vì 2/20
+                int quizTotal = db.getQuizTotal(studentId, c.getMaChuong()); // số câu lúc học sinh làm bài
+                holder.tvScore.setText(score + "/" + quizTotal);
                 // Tô màu: Xanh nếu >= 50% điểm, Đỏ nếu thấp hơn
-                if (score >= totalQuestions / 2.0) {
+                if (score >= quizTotal / 2.0) {
                     holder.tvScore.setTextColor(holder.itemView.getContext().getColor(R.color.colorPrimary));
                 } else {
                     holder.tvScore.setTextColor(android.graphics.Color.RED);

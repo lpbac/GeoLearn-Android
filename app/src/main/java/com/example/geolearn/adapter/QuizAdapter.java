@@ -71,9 +71,10 @@ public class QuizAdapter extends RecyclerView.Adapter<QuizAdapter.QuizViewHolder
         }
         else {
             // Đã làm -> Hiện điểm và Tô màu
-            holder.tvScore.setText(correctAnswers + "/" + totalQuestions);
+            int quizTotal = dbHelper.getQuizTotal(myId, chapter.getMaChuong()); // số câu lúc làm bài
+            holder.tvScore.setText(correctAnswers + "/" + quizTotal);
 
-            double score10 = ((double) correctAnswers / totalQuestions) * 10;
+            double score10 = ((double) correctAnswers / quizTotal) * 10;
             if (score10 >= 7.0) {
                 holder.cardRoot.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorPassBg)); // Xanh
             } else {

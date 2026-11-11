@@ -145,7 +145,7 @@ public class AiBotViewModel extends AndroidViewModel {
             sb.append(icon).append(" ").append(p.chapterName).append("\n");
 
             if (p.totalQuestions > 0) {
-                sb.append("  • Quiz: ").append(p.quizScore >= 0 ? p.quizScore + "/" + p.totalQuestions : "Chưa làm").append("\n");
+                sb.append("  • Quiz: ").append(p.quizScore >= 0 ? p.quizScore + "/" + p.quizTotal : "Chưa làm").append("\n");
             }
             if (p.hasAssignment) {
                 sb.append("  • Bài tập: ").append(p.assignmentDone ? "Đã nộp" : "Chưa nộp").append("\n");

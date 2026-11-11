@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static final String DATABASE_NAME = "GeoLearn.db";
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     // --- 1. ĐỊNH NGHĨA CÁC HẰNG SỐ (CONSTANTS) ---
 
@@ -86,6 +86,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_SCORE_USER_ID = "MaNguoiDung";
     public static final String COL_SCORE_CHAPTER_ID = "MaChuong";
     public static final String COL_SCORE_VALUE = "Diem";
+    public static final String COL_SCORE_TOTAL = "TongCau"; // Tổng số câu lúc làm bài
 
     // --- BẢNG MỚI: BÀI TẬP (ASSIGNMENT) ---
     public static final String TABLE_ASSIGNMENT = "BaiTap";
@@ -115,7 +116,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final Context context;
 
     public DatabaseHelper(Context context) {
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        this(context, DATABASE_NAME);
+    }
+
+    // name = null: DB trong bộ nhớ, chỉ dùng cho test
+    DatabaseHelper(Context context, String name) {
+        super(context, name, null, DATABASE_VERSION);
         this.context = context;
     }
 
@@ -161,7 +167,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_SCORE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_SCORE_USER_ID + " INTEGER, " +
                 COL_SCORE_CHAPTER_ID + " INTEGER, " +
-                COL_SCORE_VALUE + " INTEGER)";
+                COL_SCORE_VALUE + " INTEGER, " +
+                COL_SCORE_TOTAL + " INTEGER)";
         db.execSQL(createTableScore);
 
         // Tạo bảng Bài tập
@@ -194,6 +201,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        if (oldVersion == 3) { // v4 chỉ thêm cột, giữ nguyên dữ liệu
+            db.execSQL("ALTER TABLE " + TABLE_SCORE + " ADD COLUMN " + COL_SCORE_TOTAL + " INTEGER");
+            return;
+        }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHAPTER);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCUMENT);
@@ -326,7 +337,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         // Sắp xếp theo thứ tự
-        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CHAPTER + " ORDER BY " + COL_CHAPTER_ORDER + " ASC", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_CHAPTER + " ORDER BY " + COL_CHAPTER_ORDER + ", " + COL_CHAPTER_ID, null);
 
         if (cursor.moveToFirst()) {
             do {
@@ -473,12 +484,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // 1. Lưu điểm thi (Nếu chưa thi thì thêm mới, thi rồi thì cập nhật điểm mới)
-    public void saveQuizScore(int userId, int chapterId, int correctAnswers) {
+    public void saveQuizScore(int userId, int chapterId, int correctAnswers, int totalQuestions) {
+        // Giữ kết quả tốt nhất: làm lại điểm thấp hơn không được khoá lại chương đã mở
+        int old = getQuizScore(userId, chapterId);
+        if (old >= 0 && correctAnswers * getQuizTotal(userId, chapterId) <= old * totalQuestions)
+            return;
+
         SQLiteDatabase db = this.getWritableDatabase();
         android.content.ContentValues values = new android.content.ContentValues();
         values.put(COL_SCORE_USER_ID, userId);
         values.put(COL_SCORE_CHAPTER_ID, chapterId);
         values.put(COL_SCORE_VALUE, correctAnswers); // Lưu số câu đúng
+        values.put(COL_SCORE_TOTAL, totalQuestions);
 
         // Thử cập nhật điểm cũ trước
         int rows = db.update(TABLE_SCORE, values,
@@ -507,6 +524,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return score;
+    }
+
+    // Tổng số câu lúc học sinh làm bài (giáo viên thêm/xoá câu hỏi sau đó không làm đổi kết quả).
+    // Điểm lưu từ bản cũ chưa có cột này thì lấy số câu hiện tại.
+    public int getQuizTotal(int userId, int chapterId) {
+        Cursor cursor = getReadableDatabase().rawQuery(
+                "SELECT " + COL_SCORE_TOTAL + " FROM " + TABLE_SCORE +
+                        " WHERE " + COL_SCORE_USER_ID + "=? AND " + COL_SCORE_CHAPTER_ID + "=?",
+                new String[] { String.valueOf(userId), String.valueOf(chapterId) });
+        int total = cursor.moveToFirst() && !cursor.isNull(0) ? cursor.getInt(0) : getQuestionCountByChapter(chapterId);
+        cursor.close();
+        return total;
+    }
+
+    // Đạt quiz = chương không có câu hỏi, hoặc đúng từ 5/10 trở lên
+    public boolean isQuizPassed(int userId, int chapterId) {
+        if (getQuestionCountByChapter(chapterId) == 0)
+            return true;
+        int score = getQuizScore(userId, chapterId);
+        return score >= 0 && score * 2 >= getQuizTotal(userId, chapterId);
+    }
+
+    // Chương đứng ngay trước theo thứ tự học, -1 nếu là chương đầu
+    private int getPreviousChapterId(int chapterId) {
+        int prev = -1;
+        for (Chapter c : getAllChapters()) {
+            if (c.getMaChuong() == chapterId)
+                return prev;
+            prev = c.getMaChuong();
+        }
+        return -1;
     }
 
     // --- HÀM LẤY ĐỀ BÀI (Thêm vào cuối file) ---
@@ -777,12 +825,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean isChapterUnlocked(int userId, int chapterId) {
-        // Chương 1 luôn mở cho học viên mới vào
-        if (chapterId == 1)
-            return true;
-
-        // Muốn học chương hiện tại, phải hoàn thành chương trước đó
-        return isChapterCompleted(userId, chapterId - 1);
+        // Chương đầu luôn mở; các chương sau phải hoàn thành chương đứng trước theo thứ tự
+        // (không dùng id - 1: xoá chương giữa sẽ để lại lỗ hổng ID)
+        int prev = getPreviousChapterId(chapterId);
+        return prev == -1 || isChapterCompleted(userId, prev);
     }
 
     // --- LƯU TRẠNG THÁI XEM TÀI LIỆU ---
@@ -898,7 +944,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     unsubmittedSignals++;
 
                 if (totalQuestions > 0 && score >= 0) {
-                    int percent = Math.round((score * 100f) / totalQuestions);
+                    int percent = Math.round((score * 100f) / getQuizTotal(student.getMaNguoiDung(), chapter.getMaChuong()));
                     totalPercent += percent;
                     scoreCount++;
                     if (percent >= 85)
@@ -924,8 +970,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             for (User student : students) {
                 int score = getQuizScore(student.getMaNguoiDung(), chapter.getMaChuong());
                 if (score >= 0) {
-                    attempts += totalQuestions;
-                    wrong += Math.max(0, totalQuestions - score);
+                    int quizTotal = getQuizTotal(student.getMaNguoiDung(), chapter.getMaChuong());
+                    attempts += quizTotal;
+                    wrong += Math.max(0, quizTotal - score);
                 }
             }
             if (attempts > 0) {
@@ -958,7 +1005,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             int percent = 0;
             String status = "Chưa làm quiz";
             if (totalQuestions > 0 && score >= 0) {
-                percent = Math.round((score * 100f) / totalQuestions);
+                percent = Math.round((score * 100f) / getQuizTotal(userId, chapter.getMaChuong()));
                 if (percent >= 80)
                     status = "Nắm vững";
                 else if (percent >= 50)
@@ -987,11 +1034,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Thông báo cho học sinh biết chương trước còn thiếu điều kiện nào
     public String getUnlockHint(int userId, int chapterId) {
-        int prev = chapterId - 1;
+        int prev = getPreviousChapterId(chapterId);
         List<String> missing = new ArrayList<>();
-        int total = getQuestionCountByChapter(prev);
-        int score = getQuizScore(userId, prev);
-        if (total > 0 && !(score >= 0 && ((double) score / total) * 10 >= 5.0))
+        if (!isQuizPassed(userId, prev))
             missing.add("đạt từ 5/10 điểm Quiz");
         if (hasAssignmentInChapter(prev) && !isAssignmentSubmitted(userId, prev))
             missing.add("nộp bài tập");
@@ -1005,9 +1050,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public boolean isChapterCompleted(int userId, int chapterId) {
-        int totalQuestions = getQuestionCountByChapter(chapterId);
-        int score = getQuizScore(userId, chapterId);
-        boolean isQuizPassed = totalQuestions == 0 || (score >= 0 && ((double) score / totalQuestions) * 10 >= 5.0);
+        boolean isQuizPassed = isQuizPassed(userId, chapterId);
 
         boolean isAssignmentDone = !hasAssignmentInChapter(chapterId) || isAssignmentSubmitted(userId, chapterId);
         // Chỉ đòi xem tài liệu khi chương thật sự có tài liệu đó
@@ -1451,7 +1494,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // A. Thêm vào bảng Chapter
-        int newOrder = getChapterCount() + 1;
+        // MAX + 1 chứ không phải COUNT + 1: sau khi xoá chương, COUNT + 1 sẽ trùng thứ tự chương đang có
+        Cursor cOrder = db.rawQuery("SELECT COALESCE(MAX(" + COL_CHAPTER_ORDER + "), 0) + 1 FROM " + TABLE_CHAPTER, null);
+        cOrder.moveToFirst();
+        int newOrder = cOrder.getInt(0);
+        cOrder.close();
         android.content.ContentValues cvChapter = new android.content.ContentValues();
         cvChapter.put(COL_CHAPTER_NAME, name);
         cvChapter.put(COL_CHAPTER_DESC, desc);
@@ -1593,7 +1640,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         public String chapterName;
         public boolean quizDone;        // Đã đạt quiz chưa (>= 5/10)
         public int    quizScore;        // Số câu đúng (-1 nếu chưa làm)
-        public int    totalQuestions;   // Tổng câu hỏi
+        public int    totalQuestions;   // Tổng câu hỏi hiện có
+        public int    quizTotal;        // Tổng câu lúc làm bài (mẫu số của quizScore)
         public boolean assignmentDone;  // Đã nộp bài tập chưa
         public boolean hasAssignment;   // Có bài tập không
         public boolean pdfDone;         // Đã xem PDF chưa
@@ -1641,8 +1689,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             p.totalQuestions = getQuestionCountByChapter(ch.getMaChuong());
             p.quizScore      = getQuizScore(userId, ch.getMaChuong()); // -1 nếu chưa làm
             // "Xong" quiz = đạt >= 5/10, cùng chuẩn với isChapterCompleted (mở khoá chương sau)
-            p.quizDone       = (p.totalQuestions == 0)
-                    || (p.quizScore >= 0 && p.quizScore * 10.0 / p.totalQuestions >= 5.0);
+            p.quizTotal      = getQuizTotal(userId, ch.getMaChuong());
+            p.quizDone       = isQuizPassed(userId, ch.getMaChuong());
 
             // Bài tập
             p.hasAssignment   = hasAssignmentInChapter(ch.getMaChuong());
