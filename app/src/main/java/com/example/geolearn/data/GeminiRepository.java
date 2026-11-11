@@ -85,7 +85,6 @@ public class GeminiRepository {
         }
 
         String requestBodyJson = buildRequestBody(history);
-        Log.d(TAG, "Sending to Gemini: " + requestBodyJson);
 
         Request request = new Request.Builder()
                 .url(BASE_URL)

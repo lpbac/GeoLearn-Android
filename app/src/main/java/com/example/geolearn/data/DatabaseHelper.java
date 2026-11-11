@@ -650,8 +650,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COL_MSG_SENDER_ID, senderId);
         values.put(COL_MSG_CONTENT, content);
 
-        // Lấy giờ hiện tại
-        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("HH:mm", java.util.Locale.getDefault());
+        // Lưu cả ngày: chỉ có giờ thì tin hôm qua và hôm nay trông giống nhau
+        java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM HH:mm", java.util.Locale.getDefault());
         values.put(COL_MSG_TIME, sdf.format(new java.util.Date()));
 
         values.put(COL_MSG_ROOM, roomName); // <-- LƯU TÊN PHÒNG
@@ -930,11 +930,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int lowScoreSignals = 0;
         int unsubmittedSignals = 0;
 
+        // Số câu hỏi và "có bài tập" chỉ phụ thuộc chương: hỏi DB một lần, không lặp lại cho từng học sinh
+        java.util.Map<Integer, Integer> questionCounts = new java.util.HashMap<>();
+        java.util.Set<Integer> chaptersWithAssignment = new java.util.HashSet<>();
+        for (Chapter chapter : chapters) {
+            questionCounts.put(chapter.getMaChuong(), getQuestionCountByChapter(chapter.getMaChuong()));
+            if (hasAssignmentInChapter(chapter.getMaChuong()))
+                chaptersWithAssignment.add(chapter.getMaChuong());
+        }
+
         for (User student : students) {
             for (Chapter chapter : chapters) {
-                int totalQuestions = getQuestionCountByChapter(chapter.getMaChuong());
+                int totalQuestions = questionCounts.get(chapter.getMaChuong());
                 int score = getQuizScore(student.getMaNguoiDung(), chapter.getMaChuong());
-                boolean assignmentDone = !hasAssignmentInChapter(chapter.getMaChuong())
+                boolean assignmentDone = !chaptersWithAssignment.contains(chapter.getMaChuong())
                         || isAssignmentSubmitted(student.getMaNguoiDung(), chapter.getMaChuong());
                 if (isChapterCompleted(student.getMaNguoiDung(), chapter.getMaChuong()))
                     analytics.completedItems++;
@@ -960,7 +969,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
 
         for (Chapter chapter : chapters) {
-            int totalQuestions = getQuestionCountByChapter(chapter.getMaChuong());
+            int totalQuestions = questionCounts.get(chapter.getMaChuong());
             if (totalQuestions == 0 || students.isEmpty())
                 continue;
             int attempts = 0;
