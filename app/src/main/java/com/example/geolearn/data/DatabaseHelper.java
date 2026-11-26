@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static final String DATABASE_NAME = "GeoLearn.db";
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     // --- 1. ĐỊNH NGHĨA CÁC HẰNG SỐ (CONSTANTS) ---
 
@@ -214,8 +214,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 3) { // v4 chỉ thêm cột, giữ nguyên dữ liệu
-            db.execSQL("ALTER TABLE " + TABLE_SCORE + " ADD COLUMN " + COL_SCORE_TOTAL + " INTEGER");
+        if (oldVersion == 3 || oldVersion == 4) { // v4 thêm cột, v5 đổi tên GV mẫu; giữ nguyên dữ liệu
+            if (oldVersion == 3)
+                db.execSQL("ALTER TABLE " + TABLE_SCORE + " ADD COLUMN " + COL_SCORE_TOTAL + " INTEGER");
+            // Chỉ đổi khi tên còn là tên mẫu cũ, không ghi đè tên giáo viên đã tự sửa
+            db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Nguyễn Văn Hùng' WHERE "
+                    + COL_USERNAME + "='gv1' AND " + COL_FULLNAME + "='Đặng Hồng Phúc'");
+            db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Trần Thị Lan' WHERE "
+                    + COL_USERNAME + "='gv2' AND " + COL_FULLNAME + "='Nguyễn Kiều Hưng'");
             return;
         }
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
@@ -246,8 +252,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'sv5', '" + hashPassword("123") + "', 'Người Lớp Khác', 1, '12A2')");
 
         // SỬA DÒNG NÀY: Thầy Hậu dạy 2 lớp là 12A1 và 12A2 (ngăn cách bởi dấu phẩy)
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '" + hashPassword("123") + "', 'Đặng Hồng Phúc', 2, '12A2,12A1')");
-        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '" + hashPassword("123") + "', 'Nguyễn Kiều Hưng', 2, '12A2,12A1')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv1', '" + hashPassword("123") + "', 'Nguyễn Văn Hùng', 2, '12A2,12A1')");
+        db.execSQL("INSERT INTO " + TABLE_USER + " VALUES(null, 'gv2', '" + hashPassword("123") + "', 'Trần Thị Lan', 2, '12A2,12A1')");
 
         // Dữ liệu Chương học
         db.execSQL("INSERT INTO " + TABLE_CHAPTER
