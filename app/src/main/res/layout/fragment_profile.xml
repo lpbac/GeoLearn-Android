@@ -70,7 +70,7 @@
                                 android:layout_height="match_parent"
                                 android:contentDescription="Ảnh đại diện"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/ic_launcher_background" />
+                                android:src="@drawable/ic_avatar_default" />
                         </com.google.android.material.card.MaterialCardView>
 
                         <com.google.android.material.button.MaterialButton

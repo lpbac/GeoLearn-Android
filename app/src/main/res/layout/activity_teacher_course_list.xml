@@ -32,7 +32,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Quản lý khóa học"
+                android:text="Quản lý khoá học"
                 android:textColor="@color/colorOnPrimary"
                 android:textSize="21sp"
                 android:textStyle="bold" />
@@ -85,5 +85,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorSurface"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
         app:menu="@menu/bottom_nav_menu" />
 </LinearLayout>

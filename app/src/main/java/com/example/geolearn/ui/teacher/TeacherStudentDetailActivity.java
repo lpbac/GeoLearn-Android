@@ -70,7 +70,7 @@ public class TeacherStudentDetailActivity extends AppCompatActivity {
         // Hoặc có thể set là nav_home nếu muốn
         bottomNav.getMenu().setGroupCheckable(0, false, true);
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 
     // --- ADAPTER ---

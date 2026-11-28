@@ -109,6 +109,16 @@ public class RegisterActivity extends AppCompatActivity {
                 });
                 return;
             }
+            // Lớp chỉ tồn tại khi có giáo viên phụ trách; lớp lạ sẽ không có giáo viên, bài học hay phòng chat thật
+            for (String code : classCode.split(",")) {
+                if (databaseHelper.getTeachersByClass(code).isEmpty()) {
+                    runOnUiThread(() -> {
+                        setRegisterEnabled(true);
+                        showError(edtClassCode, "Mã lớp " + code + " không tồn tại");
+                    });
+                    return;
+                }
+            }
 
             long newUserId = databaseHelper.registerUser(username, password, fullName, role, classCode);
             runOnUiThread(() -> {

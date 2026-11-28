@@ -11,7 +11,6 @@ import androidx.cardview.widget.CardView;
 import com.example.geolearn.R;
 import com.example.geolearn.data.DatabaseHelper;
 import com.example.geolearn.model.Chapter;
-import com.example.geolearn.ui.quiz.QuizActivity;
 // import com.example.geolearn.ui.course.VideoPlayerActivity; // Chung package không cần import
 import com.rajat.pdfviewer.PdfViewerActivity;
 import com.rajat.pdfviewer.util.saveTo;
@@ -117,17 +116,21 @@ public class LessonActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Quiz
+        // Quiz: vào thẳng bài làm của chương đang mở
         cardQuiz.setOnClickListener(v -> {
-            Intent intent = new Intent(LessonActivity.this, QuizActivity.class);
+            Intent intent = new Intent(LessonActivity.this, com.example.geolearn.ui.quiz.QuestionActivity.class);
             intent.putExtra("CHAPTER_ID", currentChapterId);
-            intent.putExtra("CHAPTER_NAME", currentChapterName);
             startActivity(intent);
         });
 
-        // Assignment
+        // Assignment: vào thẳng màn nộp bài; bài đã chấm thì mở danh sách để xem điểm và lời phê
         cardAssignment.setOnClickListener(v -> {
-            Intent intent = new Intent(LessonActivity.this, com.example.geolearn.ui.assignment.AssignmentListActivity.class);
+            String[] sub = dbHelper.getSubmissionFullDetail(getUserId(), currentChapterId);
+            boolean graded = false;
+            try { graded = sub != null && Double.parseDouble(sub[2]) >= 0; } catch (Exception ignored) {}
+            Intent intent = new Intent(LessonActivity.this, graded
+                    ? com.example.geolearn.ui.assignment.AssignmentListActivity.class
+                    : com.example.geolearn.ui.assignment.AssignmentActivity.class);
             intent.putExtra("CHAPTER_ID", currentChapterId);
             intent.putExtra("CHAPTER_NAME", currentChapterName);
             startActivity(intent);

@@ -43,7 +43,7 @@ public class TeacherClassListActivity extends AppCompatActivity {
         // Hoặc nếu bạn coi đây là màn Home thì để nav_home
 //        bottomNav.setSelectedItemId(R.id.nav_home);
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
 
         // 1. Lấy ID Giáo viên
         SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
@@ -77,7 +77,7 @@ public class TeacherClassListActivity extends AppCompatActivity {
         // Hoặc có thể set là nav_home nếu muốn
         bottomNav.getMenu().setGroupCheckable(0, false, true);
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 
     @Override

@@ -33,6 +33,6 @@ public class ProfileActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavProfile);
         bottomNav.setSelectedItemId(R.id.nav_profile);
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 }

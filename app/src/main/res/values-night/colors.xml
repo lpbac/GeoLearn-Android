@@ -20,7 +20,6 @@
     <color name="colorLateBg">#4A1D1D</color>
     <color name="colorPendingBg">#4A3415</color>
     <color name="colorDoneBg">#1B3A1F</color>
-    <color name="colorProgressCard">#1E293B</color>
     <color name="colorOnPrimary">#FFFFFF</color>
     <color name="colorPrimarySoft">#172554</color>
 </resources>

@@ -39,6 +39,7 @@ public class TeacherAnalyticsActivity extends AppCompatActivity {
         chartScoreDistribution = findViewById(R.id.chartScoreDistribution);
         layoutWarnings = findViewById(R.id.layoutWarnings);
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        TeacherNav.setup(this, findViewById(R.id.bottomNavTeacher));
 
         List<String> classes = dbHelper.getTeachingClasses(getSharedPreferences("UserSession", MODE_PRIVATE).getInt("KEY_USER_ID", -1));
         if (classes.isEmpty()) classes = dbHelper.getAllClasses();

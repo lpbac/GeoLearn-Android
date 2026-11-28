@@ -37,7 +37,7 @@ public class CourseActivity extends AppCompatActivity {
         // 1. Ánh xạ thanh Menu
         com.google.android.material.bottomnavigation.BottomNavigationView bottomNav = findViewById(R.id.bottomNavigation);
 
-        // Đặt mặc định chọn nút Home (vì Khóa học thuộc về Home)
+        // Đặt mặc định chọn nút Home (vì Khoá học thuộc về Home)
         bottomNav.setSelectedItemId(R.id.nav_home);
 
         com.example.geolearn.ui.main.StudentNav.setup(this);

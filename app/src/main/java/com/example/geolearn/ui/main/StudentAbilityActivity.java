@@ -28,6 +28,7 @@ public class StudentAbilityActivity extends AppCompatActivity {
         chartAbility = findViewById(R.id.chartAbility);
         layoutAbilityList = findViewById(R.id.layoutAbilityList);
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        StudentNav.setup(this);
         renderAbility();
     }
 

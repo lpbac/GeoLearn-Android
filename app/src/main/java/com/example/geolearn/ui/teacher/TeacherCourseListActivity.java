@@ -55,7 +55,7 @@ public class TeacherCourseListActivity extends AppCompatActivity {
 
     private void loadData() {
         List<Chapter> chapters = db.getAllChapters();
-        tvCourseSummary.setText("Đang có " + chapters.size() + " chương học trong khóa Địa lý");
+        tvCourseSummary.setText("Đang có " + chapters.size() + " chương học trong khoá Địa lý");
         ChapterAdapter adapter = new ChapterAdapter(chapters);
         rcv.setAdapter(adapter);
     }
@@ -82,7 +82,7 @@ public class TeacherCourseListActivity extends AppCompatActivity {
     private void setupBottomNavigation() {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
         bottomNav.setSelectedItemId(R.id.nav_home);
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 
     // --- ADAPTER ---

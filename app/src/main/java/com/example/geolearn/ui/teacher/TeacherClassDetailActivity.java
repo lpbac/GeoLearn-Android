@@ -111,25 +111,6 @@ public class TeacherClassDetailActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        // ... code cũ ...
-
-        // Cập nhật Badge tin nhắn
-        DatabaseHelper db = new DatabaseHelper(this);
-        SharedPreferences prefs = getSharedPreferences("UserSession", MODE_PRIVATE);
-        int teacherId = prefs.getInt("KEY_USER_ID", -1);
-
-        int unreadCount = db.getTotalUnreadCountForTeacher(teacherId);
-        BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
-
-        if (bottomNav != null) {
-            bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
-            com.google.android.material.badge.BadgeDrawable badge = bottomNav.getOrCreateBadge(R.id.nav_chat);
-            if (unreadCount > 0) {
-                badge.setVisible(true);
-                badge.setNumber(unreadCount);
-            } else {
-                badge.setVisible(false);
-            }
-        }
+        TeacherNav.setup(this, findViewById(R.id.bottomNavTeacher));
     }
 }

@@ -10,6 +10,15 @@ import com.example.geolearn.ui.profile.ProfileActivity;
 public final class TeacherNav {
     private TeacherNav() {}
 
+    /** Gắn chuyển tab và số tin chưa đọc cho thanh dưới của màn giáo viên. */
+    public static void setup(Activity from, com.google.android.material.bottomnavigation.BottomNavigationView nav) {
+        if (nav == null) return;
+        nav.setOnItemSelectedListener(item -> openTab(from, item.getItemId()));
+        int myId = from.getSharedPreferences("UserSession", Activity.MODE_PRIVATE).getInt("KEY_USER_ID", -1);
+        com.example.geolearn.ui.main.StudentNav.showChatBadge(nav,
+                new com.example.geolearn.data.DatabaseHelper(from).getTotalUnreadCountForTeacher(myId));
+    }
+
     public static boolean openTab(Activity from, int itemId) {
         Class<?> target = itemId == R.id.nav_home ? TeacherMainActivity.class
                 : itemId == R.id.nav_chat ? TeacherChatActivity.class

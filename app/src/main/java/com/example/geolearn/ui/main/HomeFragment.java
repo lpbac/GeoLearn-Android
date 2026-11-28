@@ -18,7 +18,7 @@ import com.example.geolearn.ui.aibot.AiBotActivity;
 import com.example.geolearn.ui.assignment.AssignmentActivity;
 import com.example.geolearn.ui.assignment.AssignmentListActivity;
 import com.example.geolearn.ui.course.CourseActivity;
-import com.example.geolearn.ui.course.LessonActivity; // Ví dụ màn hình khóa học
+import com.example.geolearn.ui.course.LessonActivity; // Ví dụ màn hình khoá học
 import com.example.geolearn.ui.quiz.QuizActivity;
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton;
 // import com.example.geolearn.ui.quiz.QuizSelectorActivity; // Import màn hình Quiz của bạn
@@ -56,7 +56,7 @@ public class HomeFragment extends Fragment {
 
         // 2. Bắt sự kiện Click cho nút "BÀI HỌC"
         cardCourse.setOnClickListener(v -> {
-            // Chuyển sang màn hình LessonActivity (Màn hình chi tiết khóa học)
+            // Chuyển sang màn hình LessonActivity (Màn hình chi tiết khoá học)
             Intent intent = new Intent(getActivity(), CourseActivity.class);
             startActivity(intent);
         });
@@ -101,29 +101,19 @@ public class HomeFragment extends Fragment {
         // 3. Khởi tạo Database
         DatabaseHelper db = new DatabaseHelper(getContext());
 
-        // 4. Cập nhật Tên Chương Hiện Tại
+        // 4. Tên chương hiện tại và thanh tiến độ của đúng chương đó (không phải trung bình cả khoá)
+        com.example.geolearn.model.Chapter current = db.getCurrentChapter(myId);
         if (tvCurrentChapter != null) {
-            com.example.geolearn.model.Chapter current = db.getCurrentChapter(myId);
-            if (current != null) {
-                tvCurrentChapter.setText(current.getTenChuong());
-            } else {
-                tvCurrentChapter.setText("Chưa bắt đầu học");
-            }
+            tvCurrentChapter.setText(current != null ? current.getTenChuong() : "Chưa bắt đầu học");
         }
-
-        // 5. Cập nhật Thanh Tiến Độ (ProgressBar)
         if (progressBar != null) {
-            java.util.List<DatabaseHelper.ChapterProgress> list = db.getStudyProgress(myId);
-            int totalPercent = 0;
-            if (list != null && !list.isEmpty()) {
-                for (DatabaseHelper.ChapterProgress p : list) {
-                    totalPercent += p.getProgressPercent();
+            int percent = 0;
+            if (current != null) {
+                for (DatabaseHelper.ChapterProgress p : db.getStudyProgress(myId)) {
+                    if (p.chapterId == current.getMaChuong()) percent = p.getProgressPercent();
                 }
-                int overallProgress = totalPercent / list.size();
-                progressBar.setProgress(overallProgress);
-            } else {
-                progressBar.setProgress(0);
             }
+            progressBar.setProgress(percent);
         }
     }
 }

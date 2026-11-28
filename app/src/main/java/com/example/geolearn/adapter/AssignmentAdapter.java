@@ -46,13 +46,13 @@ public class AssignmentAdapter extends RecyclerView.Adapter<AssignmentAdapter.Vi
         Chapter c = chapters.get(position);
         holder.tvTitle.setText(c.getTenChuong());
 
-        // 1. Kiểm tra khóa chương (Chương 1 luôn mở)
+        // 1. Kiểm tra khoá chương (Chương 1 luôn mở)
         boolean isUnlocked = db.isChapterUnlocked(userId, c.getMaChuong());
         if (c.getMaChuong() == 1) isUnlocked = true;
 
         if (!isUnlocked) {
             // --- ĐANG KHÓA ---
-            holder.tvStatus.setText("🔒 Đang khóa");
+            holder.tvStatus.setText("🔒 Đang khoá");
             // Set màu xám
             if(holder.card != null) holder.card.setCardBackgroundColor(holder.itemView.getContext().getColor(R.color.colorMuted));
             holder.tvStatus.setTextColor(holder.itemView.getContext().getColor(R.color.colorTextSecondary));

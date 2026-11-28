@@ -44,7 +44,7 @@
                     android:id="@+id/tvChapterName"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Tên khóa học"
+                    android:text="Tên khoá học"
                     android:textColor="@color/colorTextPrimary"
                     android:textSize="17sp"
                     android:textStyle="bold" />

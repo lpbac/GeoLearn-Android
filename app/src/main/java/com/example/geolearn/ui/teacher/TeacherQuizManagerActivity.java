@@ -45,6 +45,7 @@ public class TeacherQuizManagerActivity extends AppCompatActivity {
         rcv = findViewById(R.id.rcvQuestions);
         btnAdd = findViewById(R.id.btnAddQuestion);
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        TeacherNav.setup(this, findViewById(R.id.bottomNavTeacher));
 
         rcv.setLayoutManager(new LinearLayoutManager(this));
 

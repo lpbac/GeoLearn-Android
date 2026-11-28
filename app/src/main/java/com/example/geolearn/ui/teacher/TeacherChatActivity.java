@@ -100,7 +100,7 @@ public class TeacherChatActivity extends AppCompatActivity {
         if (bottomNav == null) return;
         bottomNav.setSelectedItemId(R.id.nav_chat);
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 
     private void updateUnreadBadge() {

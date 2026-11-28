@@ -1050,7 +1050,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int prev = getPreviousChapterId(chapterId);
         List<String> missing = new ArrayList<>();
         if (!isQuizPassed(userId, prev))
-            missing.add("đạt từ 5/10 điểm Quiz");
+            missing.add("làm đúng từ một nửa số câu Quiz");
         if (hasAssignmentInChapter(prev) && !isAssignmentSubmitted(userId, prev))
             missing.add("nộp bài tập");
         if (hasDocumentInChapter(prev, "PDF") && !isDocViewed(userId, prev, "PDF"))
@@ -1138,16 +1138,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // (Cột IsRead dùng chung cho cả phòng nên 1 người mở nhóm lớp là cả lớp mất chấm chưa đọc.)
     private static final String READ_TABLE_SQL = "CREATE TABLE IF NOT EXISTS DaDoc (MaNguoiDung INTEGER, Phong TEXT, "
             + "MaTinCuoi INTEGER, PRIMARY KEY (MaNguoiDung, Phong))";
+    // Tin mình vừa gửi cũng tính là đã đọc mọi tin trước nó (đã trả lời thì không còn "chưa đọc").
+    // Tham số: myId, myId, myId.
     private static final String UNREAD_COND = " AND " + COL_MSG_SENDER_ID + "!=? AND " + COL_MSG_ID
-            + " > COALESCE((SELECT MaTinCuoi FROM DaDoc WHERE MaNguoiDung=? AND Phong=" + TABLE_MESSAGE + "."
-            + COL_MSG_ROOM + "), 0)";
+            + " > MAX(COALESCE((SELECT MaTinCuoi FROM DaDoc WHERE MaNguoiDung=? AND Phong=" + TABLE_MESSAGE + "."
+            + COL_MSG_ROOM + "), 0), COALESCE((SELECT MAX(m2." + COL_MSG_ID + ") FROM " + TABLE_MESSAGE + " m2 WHERE m2."
+            + COL_MSG_ROOM + "=" + TABLE_MESSAGE + "." + COL_MSG_ROOM + " AND m2." + COL_MSG_SENDER_ID + "=?), 0))";
 
     // 2. Kiểm tra xem phòng này có tin nhắn mới (của người khác) mà mình chưa đọc không?
     public boolean hasUnreadMessage(String roomId, int myId) {
         SQLiteDatabase db = this.getWritableDatabase();
         String me = String.valueOf(myId);
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?" + UNREAD_COND,
-                new String[] { roomId, me, me });
+                new String[] { roomId, me, me, me });
         boolean hasUnread = cursor.moveToFirst() && cursor.getInt(0) > 0;
         cursor.close();
         return hasUnread;
@@ -1167,7 +1170,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String me = String.valueOf(myUserId);
         Cursor cursor = db.rawQuery("SELECT COUNT(*) FROM " + TABLE_MESSAGE + " WHERE (" + COL_MSG_ROOM + "=? OR "
                 + COL_MSG_ROOM + " LIKE ? ESCAPE '\\' OR " + COL_MSG_ROOM + " LIKE ? ESCAPE '\\')" + UNREAD_COND,
-                new String[] { "Lớp " + getUserClass(myUserId), me + "\\_%", "%\\_" + me, me, me });
+                new String[] { "Lớp " + getUserClass(myUserId), me + "\\_%", "%\\_" + me, me, me, me });
         int count = cursor.moveToFirst() ? cursor.getInt(0) : 0;
         cursor.close();
         return count;
@@ -1365,6 +1368,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         List<String> classes = getTeachingClasses(teacherId);
         for (String className : classes) {
             rooms.add("Lớp " + className); // Ví dụ: "Lớp 12A1"
+        }
+        // Mọi học sinh trong lớp phụ trách, để giáo viên nhắn riêng trước được (cùng dạng ID phòng với ChatFragment)
+        for (String className : classes) {
+            for (User st : getStudentsByClass(className)) {
+                int sid = st.getMaNguoiDung();
+                String room = teacherId < sid ? teacherId + "_" + sid : sid + "_" + teacherId;
+                if (!rooms.contains(room)) rooms.add(room);
+            }
         }
 
         // 2. Lấy danh sách Học sinh nhắn tin riêng (Private Chat)

@@ -13,6 +13,8 @@ public final class StudentNav {
     public static void setup(Activity from) {
         BottomNavigationView nav = from.findViewById(R.id.bottomNavigation);
         if (nav == null) return;
+        int myId = from.getSharedPreferences("UserSession", Activity.MODE_PRIVATE).getInt("KEY_USER_ID", -1);
+        showChatBadge(nav, new com.example.geolearn.data.DatabaseHelper(from).getUnreadCount(myId));
         nav.setOnItemSelectedListener(item -> {
             int id = item.getItemId();
             String tab = id == R.id.nav_home ? "" : id == R.id.nav_chat ? "CHAT" : id == R.id.nav_profile ? "PROFILE" : null;
@@ -24,5 +26,12 @@ public final class StudentNav {
             from.finish();
             return true;
         });
+    }
+
+    /** Số tin chưa đọc trên tab Trao đổi, dùng chung cho học sinh và giáo viên. */
+    public static void showChatBadge(BottomNavigationView nav, int unread) {
+        com.google.android.material.badge.BadgeDrawable badge = nav.getOrCreateBadge(R.id.nav_chat);
+        badge.setVisible(unread > 0);
+        if (unread > 0) badge.setNumber(unread);
     }
 }

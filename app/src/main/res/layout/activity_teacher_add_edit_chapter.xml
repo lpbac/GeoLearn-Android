@@ -99,8 +99,11 @@
                     android:id="@+id/btnPickPdf"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    android:background="@color/colorBorder"
+                    android:src="@drawable/ic_folder_open"
+                    android:padding="8dp"
+                    android:background="@color/colorPrimarySoft"
+                    android:contentDescription="Chọn file"
+                    app:tint="@color/colorPrimary"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
@@ -126,8 +129,11 @@
                     android:id="@+id/btnPickVideo"
                     android:layout_width="40dp"
                     android:layout_height="40dp"
-                    android:src="@android:drawable/ic_menu_search"
-                    android:background="@color/colorBorder"
+                    android:src="@drawable/ic_folder_open"
+                    android:padding="8dp"
+                    android:background="@color/colorPrimarySoft"
+                    android:contentDescription="Chọn file"
+                    app:tint="@color/colorPrimary"
                     android:layout_marginStart="8dp"/>
             </LinearLayout>
 
@@ -176,6 +182,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorSurface"
+        app:itemIconTint="@color/nav_item_colors"
+        app:itemTextColor="@color/nav_item_colors"
         app:menu="@menu/bottom_nav_menu"/>
 
 </LinearLayout>

@@ -165,7 +165,7 @@ public class AiBotViewModel extends AndroidViewModel {
           .append(todo).append(" chưa học\n");
 
         if (todo > 0 || partial > 0) {
-            sb.append("\n💡 Hãy hoàn thành các mục chưa đạt để mở khóa tiếp theo!");
+            sb.append("\n💡 Hãy hoàn thành các mục chưa đạt để mở khoá tiếp theo!");
         } else {
             sb.append("\n🎉 Xuất sắc! Bạn đã hoàn thành tất cả các chương!");
         }

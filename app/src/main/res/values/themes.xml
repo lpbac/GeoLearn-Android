@@ -13,8 +13,11 @@
 
     <style name="Theme._9_BTL" parent="Base.Theme._9_BTL" />
 
-    <!-- Ghi đè theme của thư viện Pdf-Viewer để toolbar không đè lên status bar -->
+    <!-- Trình xem PDF (thư viện Pdf-Viewer): màu của app thay thanh đen mặc định, toolbar không đè status bar -->
     <style name="Theme.PdfView.SelectedTheme" parent="Theme.PdfView.Light">
+        <item name="pdfView_actionBarTint">@color/colorPrimary</item>
+        <item name="pdfView_backgroundColor">@color/colorBackground</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDark</item>
         <item name="android:windowOptOutEdgeToEdgeEnforcement" tools:targetApi="35">true</item>
     </style>
 </resources>

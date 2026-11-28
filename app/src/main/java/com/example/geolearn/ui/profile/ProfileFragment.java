@@ -86,7 +86,12 @@ public class ProfileFragment extends Fragment {
         btnChangeAvatar.setOnClickListener(v -> avatarPickerLauncher.launch("image/*"));
         btnSaveProfile.setOnClickListener(v -> saveProfile());
         btnToggleDarkMode.setOnClickListener(v -> toggleDarkMode());
-        btnLogout.setOnClickListener(v -> logout());
+        btnLogout.setOnClickListener(v -> new androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                .setTitle("Đăng xuất")
+                .setMessage("Bạn có chắc muốn đăng xuất?")
+                .setNegativeButton("Hủy", null)
+                .setPositiveButton("Đăng xuất", (d, w) -> logout())
+                .show());
 
         return view;
     }
@@ -96,7 +101,7 @@ public class ProfileFragment extends Fragment {
         if (user != null) {
             boolean isTeacher = user.getQuyenHan() == 2;
             tvFullName.setText(user.getHoTen());
-            tvClass.setText(isTeacher ? "Giáo viên • Lớp học phụ trách: " + user.getMaLop() : "Học sinh • Lớp học: " + user.getMaLop());
+            tvClass.setText(isTeacher ? "Giáo viên • Lớp học phụ trách: " + String.valueOf(user.getMaLop()).replace(",", ", ") : "Học sinh • Lớp học: " + user.getMaLop());
             tilFullName.setHint(isTeacher ? "Tên giáo viên" : "Tên học sinh");
             edtFullName.setText(user.getHoTen());
         } else {
@@ -141,7 +146,7 @@ public class ProfileFragment extends Fragment {
             imgAvatar.setImageURI(localAvatarUri);
             Toast.makeText(requireContext(), "Đã cập nhật ảnh đại diện", Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
-            imgAvatar.setImageResource(R.drawable.ic_launcher_background);
+            imgAvatar.setImageResource(R.drawable.ic_avatar_default);
             Toast.makeText(requireContext(), "Không thể lưu ảnh đại diện", Toast.LENGTH_SHORT).show();
         }
     }
@@ -184,13 +189,13 @@ public class ProfileFragment extends Fragment {
                 clearSavedAvatar(userId);
             }
         } else {
-            imgAvatar.setImageResource(R.drawable.ic_launcher_background);
+            imgAvatar.setImageResource(R.drawable.ic_avatar_default);
         }
     }
 
     private void clearSavedAvatar(int userId) {
         settingsPrefs.edit().remove(KEY_AVATAR_URI_PREFIX + userId).apply();
-        imgAvatar.setImageResource(R.drawable.ic_launcher_background);
+        imgAvatar.setImageResource(R.drawable.ic_avatar_default);
     }
 
     private void toggleDarkMode() {

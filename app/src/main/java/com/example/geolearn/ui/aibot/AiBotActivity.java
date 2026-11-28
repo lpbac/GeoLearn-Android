@@ -328,7 +328,7 @@ public class AiBotActivity extends AppCompatActivity
         if (subs.isEmpty()) {
             new androidx.appcompat.app.AlertDialog.Builder(this)
                     .setTitle("🔍 Kiểm tra bài tập")
-                    .setMessage("⚠️ Bạn chưa nộp bài tập nào.\n\nHãy hoàn thành và nộp bài trong mục Khóa học trước.")
+                    .setMessage("⚠️ Bạn chưa nộp bài tập nào.\n\nHãy hoàn thành và nộp bài trong mục Khoá học trước.")
                     .setPositiveButton("OK", null)
                     .show();
             return;

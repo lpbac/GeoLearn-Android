@@ -108,7 +108,7 @@ public class TeacherMainActivity extends AppCompatActivity {
         BottomNavigationView bottomNav = findViewById(R.id.bottomNavTeacher);
         bottomNav.setSelectedItemId(R.id.nav_home); // Mặc định chọn Home
 
-        bottomNav.setOnItemSelectedListener(item -> TeacherNav.openTab(this, item.getItemId()));
+        TeacherNav.setup(this, bottomNav);
     }
 
 
