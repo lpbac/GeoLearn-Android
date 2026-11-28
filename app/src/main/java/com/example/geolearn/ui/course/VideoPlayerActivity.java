@@ -86,7 +86,7 @@ public class VideoPlayerActivity extends AppCompatActivity {
             }
 
             // CÁCH 2: Tìm trong thư mục RAW (Dành cho video có sẵn trong code)
-            String rawName = fileName.replace(".mp4", "").trim(); // Bỏ đuôi .mp4
+            String rawName = fileName.replaceFirst("\\.[^.]*$", "").trim(); // Bỏ đuôi file (.mp4/.webm): tên tài nguyên raw không có đuôi
             int resId = getResources().getIdentifier(rawName, "raw", getPackageName());
 
             if (resId != 0) {
