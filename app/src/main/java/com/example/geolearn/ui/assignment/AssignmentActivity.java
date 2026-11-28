@@ -195,19 +195,21 @@ public class AssignmentActivity extends AppCompatActivity {
     private void submitAssignment() {
         String answerText = edtAnswer.getText().toString().trim();
 
-        // Kiểm tra xem đã nhập gì chưa
-        if (answerText.isEmpty() && selectedFilePath.isEmpty()) {
+        // Phải nhập nội dung hoặc đính kèm file (kiểm tra cả trường hợp null)
+        if (answerText.isEmpty() && (selectedFilePath == null || selectedFilePath.isEmpty())) {
             Toast.makeText(this, "Vui lòng nhập câu trả lời hoặc đính kèm file!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        if (!dbHelper.hasAssignmentInChapter(currentChapterId)) {
+        // Lấy mã bài tập (MaBT) của chương trước, vì bảng NopBai lưu MaBT
+        int maBT = dbHelper.getAssignmentIdByChapter(currentChapterId);
+        if (maBT <= 0) {
             Toast.makeText(this, "Chương này không có bài tập để nộp.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Lưu vào DB theo đúng ID của user đang đăng nhập
-        dbHelper.saveSubmission(getUserId(), currentChapterId, answerText, selectedFilePath);
+        // Lưu bài làm theo ID người dùng đang đăng nhập và mã bài tập
+        dbHelper.saveSubmission(getUserId(), maBT, answerText, selectedFilePath);
 
         Toast.makeText(this, "Nộp bài thành công!", Toast.LENGTH_SHORT).show();
         finish(); // Đóng màn hình

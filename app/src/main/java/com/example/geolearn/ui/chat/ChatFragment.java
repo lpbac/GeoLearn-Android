@@ -194,6 +194,7 @@ public class ChatFragment extends Fragment {
 
                 // --- QUAN TRỌNG: Gửi kèm ID phòng chuẩn sang ---
                 intent.putExtra("ROOM_ID", roomId);
+                intent.putExtra("PARTNER_ID", ChatActivity.partnerIdOf(roomId, myId));
 
                 startActivity(intent);
             });

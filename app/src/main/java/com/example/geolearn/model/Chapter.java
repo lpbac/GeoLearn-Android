@@ -5,27 +5,27 @@ public class Chapter {
     private int maChuong;       // Map với cột: MaChuong
     private String tenChuong;   // Map với cột: TenChuong
     private String moTa;        // Map với cột: MoTa
-    private int thuTuBaiHoc;    // Map với cột: ThuTuBaiHoc
+    private int thuTuChuong;    // Map với cột: ThuTuChuong
 
     // 2. Trường logic hỗ trợ giao diện (Không lưu trong bảng ChuongHoc)
     // Giá trị này sẽ được tính dựa trên kết quả thi của bài trước
     private boolean isLocked;
 
     // Constructor đầy đủ
-    public Chapter(int maChuong, String tenChuong, String moTa, int thuTuBaiHoc, boolean isLocked) {
+    public Chapter(int maChuong, String tenChuong, String moTa, int thuTuChuong, boolean isLocked) {
         this.maChuong = maChuong;
         this.tenChuong = tenChuong;
         this.moTa = moTa;
-        this.thuTuBaiHoc = thuTuBaiHoc;
+        this.thuTuChuong = thuTuChuong;
         this.isLocked = isLocked;
     }
 
     // Constructor rút gọn (dùng khi mới tạo, mặc định khoá)
-    public Chapter(int maChuong, String tenChuong, String moTa, int thuTuBaiHoc) {
+    public Chapter(int maChuong, String tenChuong, String moTa, int thuTuChuong) {
         this.maChuong = maChuong;
         this.tenChuong = tenChuong;
         this.moTa = moTa;
-        this.thuTuBaiHoc = thuTuBaiHoc;
+        this.thuTuChuong = thuTuChuong;
         this.isLocked = true; // Mặc định là khoá
     }
 
@@ -55,12 +55,12 @@ public class Chapter {
         this.moTa = moTa;
     }
 
-    public int getThuTuBaiHoc() {
-        return thuTuBaiHoc;
+    public int getThuTuChuong() {
+        return thuTuChuong;
     }
 
-    public void setThuTuBaiHoc(int thuTuBaiHoc) {
-        this.thuTuBaiHoc = thuTuBaiHoc;
+    public void setThuTuChuong(int thuTuChuong) {
+        this.thuTuChuong = thuTuChuong;
     }
 
     public boolean isLocked() {

@@ -73,6 +73,7 @@ public class TeacherChatAdapter extends RecyclerView.Adapter<TeacherChatAdapter.
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChatActivity.class);
             intent.putExtra("ROOM_ID", roomId);
+            intent.putExtra("PARTNER_ID", ChatActivity.partnerIdOf(roomId, teacherId));
             intent.putExtra("ROOM_NAME", displayName); // Truyền tên hiển thị sang
             context.startActivity(intent);
         });

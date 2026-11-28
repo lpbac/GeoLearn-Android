@@ -173,6 +173,7 @@ public class TeacherChatActivity extends AppCompatActivity {
                 Intent intent = new Intent(context, ChatActivity.class);
                 // QUAN TRỌNG: Truyền ID phòng chuẩn xác
                 intent.putExtra("ROOM_ID", roomId);
+                intent.putExtra("PARTNER_ID", ChatActivity.partnerIdOf(roomId, myId));
                 intent.putExtra("ROOM_NAME", displayName);
                 context.startActivity(intent);
             });

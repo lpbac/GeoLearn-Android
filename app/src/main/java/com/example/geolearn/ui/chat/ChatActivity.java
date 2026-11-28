@@ -94,16 +94,33 @@ public class ChatActivity extends AppCompatActivity {
         });
     }
 
+    // partnerId được truyền qua Intent từ màn hình danh sách hội thoại
     private void createSmartRoomId() {
         if (currentChatName.startsWith("Lớp ")) {
-            currentRoomId = currentChatName;
-        } else {
-            int partnerId = dbHelper.getUserIdByName(currentChatName);
-            if (partnerId != -1) {
-                currentRoomId = (myUserId < partnerId) ? (myUserId + "_" + partnerId) : (partnerId + "_" + myUserId);
-            } else {
-                currentRoomId = currentChatName;
-            }
+            currentRoomId = currentChatName; // Phòng chat nhóm lớp
+            return;
+        }
+        int partnerId = getIntent().getIntExtra("PARTNER_ID", -1);
+        if (partnerId == -1) {
+            Toast.makeText(this, "Không xác định được người nhận!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+        // Sắp xếp ID tăng dần để A nhắn B hay B nhắn A đều cùng một phòng
+        currentRoomId = (myUserId < partnerId)
+                ? (myUserId + "_" + partnerId)
+                : (partnerId + "_" + myUserId);
+    }
+
+    // Mã người còn lại của phòng riêng "a_b"; -1 nếu là phòng nhóm lớp
+    public static int partnerIdOf(String roomId, int myUserId) {
+        String[] ids = roomId.split("_");
+        if (ids.length != 2) return -1;
+        try {
+            int a = Integer.parseInt(ids[0]), b = Integer.parseInt(ids[1]);
+            return a == myUserId ? b : a;
+        } catch (NumberFormatException e) {
+            return -1;
         }
     }
 

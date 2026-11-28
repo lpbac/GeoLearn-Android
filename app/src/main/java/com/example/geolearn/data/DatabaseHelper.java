@@ -42,7 +42,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     private static final String DATABASE_NAME = "GeoLearn.db";
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     // --- 1. ĐỊNH NGHĨA CÁC HẰNG SỐ (CONSTANTS) ---
 
@@ -60,7 +60,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_CHAPTER_ID = "MaChuong";
     public static final String COL_CHAPTER_NAME = "TenChuong";
     public static final String COL_CHAPTER_DESC = "MoTa";
-    public static final String COL_CHAPTER_ORDER = "ThuTuBaiHoc";
+    public static final String COL_CHAPTER_ORDER = "ThuTuChuong";
 
     // Bảng Tài liệu
     public static final String TABLE_DOCUMENT = "TaiLieu";
@@ -82,7 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     // Bảng Điểm số (Mới)
     public static final String TABLE_SCORE = "DiemSo";
-    public static final String COL_SCORE_ID = "ID";
+    public static final String COL_SCORE_ID = "MaDiem";
     public static final String COL_SCORE_USER_ID = "MaNguoiDung";
     public static final String COL_SCORE_CHAPTER_ID = "MaChuong";
     public static final String COL_SCORE_VALUE = "Diem";
@@ -111,7 +111,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String COL_MSG_CONTENT = "NoiDung";
     public static final String COL_MSG_TIME = "ThoiGian";
     public static final String COL_MSG_ROOM = "PhongChat";
-    private static final String COL_MSG_IS_READ = "IsRead";
 
     private final Context context;
 
@@ -127,55 +126,61 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Tạo bảng User
+        createTables(db);
+        // Nạp dữ liệu mẫu
+        insertSampleData(db);
+    }
+
+    // Câu lệnh tạo bảng khớp với thiết kế vật lý trong báo cáo (Bảng 2.13–2.22, Phụ lục A).
+    // SQLite mặc định không bật kiểm tra FOREIGN KEY; khai báo để thể hiện quan hệ giữa các bảng.
+    private void createTables(SQLiteDatabase db) {
+        // Tạo bảng NguoiDung (khớp với Bảng 2.13)
         String createTableUser = "CREATE TABLE " + TABLE_USER + " (" +
                 COL_USER_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                COL_USERNAME + " TEXT, " +
-                COL_PASSWORD + " TEXT, " +
-                COL_FULLNAME + " TEXT, " +
-                COL_ROLE + " INTEGER, " +
+                COL_USERNAME + " TEXT UNIQUE NOT NULL, " +
+                COL_PASSWORD + " TEXT NOT NULL, " +
+                COL_FULLNAME + " TEXT NOT NULL, " +
+                COL_ROLE + " INTEGER NOT NULL, " +
                 COL_CLASS + " TEXT)";
         db.execSQL(createTableUser);
 
-        // Tạo bảng Chapter
-        String createTableChapter = "CREATE TABLE " + TABLE_CHAPTER + " (" +
+        // Mã chương do ứng dụng cấp (không dùng AUTOINCREMENT)
+        db.execSQL("CREATE TABLE " + TABLE_CHAPTER + " (" +
                 COL_CHAPTER_ID + " INTEGER PRIMARY KEY, " +
-                COL_CHAPTER_NAME + " TEXT, " +
+                COL_CHAPTER_NAME + " TEXT NOT NULL, " +
                 COL_CHAPTER_DESC + " TEXT, " +
-                COL_CHAPTER_ORDER + " INTEGER)";
-        db.execSQL(createTableChapter);
+                COL_CHAPTER_ORDER + " INTEGER NOT NULL)");
 
-        // Tạo bảng Document
-        String createTableDoc = "CREATE TABLE " + TABLE_DOCUMENT + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_DOCUMENT + " (" +
                 COL_DOC_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_DOC_CHAPTER_ID + " INTEGER, " +
-                COL_DOC_TYPE + " TEXT, " +
-                COL_DOC_FILENAME + " TEXT)";
-        db.execSQL(createTableDoc);
+                COL_DOC_TYPE + " TEXT NOT NULL, " +
+                COL_DOC_FILENAME + " TEXT NOT NULL, " +
+                fk(COL_DOC_CHAPTER_ID, TABLE_CHAPTER, COL_CHAPTER_ID) + ")");
 
-        // Tạo bảng Question
-        String createTableQuestion = "CREATE TABLE " + TABLE_QUESTION + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_QUESTION + " (" +
                 COL_Q_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_Q_CHAPTER_ID + " INTEGER, " +
-                COL_Q_CONTENT + " TEXT, " +
-                COL_Q_A + " TEXT, " + COL_Q_B + " TEXT, " + COL_Q_C + " TEXT, " + COL_Q_D + " TEXT, " +
-                COL_Q_CORRECT + " TEXT)";
-        db.execSQL(createTableQuestion);
+                COL_Q_CONTENT + " TEXT NOT NULL, " +
+                COL_Q_A + " TEXT NOT NULL, " + COL_Q_B + " TEXT NOT NULL, " +
+                COL_Q_C + " TEXT NOT NULL, " + COL_Q_D + " TEXT NOT NULL, " +
+                COL_Q_CORRECT + " TEXT NOT NULL, " +
+                fk(COL_Q_CHAPTER_ID, TABLE_CHAPTER, COL_CHAPTER_ID) + ")");
 
-        // Tạo bảng Score
-        String createTableScore = "CREATE TABLE " + TABLE_SCORE + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_SCORE + " (" +
                 COL_SCORE_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_SCORE_USER_ID + " INTEGER, " +
                 COL_SCORE_CHAPTER_ID + " INTEGER, " +
-                COL_SCORE_VALUE + " INTEGER, " +
-                COL_SCORE_TOTAL + " INTEGER)";
-        db.execSQL(createTableScore);
+                COL_SCORE_VALUE + " INTEGER NOT NULL, " +
+                COL_SCORE_TOTAL + " INTEGER NOT NULL, " +
+                fk(COL_SCORE_USER_ID, TABLE_USER, COL_USER_ID) + ", " +
+                fk(COL_SCORE_CHAPTER_ID, TABLE_CHAPTER, COL_CHAPTER_ID) + ")");
 
-        // Tạo bảng Bài tập
         db.execSQL("CREATE TABLE " + TABLE_ASSIGNMENT + " (" +
                 COL_ASS_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_ASS_CHAPTER_ID + " INTEGER, " +
-                COL_ASS_CONTENT + " TEXT)");
+                COL_ASS_CONTENT + " TEXT NOT NULL, " +
+                fk(COL_ASS_CHAPTER_ID, TABLE_CHAPTER, COL_CHAPTER_ID) + ")");
 
         db.execSQL("CREATE TABLE " + TABLE_SUBMISSION + " (" +
                 COL_SUB_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -183,24 +188,37 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 COL_SUB_ASS_ID + " INTEGER, " +
                 COL_SUB_TEXT + " TEXT, " +
                 COL_SUB_FILE + " TEXT, " +
-                COL_SUB_GRADE + " REAL DEFAULT -1, " + // Thêm cột điểm (-1 là chưa chấm)
-                COL_SUB_FEEDBACK + " TEXT)"); // Thêm cột nhận xét
+                COL_SUB_GRADE + " REAL NOT NULL DEFAULT -1, " + // -1: chưa chấm
+                COL_SUB_FEEDBACK + " TEXT, " +
+                fk(COL_SUB_USER_ID, TABLE_USER, COL_USER_ID) + ", " +
+                fk(COL_SUB_ASS_ID, TABLE_ASSIGNMENT, COL_ASS_ID) + ")");
 
-        String createMessageTable = "CREATE TABLE " + TABLE_MESSAGE + " (" +
+        db.execSQL("CREATE TABLE " + TABLE_MESSAGE + " (" +
                 COL_MSG_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 COL_MSG_SENDER_ID + " INTEGER, " +
-                COL_MSG_CONTENT + " TEXT, " +
-                COL_MSG_ROOM + " TEXT, " +
-                COL_MSG_TIME + " TEXT, " + // Giả sử bạn đã có cột thời gian này
-                COL_MSG_IS_READ + " INTEGER DEFAULT 0)"; // Mặc định là 0 (Chưa xem)
-        db.execSQL(createMessageTable);
+                COL_MSG_CONTENT + " TEXT NOT NULL, " +
+                COL_MSG_ROOM + " TEXT NOT NULL, " +
+                COL_MSG_TIME + " TEXT NOT NULL, " +
+                fk(COL_MSG_SENDER_ID, TABLE_USER, COL_USER_ID) + ")");
 
-        // Nạp dữ liệu mẫu
-        insertSampleData(db);
+        db.execSQL(VIEW_TABLE_SQL);
+        db.execSQL(READ_TABLE_SQL);
+    }
+
+    private static String fk(String col, String refTable, String refCol) {
+        return "FOREIGN KEY (" + col + ") REFERENCES " + refTable + "(" + refCol + ")";
     }
 
     private static final String VIEW_TABLE_SQL = "CREATE TABLE IF NOT EXISTS LichSuXem (MaNguoiDung INTEGER, "
-            + "MaChuong INTEGER, LoaiTaiLieu TEXT, TrangThai INTEGER, PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu))";
+            + "MaChuong INTEGER, LoaiTaiLieu TEXT NOT NULL, TrangThai INTEGER NOT NULL, "
+            + "PRIMARY KEY (MaNguoiDung, MaChuong, LoaiTaiLieu), "
+            + "FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung), "
+            + "FOREIGN KEY (MaChuong) REFERENCES ChuongHoc(MaChuong))";
+
+    // Trạng thái đã đọc lưu RIÊNG cho từng người: ID tin nhắn cuối cùng người đó đã xem trong phòng.
+    private static final String READ_TABLE_SQL = "CREATE TABLE IF NOT EXISTS DaDoc (MaNguoiDung INTEGER, "
+            + "PhongChat TEXT NOT NULL, MaTinCuoi INTEGER NOT NULL, PRIMARY KEY (MaNguoiDung, PhongChat), "
+            + "FOREIGN KEY (MaNguoiDung) REFERENCES NguoiDung(MaNguoiDung))";
 
     // Hai bảng phụ (lịch sử xem, đã đọc) tạo ở đây để DB cũ chưa có cũng được bổ sung
     @Override
@@ -214,28 +232,69 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (oldVersion == 3 || oldVersion == 4) { // v4 thêm cột, v5 đổi tên GV mẫu; giữ nguyên dữ liệu
+        if (oldVersion >= 3 && oldVersion <= 5) { // nâng cấp giữ nguyên dữ liệu
             if (oldVersion == 3)
                 db.execSQL("ALTER TABLE " + TABLE_SCORE + " ADD COLUMN " + COL_SCORE_TOTAL + " INTEGER");
-            // Chỉ đổi khi tên còn là tên mẫu cũ, không ghi đè tên giáo viên đã tự sửa
-            db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Nguyễn Văn Hùng' WHERE "
-                    + COL_USERNAME + "='gv1' AND " + COL_FULLNAME + "='Đặng Hồng Phúc'");
-            db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Trần Thị Lan' WHERE "
-                    + COL_USERNAME + "='gv2' AND " + COL_FULLNAME + "='Nguyễn Kiều Hưng'");
+            if (oldVersion <= 4) {
+                // Chỉ đổi khi tên còn là tên mẫu cũ, không ghi đè tên giáo viên đã tự sửa
+                db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Nguyễn Văn Hùng' WHERE "
+                        + COL_USERNAME + "='gv1' AND " + COL_FULLNAME + "='Đặng Hồng Phúc'");
+                db.execSQL("UPDATE " + TABLE_USER + " SET " + COL_FULLNAME + "='Trần Thị Lan' WHERE "
+                        + COL_USERNAME + "='gv2' AND " + COL_FULLNAME + "='Nguyễn Kiều Hưng'");
+            }
+            migrateToV6(db);
             return;
         }
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CHAPTER);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_DOCUMENT);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_QUESTION);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SCORE);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ASSIGNMENT);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBMISSION);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_MESSAGE);
-        // Xoá cả bảng phụ, nếu không user mới trùng ID sẽ thừa hưởng lịch sử xem/đã đọc cũ
-        db.execSQL("DROP TABLE IF EXISTS LichSuXem");
-        db.execSQL("DROP TABLE IF EXISTS DaDoc");
+        for (String t : new String[] { TABLE_USER, TABLE_CHAPTER, TABLE_DOCUMENT, TABLE_QUESTION, TABLE_SCORE,
+                TABLE_ASSIGNMENT, TABLE_SUBMISSION, TABLE_MESSAGE,
+                // Xoá cả bảng phụ, nếu không user mới trùng ID sẽ thừa hưởng lịch sử xem/đã đọc cũ
+                "LichSuXem", "DaDoc" })
+            db.execSQL("DROP TABLE IF EXISTS " + t);
         onCreate(db);
+    }
+
+    // v6: thêm ràng buộc NOT NULL/UNIQUE/FOREIGN KEY, đổi tên cột (ID→MaDiem, ThuTuBaiHoc→ThuTuChuong,
+    // DaDoc.Phong→PhongChat), bỏ cột IsRead. SQLite không sửa được ràng buộc nên dựng lại bảng rồi chép dữ liệu.
+    private void migrateToV6(SQLiteDatabase db) {
+        String[][] copies = {
+                { TABLE_USER, "MaNguoiDung, TenDangNhap, MatKhau, HoTen, QuyenHan, MaLop",
+                        "MaNguoiDung, TenDangNhap, COALESCE(MatKhau,''), COALESCE(HoTen,''), COALESCE(QuyenHan,1), MaLop" },
+                { TABLE_CHAPTER, "MaChuong, TenChuong, MoTa, ThuTuChuong",
+                        "MaChuong, COALESCE(TenChuong,''), MoTa, COALESCE(ThuTuBaiHoc, MaChuong)" },
+                { TABLE_DOCUMENT, "MaTaiLieu, MaChuong, Loai, TenFile",
+                        "MaTaiLieu, MaChuong, COALESCE(Loai,''), COALESCE(TenFile,'')" },
+                { TABLE_QUESTION, "MaCH, MaChuong, NoiDung, DapAnA, DapAnB, DapAnC, DapAnD, DapAnDung",
+                        "MaCH, MaChuong, COALESCE(NoiDung,''), COALESCE(DapAnA,''), COALESCE(DapAnB,''), "
+                                + "COALESCE(DapAnC,''), COALESCE(DapAnD,''), COALESCE(DapAnDung,'')" },
+                { TABLE_SCORE, "MaDiem, MaNguoiDung, MaChuong, Diem, TongCau",
+                        "ID, MaNguoiDung, MaChuong, COALESCE(Diem,0), COALESCE(TongCau,0)" },
+                { TABLE_ASSIGNMENT, "MaBT, MaChuong, DeBai", "MaBT, MaChuong, COALESCE(DeBai,'')" },
+                { TABLE_SUBMISSION, "MaNop, MaNguoiDung, MaBT, TraLoiVanBan, DuongDanFile, DiemGV, NhanXetGV",
+                        "MaNop, MaNguoiDung, MaBT, TraLoiVanBan, DuongDanFile, COALESCE(DiemGV,-1), NhanXetGV" },
+                { TABLE_MESSAGE, "MaTN, NguoiGui, NoiDung, PhongChat, ThoiGian",
+                        "MaTN, NguoiGui, COALESCE(NoiDung,''), COALESCE(PhongChat,''), COALESCE(ThoiGian,'')" },
+                { "LichSuXem", "MaNguoiDung, MaChuong, LoaiTaiLieu, TrangThai",
+                        "MaNguoiDung, MaChuong, COALESCE(LoaiTaiLieu,''), COALESCE(TrangThai,0)" },
+                { "DaDoc", "MaNguoiDung, PhongChat, MaTinCuoi", "MaNguoiDung, COALESCE(Phong,''), COALESCE(MaTinCuoi,0)" },
+        };
+        for (String[] c : copies) {
+            if (tableExists(db, c[0]))
+                db.execSQL("ALTER TABLE " + c[0] + " RENAME TO " + c[0] + "_cu");
+        }
+        createTables(db);
+        for (String[] c : copies) {
+            if (!tableExists(db, c[0] + "_cu"))
+                continue;
+            db.execSQL("INSERT OR IGNORE INTO " + c[0] + " (" + c[1] + ") SELECT " + c[2] + " FROM " + c[0] + "_cu");
+            db.execSQL("DROP TABLE " + c[0] + "_cu");
+        }
+    }
+
+    private static boolean tableExists(SQLiteDatabase db, String name) {
+        Cursor c = db.rawQuery("SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", new String[] { name });
+        boolean exists = c.moveToFirst();
+        c.close();
+        return exists;
     }
 
     private void insertSampleData(SQLiteDatabase db) {
@@ -286,27 +345,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Tin nhắn nhóm lớp
         // Sửa lại insertSampleData trong DatabaseHelper.java
 
-        // Tin nhắn nhóm lớp (QUAN TRỌNG: Phải để số 1 ở cuối để coi là ĐÃ ĐỌC)
+        // Tin nhắn nhóm lớp
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 6, 'Chào lớp 12A1, hôm nay các em đọc trước tài liệu Chương 2 nhé.', 'Lớp 12A1', '08:05', 1)");
+                + " VALUES(null, 6, 'Chào lớp 12A1, hôm nay các em đọc trước tài liệu Chương 2 nhé.', 'Lớp 12A1', '08:05')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 1, 'Dạ thầy, em đã tải tài liệu về rồi ạ.', 'Lớp 12A1', '08:08', 1)");
+                + " VALUES(null, 1, 'Dạ thầy, em đã tải tài liệu về rồi ạ.', 'Lớp 12A1', '08:08')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 2, 'Thầy ơi phần bài tập Chương 1 nộp đến khi nào ạ?', 'Lớp 12A1', '08:12', 1)");
+                + " VALUES(null, 2, 'Thầy ơi phần bài tập Chương 1 nộp đến khi nào ạ?', 'Lớp 12A1', '08:12')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 6, 'Hạn nộp là 22h tối nay, các em chú ý hoàn thành đúng hạn.', 'Lớp 12A1', '08:15', 1)");
+                + " VALUES(null, 6, 'Hạn nộp là 22h tối nay, các em chú ý hoàn thành đúng hạn.', 'Lớp 12A1', '08:15')");
 
         // Tin riêng mẫu giữa học sinh và bạn cùng lớp / giáo viên
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 2, 'Minh ơi, cậu làm xong câu hỏi ôn tập chưa?', '1_2', '09:20', 1)");
+                + " VALUES(null, 2, 'Minh ơi, cậu làm xong câu hỏi ôn tập chưa?', '1_2', '09:20')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 1, 'Mình làm gần xong rồi, lát gửi cậu phần gợi ý nhé.', '1_2', '09:24', 1)");
+                + " VALUES(null, 1, 'Mình làm gần xong rồi, lát gửi cậu phần gợi ý nhé.', '1_2', '09:24')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 6, 'Minh nhớ bổ sung bản đồ minh họa vào bài nộp nhé.', '1_6', '14:10', 1)");
+                + " VALUES(null, 6, 'Minh nhớ bổ sung bản đồ minh họa vào bài nộp nhé.', '1_6', '14:10')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 1, 'Dạ vâng thầy, em sẽ cập nhật ngay ạ.', '1_6', '14:18', 1)");
+                + " VALUES(null, 1, 'Dạ vâng thầy, em sẽ cập nhật ngay ạ.', '1_6', '14:18')");
         db.execSQL("INSERT INTO " + TABLE_MESSAGE
-                + " VALUES(null, 3, 'Tối nay nhóm mình ôn quiz Chương 2 không?', '1_3', '19:30', 1)");
+                + " VALUES(null, 3, 'Tối nay nhóm mình ôn quiz Chương 2 không?', '1_3', '19:30')");
     }
 
     // ==========================================================
@@ -589,7 +648,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
 
     // Mã bài tập của chương (mỗi chương tối đa 1 bài), 0 nếu chương không có bài tập
-    private int getAssignmentId(int chapterId) {
+    public int getAssignmentIdByChapter(int chapterId) {
         Cursor c = getReadableDatabase().rawQuery(
                 "SELECT " + COL_ASS_ID + " FROM " + TABLE_ASSIGNMENT + " WHERE " + COL_ASS_CHAPTER_ID + "=?",
                 new String[] { String.valueOf(chapterId) });
@@ -599,11 +658,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // --- HÀM LƯU BÀI LÀM (Thêm vào cuối file) ---
-    public void saveSubmission(int userId, int chapterId, String text, String filePath) {
+    // maBT: mã bài tập (BaiTap.MaBT), lấy trước bằng getAssignmentIdByChapter()
+    public void saveSubmission(int userId, int maBT, String text, String filePath) {
         SQLiteDatabase db = this.getWritableDatabase();
-        // Lấy ID bài tập dựa trên chương (Giả sử mỗi chương 1 bài)
-        // Trong thực tế cần logic phức tạp hơn, nhưng BTL làm vậy là ổn
-        int assId = getAssignmentId(chapterId);
+        int assId = maBT;
 
         if (assId > 0) {
             android.content.ContentValues values = new android.content.ContentValues();
@@ -630,7 +688,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String[] result = null;
 
         // Lấy ID bài tập của chương này
-        int assId = getAssignmentId(chapterId);
+        int assId = getAssignmentIdByChapter(chapterId);
 
         if (assId > 0) {
             // Tìm trong bảng NopBai
@@ -793,19 +851,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         return names;
-    }
-
-    // Hàm lấy ID của người dùng dựa vào Tên (Để tạo phòng chat riêng)
-    public int getUserIdByName(String fullname) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        int id = -1; // Mặc định là không tìm thấy
-        Cursor cursor = db.rawQuery("SELECT " + COL_USER_ID + " FROM " + TABLE_USER + " WHERE " + COL_FULLNAME + "=?",
-                new String[] { fullname });
-        if (cursor.moveToFirst()) {
-            id = cursor.getInt(0);
-        }
-        cursor.close();
-        return id;
     }
 
     // --- THÊM VÀO DatabaseHelper.java ---
@@ -1134,14 +1179,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return lastId; // Trả về 0 nếu chưa có tin nhắn nào
     }
 
-    // Trạng thái đã đọc lưu RIÊNG cho từng người: ID tin nhắn cuối cùng người đó đã xem trong phòng.
-    // (Cột IsRead dùng chung cho cả phòng nên 1 người mở nhóm lớp là cả lớp mất chấm chưa đọc.)
-    private static final String READ_TABLE_SQL = "CREATE TABLE IF NOT EXISTS DaDoc (MaNguoiDung INTEGER, Phong TEXT, "
-            + "MaTinCuoi INTEGER, PRIMARY KEY (MaNguoiDung, Phong))";
     // Tin mình vừa gửi cũng tính là đã đọc mọi tin trước nó (đã trả lời thì không còn "chưa đọc").
     // Tham số: myId, myId, myId.
     private static final String UNREAD_COND = " AND " + COL_MSG_SENDER_ID + "!=? AND " + COL_MSG_ID
-            + " > MAX(COALESCE((SELECT MaTinCuoi FROM DaDoc WHERE MaNguoiDung=? AND Phong=" + TABLE_MESSAGE + "."
+            + " > MAX(COALESCE((SELECT MaTinCuoi FROM DaDoc WHERE MaNguoiDung=? AND PhongChat=" + TABLE_MESSAGE + "."
             + COL_MSG_ROOM + "), 0), COALESCE((SELECT MAX(m2." + COL_MSG_ID + ") FROM " + TABLE_MESSAGE + " m2 WHERE m2."
             + COL_MSG_ROOM + "=" + TABLE_MESSAGE + "." + COL_MSG_ROOM + " AND m2." + COL_MSG_SENDER_ID + "=?), 0))";
 
@@ -1159,7 +1200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     // 3. Đánh dấu phòng là ĐÃ ĐỌC đối với một người
     public void markMessagesAsRead(String roomId, int userId) {
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT OR REPLACE INTO DaDoc (MaNguoiDung, Phong, MaTinCuoi) VALUES (?, ?, "
+        db.execSQL("INSERT OR REPLACE INTO DaDoc (MaNguoiDung, PhongChat, MaTinCuoi) VALUES (?, ?, "
                 + "(SELECT COALESCE(MAX(" + COL_MSG_ID + "), 0) FROM " + TABLE_MESSAGE + " WHERE " + COL_MSG_ROOM + "=?))",
                 new Object[] { userId, roomId, roomId });
     }
@@ -1315,7 +1356,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
         // 1. Tìm ID bài tập
-        int assId = getAssignmentId(chapterId);
+        int assId = getAssignmentIdByChapter(chapterId);
 
         // 2. Cập nhật điểm
         if (assId > 0) {
@@ -1335,7 +1376,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public String[] getSubmissionFullDetail(int userId, int chapterId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String[] result = null;
-        int assId = getAssignmentId(chapterId);
+        int assId = getAssignmentIdByChapter(chapterId);
 
         if (assId > 0) {
             Cursor c2 = db.rawQuery(

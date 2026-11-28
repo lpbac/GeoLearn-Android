@@ -99,7 +99,7 @@ public class TeacherCourseListActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
             Chapter c = list.get(position);
-            holder.tvOrder.setText(String.valueOf(c.getThuTuBaiHoc()));
+            holder.tvOrder.setText(String.valueOf(c.getThuTuChuong()));
             holder.tvName.setText(c.getTenChuong());
             String pdf = db.getPdfFileName(c.getMaChuong()).isEmpty() ? "Chưa có PDF" : "Có PDF";
             String video = db.getVideoFileName(c.getMaChuong()).isEmpty() ? "Chưa có video" : "Có video";

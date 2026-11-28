@@ -53,8 +53,13 @@ public class QuestionActivity extends AppCompatActivity {
 
         // 2. Lấy dữ liệu câu hỏi từ DB
         dbHelper = new DatabaseHelper(this);
-        // Giả sử lấy câu hỏi chương 1 (Sau này bạn lấy ID từ Intent gửi sang)
-        int chapterId = getIntent().getIntExtra("CHAPTER_ID", 1);
+        // Không dùng mã chương mặc định: thiếu CHAPTER_ID thì báo lỗi và thoát
+        int chapterId = getIntent().getIntExtra("CHAPTER_ID", -1);
+        if (chapterId == -1) {
+            Toast.makeText(this, "Không xác định được chương học!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         questionList = dbHelper.getQuestionsByChapter(chapterId);
 
         if (questionList.isEmpty()) {
@@ -218,13 +223,19 @@ public class QuestionActivity extends AppCompatActivity {
         int total = questionList.size();
 
         for (Question q : questionList) {
-            if (q.getUserAnswer().equals(q.getCorrectAnswer())) {
+            // Gọi equals() từ đáp án đúng để không lỗi khi câu bị bỏ trống (userAnswer null)
+            if (q.getCorrectAnswer().equals(q.getUserAnswer())) {
                 score++;
             }
         }
 
         // --- MỚI: LƯU ĐIỂM VÀO DATABASE THEO USER ĐĂNG NHẬP ---
-        int chapterId = getIntent().getIntExtra("CHAPTER_ID", 1);
+        int chapterId = getIntent().getIntExtra("CHAPTER_ID", -1);
+        if (chapterId == -1) {
+            Toast.makeText(this, "Không xác định được chương học!", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
         dbHelper.saveQuizScore(getUserId(), chapterId, score, total);
         // ----------------------------------
 
